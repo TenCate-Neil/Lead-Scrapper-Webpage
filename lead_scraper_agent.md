@@ -79,6 +79,7 @@ Each subagent should make a genuine effort to populate every field below — if 
 | `Title` | Job title for the point of contact for this lead |
 | `Company` | Name of the company or entity this lead is associated with (e.g. the school district, city, or county) |
 | `Email` | Email address for the point of contact for this lead |
+| `Project_Name__c` | Name of the project associated with this lead. Must be less than 255 characters |
 
 ### Per-subagent return format
 
@@ -95,7 +96,8 @@ Each subagent's final message must be **only** a JSON array of lead objects in t
     "Projected_Start_Date__c": "",
     "Title": "",
     "Company": "",
-    "Email": ""
+    "Email": "",
+    "Project_Name__c"
   }
 ]
 ```
@@ -116,7 +118,8 @@ The orchestrator merges every subagent's returned array into one document, addin
       "Projected_Start_Date__c": "",
       "Title": "",
       "Company": "",
-      "Email": ""
+      "Email": "",
+      "Project_Name__c": ""
     }
   ],
   "failed_sources": [
