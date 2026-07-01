@@ -79,7 +79,7 @@ Each subagent should make a genuine effort to populate every field below — if 
 | `Title` | Job title for the point of contact for this lead |
 | `Company` | Name of the company or entity this lead is associated with (e.g. the school district, city, or county) |
 | `Email` | Email address for the point of contact for this lead |
-| `Project_Name__c` | Name of the project associated with this lead. Must be less than 255 characters |
+| `Project_Name__c` | A short project title in the format [Site or facility name] - [brief scope summary], e.g. "Troponin Soccer Complex - soccer field and lights" or "Curly Hollow Park - Turf, Lights, PB Courts". Name the specific site or facility (not the parent district or city), followed by a separator, followed by a compact comma-separated list of the main scope items (e.g. turf, lights, field type). Keep it under 255 characters and closer to 3–8 words. This is a label, not a sentence — no project background, dates, budgets, or contractor names (those belong in Lead_Details__c). |
 
 ### Per-subagent return format
 
