@@ -11,7 +11,7 @@ Sonnet (claude-sonnet-4-6)
 
 ## Tools
 - **web_fetch** — retrieve the contents of each source URL and its linked bid/bond/agenda pages
-- **web_search** — locate the correct purchasing/bids page when a source root URL does not link directly to solicitations, and to confirm portal type (Bonfire/IonWave/BidNet/DemandStar)
+- **web_search** — locate the correct purchasing/bids page when a source root URL does not link directly to solicitations; confirm portal type (Bonfire/IonWave/BidNet/DemandStar); and resolve the physical address of any named facility, campus, stadium, park, or field that the source references but does not give a full street address for.
 - **view** — read the data source markdown file and any working files
 - **bash_tool** — file operations, JSON assembly and validation
 - **create_file** / **str_replace** — write and update the output JSON file
@@ -55,6 +55,8 @@ For each qualifying lead, extract the fields defined in the output schema below.
 
 ### Rules
 - Use only the sources in the markdown file. Do not add external sources.
+- Resolving Project_Address__c. A named facility is a resolvable address, not a missing value. If the source page names a specific site — a campus ("Cedar Park HS"), a stadium, a park, a complex, or a field tied to a named campus ("Running Brushy MS competition field" → the Running Brushy MS campus) — but does not print the street address, use web_search to find that facility's physical address (e.g. search the facility name plus city/state). Record the resulting street address, city, state, and ZIP. Only leave Project_Address__c empty when there is no identifiable site at all (e.g. a district-wide project with no named location) or when a search cannot confidently resolve one. When a project covers multiple named sites, resolve and list each. Resolving a named facility to its known address this way is retrieval, not fabrication, and is expected — the no-fabrication rule applies to solicitation numbers, dates, costs, and contacts, not to looking up the real address of a place the source explicitly names.
+- When searching for a facility address, constrain the query with the entity and county/city from the source entry (e.g. the school district name and its Austin-metro county) so the correct campus is matched. If multiple facilities share the name and the correct one can't be distinguished, leave the field empty rather than record a guessed address.
 - Only capture football, soccer, and baseball/softball turf leads; exclude all other sports and unrelated recreation facilities.
 - Do not fabricate solicitation numbers, dates, or descriptions. Missing data stays empty.
 - Deduplicate within a source: if the same project appears on multiple pages within one source's site, record it once and note the additional URL(s) if the schema allows. Cross-source duplicates are handled by the orchestrator at consolidation time, not by individual subagents.
