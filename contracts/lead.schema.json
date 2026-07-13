@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tencate.example/contracts/lead.schema.json",
+  "title": "Lead",
+  "description": "One artificial-turf lead produced by the Lead Scraper. Field names ending in __c mirror Salesforce custom field API names so the record maps cleanly to a Salesforce Lead. Pipeline-only metadata fields do not sync to Salesforce (see docs/SCHEMAS.md).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["external_id", "location_id", "Company", "Lead_Details__c", "Project_Name__c", "source_ids"],
+  "properties": {
+    "external_id": {
+      "type": "string",
+      "description": "Stable, content-derived id (hash of Company + Project_Name__c + primary source URL). Maps to a Salesforce External Id field so upserts are idempotent across runs.",
+      "minLength": 8
+    },
+    "location_id": {
+      "type": "string",
+      "pattern": "^us-[a-z]{2}-[a-z0-9-]+$",
+      "description": "Which location this lead was discovered under."
+    },
+    "FirstName": { "type": "string", "description": "Point-of-contact first name. Empty string if unknown." },
+    "LastName": { "type": "string", "description": "Point-of-contact last name. Empty string if unknown." },
+    "Lead_Details__c": {
+      "type": "string",
+      "description": "Project summary: scope, sports, square footage, products needed."
+    },
+    "Project_Address__c": { "type": "string", "description": "Project site address. Empty string if unresolved." },
+    "Phone": { "type": "string", "description": "Contact phone. Empty string if unknown." },
+    "Projected_Start_Date__c": { "type": "string", "description": "Expected start date (free text or ISO). Empty string if unknown." },
+    "Title": { "type": "string", "description": "Contact job title. Empty string if unknown." },
+    "Company": { "type": "string", "description": "Entity name (school district, city, county)." },
+    "Email": { "type": "string", "description": "Contact email. Empty string if unknown." },
+    "Project_Name__c": {
+      "type": "string",
+      "maxLength": 255,
+      "description": "Label: [Site or facility name] - [compact scope]. 3-8 words. Not a sentence."
+    },
+    "source_ids": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^SRC-[0-9]{3,}$" },
+      "minItems": 1,
+      "description": "Source ids this lead traces back to. Pipeline metadata; not synced to Salesforce as-is."
+    },
+    "source_urls": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Exact page URL(s) the lead was found on. Pipeline metadata."
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Extraction/validation confidence. Below the review threshold routes to human review before Salesforce."
+    },
+    "needs_review": {
+      "type": "boolean",
+      "description": "True if any required field is missing, sport is unconfirmed, or confidence is below threshold."
+    }
+  }
+}

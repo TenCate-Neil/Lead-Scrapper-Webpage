@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tencate.example/contracts/run_manifest.schema.json",
+  "title": "RunManifest",
+  "description": "Per-run metadata written alongside sources.json / leads.json in each output run folder. Makes runs comparable, auditable, and rollup-able.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "location_id", "run_timestamp", "stage"],
+  "properties": {
+    "schema_version": { "type": "string", "const": "1.0" },
+    "location_id": { "type": "string", "pattern": "^us-[a-z]{2}-[a-z0-9-]+$" },
+    "run_timestamp": {
+      "type": "string",
+      "pattern": "^[0-9]{8}T[0-9]{6}Z$",
+      "description": "UTC run time, YYYYMMDDTHHMMSSZ. Also the run folder name."
+    },
+    "stage": {
+      "type": "string",
+      "enum": ["discovery", "scrape"],
+      "description": "Which pipeline stage produced this manifest."
+    },
+    "agent_versions": {
+      "type": "object",
+      "additionalProperties": { "type": "string" },
+      "description": "Version tag per agent/skill involved, e.g. {\"source_discovery\": \"1.0\"}."
+    },
+    "counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "entities": { "type": "integer", "minimum": 0 },
+        "sources_verified": { "type": "integer", "minimum": 0 },
+        "leads": { "type": "integer", "minimum": 0 },
+        "leads_needs_review": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "coverage": { "type": "number", "minimum": 0, "maximum": 1 },
+    "run_quality": { "type": "number", "minimum": 0, "maximum": 1 },
+    "budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "What the goal loop consumed, for cost tracking and tuning.",
+      "properties": {
+        "iterations": { "type": "integer", "minimum": 0 },
+        "tool_calls": { "type": "integer", "minimum": 0 },
+        "wall_time_seconds": { "type": "number", "minimum": 0 },
+        "stop_reason": {
+          "type": "string",
+          "enum": ["goal_met", "diminishing_returns", "max_iterations", "budget_exhausted"]
+        }
+      }
+    },
+    "failed_sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "reason"],
+        "properties": {
+          "id": { "type": "string" },
+          "reason": { "type": "string" }
+        }
+      },
+      "description": "Sources that could not be validated or scraped, with a short reason. Visible, not silently dropped."
+    },
+    "gaps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["entity"],
+        "properties": {
+          "entity": { "type": "string" },
+          "strategies_tried": { "type": "array", "items": { "type": "string" } },
+          "note": { "type": "string" }
+        }
+      },
+      "description": "Entities that ended a discovery run with no confident source, and what was tried."
+    }
+  }
+}

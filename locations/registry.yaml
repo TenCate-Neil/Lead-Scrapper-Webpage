@@ -1,0 +1,74 @@
+# Location Registry
+#
+# The central list of geographic scopes the pipeline covers. This is a static,
+# versioned INPUT (see CLAUDE.md). To start covering a new area, add one entry
+# to `locations` below — nothing else needs editing. The Source Finder reads
+# this file to build its work queue; dynamic per-location progress lives
+# separately in locations/state.json.
+#
+# Every entry must conform to contracts/location.schema.json:
+#   Required : schema_version, location_id, name, type, priority, cadence, added_date
+#   Optional : scope (counties/state/parent), tags
+#
+# Conventions:
+#   - location_id is a stable slug `us-<state>-<area>` (e.g. us-tx-austin-msa),
+#     used identically in inputs, state, and output paths.
+#   - type     : city | county | metro | district | state
+#   - priority : high | medium | low     (orders the work queue)
+#   - cadence  : weekly | monthly | quarterly   (sets next_due in state.json)
+#   - added_date is an ISO date (YYYY-MM-DD).
+
+locations:
+  - schema_version: "1.0"
+    location_id: us-tx-austin-msa
+    name: Austin Metro (5-county MSA)
+    type: metro
+    scope:
+      counties: [Travis, Williamson, Hays, Bastrop, Caldwell]
+      state: TX
+    priority: high
+    cadence: weekly
+    tags: [texas, tier-1]
+    added_date: "2026-07-13"
+
+  # ---------------------------------------------------------------------------
+  # Example stubs. Uncomment and adjust to add a location. Copy the shape above:
+  # give it a unique location_id, fill in scope, and set priority/cadence.
+  # ---------------------------------------------------------------------------
+
+  # - schema_version: "1.0"
+  #   location_id: us-tx-dallas-msa
+  #   name: Dallas–Fort Worth Metro
+  #   type: metro
+  #   scope:
+  #     counties: [Dallas, Tarrant, Collin, Denton]
+  #     state: TX
+  #   priority: medium
+  #   cadence: monthly
+  #   tags: [texas, tier-2]
+  #   added_date: "2026-07-13"
+
+  # - schema_version: "1.0"
+  #   location_id: us-tx-houston-msa
+  #   name: Houston Metro
+  #   type: metro
+  #   scope:
+  #     counties: [Harris, Fort Bend, Montgomery]
+  #     state: TX
+  #   priority: medium
+  #   cadence: monthly
+  #   tags: [texas, tier-2]
+  #   added_date: "2026-07-13"
+
+  # - schema_version: "1.0"
+  #   location_id: us-tx-round-rock
+  #   name: City of Round Rock
+  #   type: city
+  #   scope:
+  #     counties: [Williamson]
+  #     state: TX
+  #     parent: us-tx-austin-msa
+  #   priority: low
+  #   cadence: quarterly
+  #   tags: [texas]
+  #   added_date: "2026-07-13"

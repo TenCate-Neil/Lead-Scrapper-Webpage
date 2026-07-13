@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tencate.example/contracts/location.schema.json",
+  "title": "Location",
+  "description": "A geographic scope the Source Finder processes. Static input, versioned in locations/registry.yaml.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "location_id", "name", "type", "priority", "cadence", "added_date"],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0",
+      "description": "Contract version. Bump on breaking changes."
+    },
+    "location_id": {
+      "type": "string",
+      "pattern": "^us-[a-z]{2}-[a-z0-9-]+$",
+      "description": "Stable slug used across inputs, state, and outputs. Example: us-tx-austin-msa."
+    },
+    "name": {
+      "type": "string",
+      "description": "Human-readable name. Example: Austin Metro (5-county MSA)."
+    },
+    "type": {
+      "type": "string",
+      "enum": ["city", "county", "metro", "district", "state"],
+      "description": "Kind of geography."
+    },
+    "scope": {
+      "type": "object",
+      "description": "Optional structured detail that bounds the location (counties, parent entity, etc.).",
+      "additionalProperties": true,
+      "properties": {
+        "counties": { "type": "array", "items": { "type": "string" } },
+        "state": { "type": "string" },
+        "parent": { "type": "string" }
+      }
+    },
+    "priority": {
+      "type": "string",
+      "enum": ["high", "medium", "low"],
+      "description": "Drives ordering of the work queue."
+    },
+    "cadence": {
+      "type": "string",
+      "enum": ["weekly", "monthly", "quarterly"],
+      "description": "How often the location is re-discovered. Sets next_due in the state store."
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Free-form labels for filtering (e.g. texas, tier-1)."
+    },
+    "added_date": {
+      "type": "string",
+      "format": "date",
+      "description": "ISO date the location was added to the registry."
+    }
+  }
+}
