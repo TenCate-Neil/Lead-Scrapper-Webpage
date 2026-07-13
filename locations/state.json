@@ -1,0 +1,21 @@
+{
+  "locations": [
+    {
+      "schema_version": "1.0",
+      "location_id": "us-tx-austin-msa",
+      "status": "scraped",
+      "last_run": "2026-07-01T18:41:58Z",
+      "next_due": "2026-07-08T18:41:58Z",
+      "coverage": null,
+      "quality_score": null,
+      "counts": {
+        "entities": 2,
+        "sources_verified": 4,
+        "leads": 11
+      },
+      "latest_run": "20260701T184158Z",
+      "lease": null,
+      "notes": "Backfilled from the legacy flat output file output/austin_turf_leads_20260701T184158Z.json. coverage and quality_score were not measured in this legacy run and are left null. See output/us-tx-austin-msa/20260701T184158Z/run_manifest.json for run details and gaps."
+    }
+  ]
+}
