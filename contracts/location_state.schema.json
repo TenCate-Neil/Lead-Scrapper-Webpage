@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tencate.example/contracts/location_state.schema.json",
+  "title": "LocationState",
+  "description": "Dynamic processing state for one location. Updated every run. Stored in locations/state.json (JSON at small scale; migrate to SQLite for the national rollout).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "location_id", "status"],
+  "properties": {
+    "schema_version": { "type": "string", "const": "1.0" },
+    "location_id": {
+      "type": "string",
+      "pattern": "^us-[a-z]{2}-[a-z0-9-]+$",
+      "description": "Foreign key to a location in the registry."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "scoping",
+        "discovering",
+        "validating",
+        "review",
+        "ready_for_scrape",
+        "scraped",
+        "stale",
+        "blocked",
+        "failed"
+      ],
+      "description": "Position in the pipeline state machine. See docs/ARCHITECTURE.md for transitions."
+    },
+    "last_run": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "UTC timestamp of the most recent discovery run."
+    },
+    "next_due": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "When this location should next be processed (derived from cadence)."
+    },
+    "coverage": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Fraction of enumerated entities with at least one confident source."
+    },
+    "quality_score": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Aggregate confidence across verified sources for the latest run."
+    },
+    "counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "entities": { "type": "integer", "minimum": 0 },
+        "sources_verified": { "type": "integer", "minimum": 0 },
+        "leads": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "latest_run": {
+      "type": ["string", "null"],
+      "description": "Run-timestamp folder name of the current run, e.g. 20260701T184158Z. Points into output/<location_id>/."
+    },
+    "lease": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "description": "Concurrency lock so two runs cannot grab the same location at once.",
+      "properties": {
+        "owner": { "type": "string" },
+        "acquired_at": { "type": "string", "format": "date-time" },
+        "expires_at": { "type": "string", "format": "date-time" }
+      }
+    },
+    "notes": {
+      "type": "string",
+      "description": "Free text, e.g. why the location is blocked."
+    }
+  }
+}

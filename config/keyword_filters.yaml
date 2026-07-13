@@ -1,0 +1,82 @@
+# Single source of truth for keyword filters.
+# Both the Source Finder and the Lead Scraper read this file. Do NOT copy these
+# lists into agent prompts, skills, or source files — reference this path instead.
+#
+# A candidate qualifies as a lead only if it matches at least one turf keyword
+# AND at least one sport keyword (or an explicit multipurpose field reference),
+# and does not match an exclusion keyword unless it also clearly covers a target
+# sport.
+
+version: "1.0"
+
+turf_keywords:
+  - "artificial turf"
+  - "synthetic turf"
+  - "turf replacement"
+  - "turf installation"
+  - "field turf"
+  - "synthetic surface"
+  - "turf field"
+  - "field resurfacing"
+  - "infield turf"
+  - "synthetic infield"
+
+football_keywords:
+  - "football field"
+  - "football stadium"
+  - "stadium turf"
+  - "practice field"
+  - "high school stadium"
+  - "football field renovation"
+  - "football field replacement"
+
+soccer_keywords:
+  - "soccer field"
+  - "soccer complex"
+  - "soccer park"
+  - "youth soccer"
+  - "soccer field renovation"
+  - "soccer field replacement"
+  - "football/soccer field"
+
+baseball_softball_keywords:
+  - "baseball field"
+  - "softball field"
+  - "baseball complex"
+  - "softball complex"
+  - "baseball/softball complex"
+  - "ballfield"
+  - "baseball turf"
+  - "softball turf"
+  - "baseball field renovation"
+  - "softball field renovation"
+
+procurement_keywords:
+  - "bid"
+  - "RFP"
+  - "RFQ"
+  - "CSP"
+  - "competitive sealed proposal"
+  - "invitation to bid"
+  - "awarded contract"
+  - "notice to bidders"
+  - "construction services"
+  - "CMAR"
+  - "vendor registration"
+  - "bond"
+  - "capital improvement program"
+  - "CIP"
+
+exclusion_keywords:
+  - "basketball"
+  - "tennis"
+  - "pickleball"
+  - "volleyball"
+  - "lacrosse"
+  - "track only"
+  - "pool"
+  - "playground"
+  - "gym"
+  - "trail"
+  - "golf"
+  - "skate park"

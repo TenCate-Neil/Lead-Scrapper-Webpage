@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tencate.example/contracts/source.schema.json",
+  "title": "Source",
+  "description": "One verified data source produced by the Source Finder. The array of these is the sources.json contract consumed by the Lead Scraper.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "location_id",
+    "entity",
+    "entity_type",
+    "source_type",
+    "name",
+    "url",
+    "sport_confirmed",
+    "validation_status"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^SRC-[0-9]{3,}$",
+      "description": "Sequential id within a location run: SRC-001, SRC-002, ..."
+    },
+    "location_id": {
+      "type": "string",
+      "pattern": "^us-[a-z]{2}-[a-z0-9-]+$",
+      "description": "Which location this source belongs to."
+    },
+    "entity": {
+      "type": "string",
+      "description": "Public entity name, e.g. Round Rock ISD, City of Austin."
+    },
+    "entity_type": {
+      "type": "string",
+      "enum": ["school_district", "city", "county", "state", "cooperative", "aggregator"]
+    },
+    "source_type": {
+      "type": "string",
+      "enum": [
+        "procurement",
+        "bond_program",
+        "cip",
+        "budget",
+        "parks_plan",
+        "athletic_facility_plan",
+        "construction_updates"
+      ]
+    },
+    "name": {
+      "type": "string",
+      "description": "Short descriptive name, e.g. Purchasing / Bids (Bonfire)."
+    },
+    "url": {
+      "type": "string",
+      "format": "uri",
+      "description": "The verified deep-linked URL."
+    },
+    "contains": {
+      "type": "string",
+      "description": "What the page actually contains, written from observation."
+    },
+    "relevant_sports": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["football", "soccer", "baseball_softball", "multipurpose", "needs_validation"]
+      }
+    },
+    "lead_stage": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["early_planning", "funding", "active_bid", "awarded", "historical_reference"]
+      }
+    },
+    "searchability": {
+      "type": "string",
+      "enum": ["good", "medium", "poor"]
+    },
+    "monitor_frequency": {
+      "type": "string",
+      "enum": ["weekly", "monthly", "quarterly"]
+    },
+    "sport_confirmed": {
+      "type": "boolean",
+      "description": "True only if a target sport (football, soccer, baseball/softball) is explicitly named."
+    },
+    "validation_status": {
+      "type": "string",
+      "enum": ["verified", "needs_redirect", "broken", "retry", "not_found"],
+      "description": "Result of the Phase 3 validation loop. Only verified sources are passed downstream."
+    },
+    "validation_tier": {
+      "type": "array",
+      "items": { "type": "string", "enum": ["live", "relevant", "fresh", "sport_confirmed"] },
+      "description": "Cumulative validation tiers the source cleared."
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Reviewer sub-agent confidence score from the quality rubric."
+    },
+    "reviewed": {
+      "type": "boolean",
+      "description": "True once an independent reviewer sub-agent has scored it."
+    },
+    "last_validated": {
+      "type": "string",
+      "format": "date-time",
+      "description": "UTC timestamp of the last successful validation."
+    }
+  }
+}

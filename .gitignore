@@ -1,0 +1,24 @@
+# Generated run artifacts are large and append-only. Keep them out of git history;
+# archive them in object storage. One example run is tracked (see output/README.md)
+# to document the layout — everything else is ignored.
+/output/**
+!/output/README.md
+!/output/us-tx-austin-msa/**
+
+# Local, machine-specific Claude Code settings
+.claude/settings.local.json
+
+# Location processing state can grow large / churn; track the JSON at small scale,
+# ignore the SQLite form used at rollout scale.
+/locations/state.db
+/locations/state.db-*
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# OS / editor
+.DS_Store
+*.swp
