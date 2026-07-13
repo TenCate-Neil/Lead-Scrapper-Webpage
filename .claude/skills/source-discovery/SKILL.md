@@ -114,8 +114,10 @@ Always emit a gap report regardless of stop reason.
   `config/keyword_filters.yaml`; do not restate the lists here.
 
 ## Output
-1. Write `output/<location_id>/<run-timestamp>/sources.json` — the array of
-   confident Source objects, valid against `contracts/source.schema.json`.
+1. Write `output/<location_id>/<run-timestamp>/sources.json` — a wrapper document
+   `{ "schema_version": "1.0", "location_id": "<slug>", "sources": [ ... ] }` whose
+   `sources` array holds the confident Source objects, each valid against
+   `contracts/source.schema.json`.
 2. Write `output/<location_id>/<run-timestamp>/run_manifest.json` with
    `schema_version: "1.0"`, `location_id`, `run_timestamp`, `stage: "discovery"`,
    `agent_versions` (e.g. `{ "source_discovery": "1.0", "scout": "1.0",

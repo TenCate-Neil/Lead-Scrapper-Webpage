@@ -46,7 +46,7 @@ Stages are decoupled through shared storage + the location state machine in
 
 - **`location_id`** is a stable slug `us-<state>-<area>` (e.g. `us-tx-austin-msa`), used identically in inputs, state, and output paths.
 - **Output path**: `output/<location_id>/<run-timestamp>/` where the timestamp is UTC `YYYYMMDDTHHMMSSZ`. Never overwrite a prior run.
-- **Every record carries `schema_version`.** Every lead carries a stable `external_id` for idempotent Salesforce upserts.
+- **Every output document carries a top-level `schema_version`** (the `location`, `location_state`, and `run_manifest` records carry it inline; individual `source` and `lead` records are versioned by their wrapper document and pinned contract file). Every lead carries a stable `external_id` for idempotent Salesforce upserts.
 - **Definition of done for a location**: coverage ≥ target AND run quality ≥ threshold, or the discovery budget is exhausted — then state flips to `ready_for_scrape`. See `docs/ARCHITECTURE.md`.
 
 ## Ground rules

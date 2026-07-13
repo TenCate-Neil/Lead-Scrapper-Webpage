@@ -80,10 +80,11 @@ unless a target sport is also clearly present. The canonical lists are in
    unconfirmed sport, or below the review confidence threshold.
 
 ## Output
-1. Write `output/<location_id>/<run-timestamp>/leads.json` — the deduplicated
-   array of Lead objects (now WITH `external_id`), valid against
-   `contracts/lead.schema.json`. Each lead keeps `location_id` and at least one
-   `source_ids` entry so it traces back to the inventory.
+1. Write `output/<location_id>/<run-timestamp>/leads.json` — a wrapper document
+   `{ "schema_version": "1.0", "location_id": "<slug>", "leads": [ ... ] }` whose
+   `leads` array holds the deduplicated Lead objects (now WITH `external_id`), each
+   valid against `contracts/lead.schema.json`. Each lead keeps `location_id` and at
+   least one `source_ids` entry so it traces back to the inventory.
 2. Write `output/<location_id>/<run-timestamp>/run_manifest.json` with
    `schema_version: "1.0"`, `location_id`, `run_timestamp`, `stage: "scrape"`,
    `agent_versions` (e.g. `{ "lead_extraction": "1.0", "scraper_worker": "1.0" }`),

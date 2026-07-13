@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0",
+  "location_id": "us-tx-austin-msa",
+  "run_timestamp": "20260701T184158Z",
+  "stage": "scrape",
+  "agent_versions": {
+    "lead_extraction": "legacy"
+  },
+  "counts": {
+    "entities": 2,
+    "sources_verified": 4,
+    "leads": 11,
+    "leads_needs_review": 11
+  },
+  "failed_sources": [],
+  "gaps": [
+    {
+      "entity": "(backfilled legacy run)",
+      "note": "This run was migrated from a pre-restructure flat output file to demonstrate the output layout. It is scoped to the four sources documented in the original turf_lead_data_sources.md (SRC-001..SRC-004: Leander ISD and Round Rock ISD); all 11 leads reference only those sources, so sources.json and leads.json are internally consistent. A separate, broader historical run (~41 sources) existed but its source records were never committed, so it was not migrated."
+    }
+  ]
+}
