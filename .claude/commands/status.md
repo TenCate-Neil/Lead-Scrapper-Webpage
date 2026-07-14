@@ -9,11 +9,15 @@ missing or empty, say so and list every registry location as effectively
 
 Render one table with a row per location:
 
-| location_id | status | coverage | quality | last_run | next_due |
+| location_id | status | coverage | quality | last_discovered | last_scraped | next_due |
 
 - `coverage` and `quality` come from state (`coverage` and `quality_score`).
   Show them as percentages; show `—` when null.
-- `last_run` and `next_due` come from state; show `—` when null.
+- `last_discovered`, `last_scraped` (fall back to `last_run` for legacy rows)
+  and `next_due` come from state; show `—` when null.
+- After the table, report totals from the durable stores: sources in
+  `sources/registry.json`, organizations in `organizations/registry.json`, and
+  leads in `leads/ledger.json` (overall and per location where cheap to count).
 - Sort by registry `priority` (high first), then by `next_due` ascending.
 
 After the table, highlight:

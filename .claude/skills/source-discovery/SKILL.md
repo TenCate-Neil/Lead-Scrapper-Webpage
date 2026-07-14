@@ -5,16 +5,26 @@ description: Build or refresh a verified turf data-source inventory for one loca
 
 # Source Discovery
 
-Build a verified, machine-readable source inventory for one location, driven by a
-`location_id` from the registry, not by any hardcoded source list. The run is an
-autonomous goal loop: it keeps discovering, validating, reviewing, and re-trying
-gaps until a measured coverage and quality bar is met or a budget cap is hit.
+Build or refresh a verified, machine-readable source inventory for one location,
+driven by a `location_id` from the registry, not by any hardcoded source list.
+The run is an autonomous goal loop: it keeps discovering, validating, reviewing,
+and re-trying gaps until a measured coverage and quality bar is met or a budget
+cap is hit.
+
+**Registry-first: never rebuild from scratch.** The durable source registry
+(`sources/registry.json`) holds every source ever discovered. A re-run of a
+location is mostly "re-check known sources + look for new ones", not "search the
+entire web again". Web discovery TOPS UP the registry; it never replaces it.
 
 ## Inputs
 - One `location_id` slug, e.g. `us-tx-austin-msa`. Read its definition from
-  `locations/registry.yaml` (name, type, scope.counties, priority, cadence). If
-  the id is absent from the registry, stop and report it — do not invent scope.
+  `locations/registry.yaml` (name, type, scope.counties, priority, cadence,
+  optional coverage_target). If the id is absent from the registry, stop and
+  report it — do not invent scope.
 - Current pipeline state for the location from `locations/state.json`.
+- The durable source registry `sources/registry.json` (known sources whose
+  `location_ids` include this location).
+- The organization registry `organizations/registry.json` (known entities).
 
 ## Conventions (shared across the pipeline)
 - Output path: `output/<location_id>/<run-timestamp>/` where `<run-timestamp>` is
@@ -49,8 +59,29 @@ Set state `status` as you progress: `scoping` -> `discovering` -> `validating`
 Enumerate every public entity whose boundary overlaps the location's scope:
 school districts, incorporated cities, counties, regional bid aggregators
 (BidNet, DemandStar, Bonfire, etc.), purchasing cooperatives (BuyBoard, TIPS,
-Choice Partners, etc.), and the state procurement portal. Confirm each entity's
-homepage exists. This entity list is the coverage denominator; record it.
+Choice Partners, etc.), and the state procurement portal. Start from
+`organizations/registry.json` (entities already known for this location), then
+add any missing ones. Confirm each entity's homepage exists. This entity list is
+the coverage denominator; record it.
+
+**Upsert organizations:** for each enumerated district/city/county, make sure
+`organizations/registry.json` has a record conforming to
+`contracts/organization.schema.json` — stable `organization_id` slug, `type`,
+`website`, `state`, `primary_county` (always populated), and this `location_id`
+in its `location_ids`. Fill the many-to-many `geography` array (counties and
+places the org spans) opportunistically; never force a single county onto a
+multi-county district.
+
+### Phase A2 — Recheck known sources (registry-first)
+Before any new web discovery, load every registry source whose `location_ids`
+include this location and fan out one `validator` per source URL. For each:
+- Update `last_checked` (UTC now) and `last_result` in the registry.
+- Still-verified sources go straight into this run's inventory (skip the scout;
+  re-review only if older than the location's cadence window).
+- Broken/moved sources keep their registry entry (with the failure in
+  `last_result`) and re-queue their entity for discovery.
+Count these as `sources_known_rechecked`. Entities fully covered by rechecked
+sources need no scout in Phase B.
 
 ### Phase B — Discover (`discovering`)
 Fan out one `scout` sub-agent per entity still lacking a confident source. Pass
@@ -94,7 +125,8 @@ Stop and set `budget.stop_reason` accordingly:
 Always emit a gap report regardless of stop reason.
 
 ## Assembling each Source object (orchestrator)
-- `id`: assign sequentially per run, `SRC-001`, `SRC-002`, ...
+- `id`: keep the registry id for known sources; assign the next free `SRC-NNN`
+  (registry-wide, not per-run) for new ones.
 - `location_id`: the run's slug (echoed by scouts; verify it).
 - From scout: `entity`, `entity_type`, `source_type`, `name`, `url`, `contains`,
   `relevant_sports`, `lead_stage`, `searchability`, `monitor_frequency`,
@@ -102,6 +134,18 @@ Always emit a gap report regardless of stop reason.
 - From validator: `validation_status`, `validation_tier`; set `last_validated` to
   the UTC time of successful validation.
 - From reviewer: `confidence`, `reviewed: true`.
+- Registry fields (orchestrator): `normalized_url` (lowercase scheme+host, strip
+  fragment/tracking params/trailing slash), `location_ids`, `first_seen` (new
+  sources only), `last_checked`, `last_result`.
+
+## Merging into the durable registry
+After assembly, upsert every confident source into `sources/registry.json`:
+- **Dedup on `normalized_url`.** An existing entry is UPDATED (refresh
+  `last_checked`, `last_result`, `validation_status`, union `location_ids`),
+  never duplicated and never deleted. A new entry gets `first_seen` = now.
+- Count registry additions as `sources_new` for the manifest.
+- Sources that failed this run stay in the registry with the failure recorded in
+  `last_result`, so the next run knows not to re-discover them blind.
 
 ## Sport classification
 - `sport_confirmed: true` ONLY when a target sport (football, soccer, or
@@ -114,22 +158,28 @@ Always emit a gap report regardless of stop reason.
   `config/keyword_filters.yaml`; do not restate the lists here.
 
 ## Output
-1. Write `output/<location_id>/<run-timestamp>/sources.json` — a wrapper document
-   `{ "schema_version": "1.0", "location_id": "<slug>", "sources": [ ... ] }` whose
-   `sources` array holds the confident Source objects, each valid against
-   `contracts/source.schema.json`.
-2. Write `output/<location_id>/<run-timestamp>/run_manifest.json` with
-   `schema_version: "1.0"`, `location_id`, `run_timestamp`, `stage: "discovery"`,
-   `agent_versions` (e.g. `{ "source_discovery": "1.0", "scout": "1.0",
+1. Upsert `sources/registry.json` (see "Merging into the durable registry") and
+   `organizations/registry.json` (Phase A upserts).
+2. Write `output/<location_id>/<run-timestamp>/sources.json` — a wrapper document
+   `{ "schema_version": "2.0", "location_id": "<slug>", "sources": [ ... ] }` whose
+   `sources` array holds this run's confident Source objects, each valid against
+   `contracts/source.schema.json`. This is the run snapshot; the registry is the
+   durable store.
+3. Write `output/<location_id>/<run-timestamp>/run_manifest.json` with
+   `schema_version: "1.1"`, `location_id`, `run_timestamp`, `stage: "discovery"`,
+   `agent_versions` (e.g. `{ "source_discovery": "2.0", "scout": "1.0",
    "validator": "1.0", "reviewer": "1.0" }`), `counts.entities`,
-   `counts.sources_verified`, `coverage`, `run_quality`, `budget`
+   `counts.sources_verified`, `counts.sources_new`,
+   `counts.sources_known_rechecked`, `coverage`, `run_quality`, `budget`
    (iterations, tool_calls, wall_time_seconds, stop_reason), and `gaps`
    (each `{ entity, strategies_tried, note }`).
-3. Update `locations/state.json` for this location: set `coverage`,
-   `quality_score` (= run_quality), `counts`, `latest_run` (the run-timestamp
-   folder), `last_run`, and `next_due` (derived from the registry `cadence`).
-   Set `status: "ready_for_scrape"` only when the goal was met; otherwise
-   `stale` (thin coverage), `blocked` (external barrier, note it), or `failed`.
+4. Update `locations/state.json` for this location: set `coverage`,
+   `quality_score` (= run_quality), `counts`, `latest_run` and
+   `latest_discovery_run` (the run-timestamp folder), `last_run`,
+   `last_discovered` (UTC now), and `next_due` (derived from the registry
+   `cadence`). Set `status: "ready_for_scrape"` only when the goal was met;
+   otherwise `stale` (thin coverage), `blocked` (external barrier, note it), or
+   `failed`.
 
 The PostToolUse hook validates every written `sources.json` and
 `run_manifest.json` against `contracts/`. If it reports errors, fix the data and
@@ -139,14 +189,18 @@ rewrite — do not ship an invalid artifact.
 ```
 [ ] location_id resolved in locations/registry.yaml (scope read)
 [ ] Phase A: full entity list enumerated (coverage denominator recorded)
-[ ] Phase B: scout dispatched per uncovered entity; candidates collected
+[ ] Phase A: organizations/registry.json upserted for enumerated entities
+[ ] Phase A2: registry sources for this location rechecked BEFORE new discovery
+[ ] Phase B: scout dispatched only for entities still lacking a confident source
 [ ] Phase C: validator dispatched per candidate; only verified kept
 [ ] Phase D: reviewer dispatched per verified source; confident set decided
 [ ] Phase E: uncovered entities re-queued with next escalation strategy
 [ ] Exit condition met; budget.stop_reason set
-[ ] sources.json written and schema-valid
-[ ] run_manifest.json (stage=discovery) written with gaps report
-[ ] locations/state.json updated (status, coverage, quality_score, next_due)
+[ ] sources/registry.json upserted (dedup on normalized_url; nothing deleted)
+[ ] sources.json (run snapshot) written and schema-valid
+[ ] run_manifest.json (stage=discovery) written with gaps + new/rechecked counts
+[ ] locations/state.json updated (status, coverage, quality_score, next_due,
+    last_discovered, latest_discovery_run)
 ```
 
 ## Rules
