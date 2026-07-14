@@ -6,12 +6,22 @@ failure modes. It is practical and example-driven; the running example is the
 Austin metro location, `us-tx-austin-msa`.
 
 For the design, read `docs/ARCHITECTURE.md`. For the field-level data contracts
-and the Salesforce mapping, read `docs/SCHEMAS.md`. For the directory map, read
+and the Supabase mapping, read `docs/SCHEMAS.md`. For the directory map, read
 `CLAUDE.md`.
 
 The pipeline has two stages joined by shared storage and the location state
 machine. The Source Finder discovers and validates sources; the Lead Scraper
 reads those sources and extracts leads. Neither stage calls the other directly.
+
+Three durable stores make re-runs cheap — consult them before doing anything
+from scratch:
+
+- `sources/registry.json` — every source ever discovered (deduped on
+  `normalized_url`). Discovery re-checks these first; web search only tops up.
+- `organizations/registry.json` — the entities leads anchor on, with primary
+  county and many-to-many geography.
+- `leads/ledger.json` — every lead ever recorded, keyed by `external_id`.
+  Scrape runs skip known ids, so nothing is paid for twice.
 
 ## Prerequisites
 
@@ -68,18 +78,26 @@ for discovery.
 /discover us-tx-austin-msa
 ```
 
-This runs the Source Finder (the `source-discovery` skill). It enumerates the
-public entities in the location, discovers candidate procurement and planning
-sources, validates each URL (live, relevant, fresh, sport-confirmed), scores and
-reviews them, and repeats until it meets its coverage and quality target or hits
-a budget cap.
+This runs the Source Finder (the `source-discovery` skill). It is
+**registry-first**: it enumerates the public entities in the location (upserting
+`organizations/registry.json`), re-checks every known source in
+`sources/registry.json` that covers the location, and only then discovers new
+candidate procurement and planning sources for the entities still uncovered. New
+finds are validated (live, relevant, fresh, sport-confirmed), scored, reviewed,
+and merged into the registry (deduped on `normalized_url` — nothing is ever
+deleted, broken sources just record their failure in `last_result`). The loop
+repeats until it meets its coverage and quality target or hits a budget cap.
 
-Output lands in a new timestamped run folder:
+A re-run of a location is therefore mostly "re-check known sources + look for
+new ones", never "search the entire web again".
+
+Output lands in a new timestamped run folder (a snapshot; the registry is the
+durable store):
 
 ```
 output/us-tx-austin-msa/20260701T184158Z/
-    sources.json        # array of Source records (contract: source.schema.json)
-    run_manifest.json    # stage: "discovery"
+    sources.json        # wrapper of Source records (contract: source.schema.json)
+    run_manifest.json    # stage: "discovery"; counts.sources_new vs sources_known_rechecked
 ```
 
 The timestamp is UTC `YYYYMMDDTHHMMSSZ`. Prior runs are never overwritten.
@@ -98,21 +116,28 @@ updates `last_run`, `next_due`, `coverage`, `quality_score`, `counts`, and
 /scrape us-tx-austin-msa
 ```
 
-This runs the Lead Scraper (the `lead-extraction` skill). It reads the latest
-`sources.json` for the location (via the `latest_run` pointer in state), extracts
-leads, and writes:
+This runs the Lead Scraper (the `lead-extraction` skill). It is
+**ledger-first**: it loads the verified sources for the location, tells each
+scraper-worker which project labels are already known from its source, and
+dedups every extracted lead against `leads/ledger.json` by `external_id`.
+Only genuinely NEW leads are written and appended to the ledger — money is not
+spent re-extracting leads already recorded.
 
 ```
 output/us-tx-austin-msa/20260701T184158Z/
-    leads.json          # array of Lead records (contract: lead.schema.json)
-    run_manifest.json    # stage: "scrape"
+    leads.json          # wrapper of NEW Lead records (contract: lead.schema.json)
+    run_manifest.json    # stage: "scrape"; counts.leads_new vs leads_duplicate
 ```
 
-Only `verified` sources are consumed. A lead whose confidence is below the review
-threshold, or that is missing a required field, or whose sport is unconfirmed, is
-written with `needs_review: true` so it can be held for a human before Salesforce.
+Only `verified` sources are consumed. Each lead is two-tier: a flat core (what a
+BDM reads: organization, state/county, one-line summary, best evidence quote,
+deep `source_url`) plus a nested `evidence` block with the extraction detail. A
+lead whose confidence is below the review threshold, or that is missing a core
+field, or whose sport is unconfirmed, carries `evidence.needs_review: true` so
+it can be held for a human.
 
-State moves `ready_for_scrape → scraped`, and `counts.leads` is updated.
+State moves `ready_for_scrape → scraped`, and `counts.leads`, `last_scraped`,
+and `latest_scrape_run` are updated.
 
 ## Check status
 
@@ -121,9 +146,11 @@ State moves `ready_for_scrape → scraped`, and `counts.leads` is updated.
 ```
 
 This reads `locations/state.json` and prints the per-location work-queue view:
-`status`, `coverage`, `quality_score`, `counts`, `last_run`, `next_due`, and
-`latest_run`. Use it to see which locations are due, which are `stale`, and which
-are `blocked` or `failed`.
+`status`, `coverage`, `quality_score`, `counts`, `last_discovered`,
+`last_scraped`, and `next_due`, plus totals from the durable stores. Use it to
+see which locations are due, which are `stale`, and which are `blocked` or
+`failed`. "When did we last cover us-tx-austin-msa, and what did we get" is
+answered here (state + the run manifests) without opening output files.
 
 ## Understand a run
 
@@ -146,7 +173,11 @@ The fields to look at:
   with a `reason`. These are recorded, not silently dropped.
 - **`gaps[]`** — entities that ended discovery with no confident source, and the
   `strategies_tried`. These are your follow-up targets.
-- **`counts`** — `entities`, `sources_verified`, `leads`, `leads_needs_review`.
+- **`counts`** — `entities`, `sources_verified`, `sources_new`,
+  `sources_known_rechecked`, `leads`, `leads_new`, `leads_duplicate`,
+  `leads_needs_review`. A healthy re-run shows most sources under
+  `sources_known_rechecked` and most leads under `leads_duplicate` — that is the
+  registries doing their job.
 
 Useful one-liners (require `jq`):
 
@@ -167,17 +198,21 @@ another discovery run; `/status` surfaces it, and its state may flip to `stale`.
 A `stale` location has a last run older than its cadence window — re-run
 `/discover` for it.
 
-Because each run writes a new timestamped folder and never overwrites a prior one,
-you can diff runs to surface only what changed. Leads are keyed on `external_id`,
-which is content-derived: an unchanged project produces the same id across runs,
-so a diff by `external_id` shows genuinely new or changed leads and nothing else.
-This is also what makes the Salesforce upsert idempotent.
+Because the ledger is deduped on content-derived `external_id`, a re-scrape's
+`leads.json` already contains only what is new — the diff is done for you.
+The same id is what makes the Supabase upsert idempotent.
 
 ```bash
-# New/changed lead ids in the current run vs. the previous run
-comm -13 \
-  <(jq -r '.[].external_id' output/us-tx-austin-msa/20260601T090000Z/leads.json | sort) \
-  <(jq -r '.[].external_id' output/us-tx-austin-msa/20260701T184158Z/leads.json | sort)
+# What did the latest scrape run add?
+jq -r '.leads[].external_id + "  " + .leads[].summary' \
+  output/us-tx-austin-msa/20260701T184158Z/leads.json
+
+# How many leads have we ever recorded, per organization?
+jq -r '.leads[].organization' leads/ledger.json | sort | uniq -c
+
+# Which known sources cover a location, and when were they last checked?
+jq -r '.sources[] | select(.location_ids | index("us-tx-austin-msa"))
+       | .id + "  " + .last_checked + "  " + .url' sources/registry.json
 ```
 
 ## Handling blocked sources
@@ -202,24 +237,25 @@ rather than a silent miss.
 To check a file against its contract without waiting for the hook:
 
 ```bash
-# Using the repo hook script (it infers the contract from the file):
-python3 .claude/hooks/validate_schema.py output/us-tx-austin-msa/20260701T184158Z/leads.json
+# Using the repo hook script (it infers the contract from the file; accepts
+# multiple paths):
+python3 .claude/hooks/validate_schema.py \
+  output/us-tx-austin-msa/20260701T184158Z/leads.json \
+  sources/registry.json organizations/registry.json leads/ledger.json
 ```
 
-`sources.json` and `leads.json` are arrays, so each element is validated against
-the per-record contract.
+`sources.json`, `leads.json`, and the durable stores are wrapper documents; the
+hook checks the wrapper's `schema_version` and validates each inner record
+against the per-record contract.
 
 You can also use the `jsonschema` CLI directly against a single record:
 
 ```bash
 # Validate one record against a contract
 jsonschema -i one_lead.json contracts/lead.schema.json
-```
 
-To validate every element of an array file with the CLI, loop over the elements:
-
-```bash
-jq -c '.[]' output/us-tx-austin-msa/20260701T184158Z/leads.json | while read -r rec; do
+# Validate every record in a wrapper file
+jq -c '.leads[]' leads/ledger.json | while read -r rec; do
   echo "$rec" | jsonschema -i /dev/stdin contracts/lead.schema.json || echo "FAILED: $rec"
 done
 ```

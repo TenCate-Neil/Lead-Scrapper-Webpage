@@ -1,5 +1,18 @@
 # Turf Lead Pipeline — Architecture & Scaling Guidance
 
+> **Update (July 2026, platform consolidation).** This document predates the
+> decision to consolidate this pipeline with the meeting-minutes repo into one
+> platform (Supabase store + Retool UI) for a 3-month BDM trial. Where it says
+> *region*, read *location*; where it says *Salesforce*, read *Supabase* —
+> Salesforce comes only after the trial proves value. Since then the repo has
+> also gained three durable stores that implement the "incremental, not full
+> re-scrape" guidance in §5: `sources/registry.json` (registry-first
+> discovery), `organizations/registry.json` (leads anchor on organizations,
+> with many-to-many geography), and `leads/ledger.json` (scrapes skip known
+> `external_id`s). The lead contract is now two-tier (flat BDM-readable core +
+> nested evidence detail) — see `docs/SCHEMAS.md`, which is authoritative for
+> data shapes. The rest of this document remains valid design rationale.
+
 This document responds to five questions about the lead-scraping tool:
 
 1. Overall repository and agent structure

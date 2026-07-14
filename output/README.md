@@ -8,10 +8,15 @@ another and stay comparable and auditable.
 
 ```
 output/<location_id>/<run-timestamp>/
-    sources.json        # verified sources   (contract: contracts/source.schema.json)
-    leads.json          # extracted leads    (contract: contracts/lead.schema.json)
-    run_manifest.json   # per-run metadata    (contract: contracts/run_manifest.schema.json)
+    sources.json        # verified sources this run (contract: contracts/source.schema.json)
+    leads.json          # NEW leads this run        (contract: contracts/lead.schema.json)
+    run_manifest.json   # per-run metadata           (contract: contracts/run_manifest.schema.json)
 ```
+
+Run folders are point-in-time snapshots. The durable stores live outside
+`output/`: `sources/registry.json` (all sources ever found),
+`organizations/registry.json` (entities), and `leads/ledger.json` (all leads
+ever recorded — a run's `leads.json` holds only what that run added).
 
 - `location_id` is the stable slug from `locations/registry.yaml`, e.g.
   `us-tx-austin-msa`.
@@ -37,4 +42,6 @@ structure above. Because it is a legacy backfill, some fields could not be
 recomputed (for example `coverage` and `run_quality` were not measured), and
 `run_manifest.json` records a gap: the leads trace to a wider set of source ids
 than the four source records preserved in `sources.json`. See that run's
-`run_manifest.json` for details.
+`run_manifest.json` for details. The run has since been migrated to the v2
+two-tier lead shape (external_ids preserved); its `evidence_quote` fields are
+empty because the legacy run kept no verbatim quotes.

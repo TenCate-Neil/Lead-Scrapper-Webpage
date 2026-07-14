@@ -7,7 +7,7 @@
   "additionalProperties": false,
   "required": ["schema_version", "location_id", "run_timestamp", "stage"],
   "properties": {
-    "schema_version": { "type": "string", "const": "1.0" },
+    "schema_version": { "type": "string", "pattern": "^1\\.[0-9]+$" },
     "location_id": { "type": "string", "pattern": "^us-[a-z]{2}-[a-z0-9-]+$" },
     "run_timestamp": {
       "type": "string",
@@ -30,7 +30,11 @@
       "properties": {
         "entities": { "type": "integer", "minimum": 0 },
         "sources_verified": { "type": "integer", "minimum": 0 },
+        "sources_new": { "type": "integer", "minimum": 0, "description": "Sources added to the durable registry this run (web discovery top-up)." },
+        "sources_known_rechecked": { "type": "integer", "minimum": 0, "description": "Registry sources re-checked instead of re-discovered." },
         "leads": { "type": "integer", "minimum": 0 },
+        "leads_new": { "type": "integer", "minimum": 0, "description": "Leads whose external_id was NOT already in leads/ledger.json." },
+        "leads_duplicate": { "type": "integer", "minimum": 0, "description": "Leads skipped because their external_id was already in the ledger." },
         "leads_needs_review": { "type": "integer", "minimum": 0 }
       }
     },

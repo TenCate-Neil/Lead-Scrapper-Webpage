@@ -2,15 +2,15 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://tencate.example/contracts/location.schema.json",
   "title": "Location",
-  "description": "A geographic scope the Source Finder processes. Static input, versioned in locations/registry.yaml.",
+  "description": "A search area: the geographic scope the Source Finder processes. This is search INPUT (where to look), curated by a human — distinct from a lead's geography, which anchors on the organization. Static, versioned in locations/registry.yaml. Maps to the Supabase 'search_area' table.",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema_version", "location_id", "name", "type", "priority", "cadence", "added_date"],
   "properties": {
     "schema_version": {
       "type": "string",
-      "const": "1.0",
-      "description": "Contract version. Bump on breaking changes."
+      "pattern": "^1\\.[0-9]+$",
+      "description": "Contract version (any 1.x is accepted; current 1.1). Bump the major on breaking changes."
     },
     "location_id": {
       "type": "string",
@@ -45,6 +45,12 @@
       "type": "string",
       "enum": ["weekly", "monthly", "quarterly"],
       "description": "How often the location is re-discovered. Sets next_due in the state store."
+    },
+    "coverage_target": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Optional per-area override of the discovery coverage target (default 0.90 in the source-discovery skill)."
     },
     "tags": {
       "type": "array",
