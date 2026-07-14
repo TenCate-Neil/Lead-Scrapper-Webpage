@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.0",
+  "description": "Durable organization registry. Leads anchor on an organization, not a county/city; geography is many-to-many because districts span counties. Upserted by discovery/scrape runs; primary_county is always populated, the geography set is filled in opportunistically.",
+  "organizations": [
+    {
+      "organization_id": "leander-isd-tx",
+      "name": "Leander ISD",
+      "type": "school_district",
+      "website": "https://www.leanderisd.org/",
+      "state": "TX",
+      "primary_county": "Williamson",
+      "geography": [
+        { "kind": "county", "value": "Williamson" },
+        { "kind": "county", "value": "Travis" },
+        { "kind": "place", "value": "Leander" },
+        { "kind": "place", "value": "Cedar Park" },
+        { "kind": "place", "value": "Austin" }
+      ],
+      "location_ids": ["us-tx-austin-msa"],
+      "first_seen": "2026-07-01T18:41:58Z"
+    },
+    {
+      "organization_id": "round-rock-isd-tx",
+      "name": "Round Rock ISD",
+      "type": "school_district",
+      "website": "https://www.roundrockisd.org/",
+      "state": "TX",
+      "primary_county": "Williamson",
+      "geography": [
+        { "kind": "county", "value": "Williamson" },
+        { "kind": "county", "value": "Travis" },
+        { "kind": "place", "value": "Round Rock" },
+        { "kind": "place", "value": "Austin" },
+        { "kind": "place", "value": "Cedar Park" }
+      ],
+      "location_ids": ["us-tx-austin-msa"],
+      "first_seen": "2026-07-01T18:41:58Z"
+    }
+  ]
+}

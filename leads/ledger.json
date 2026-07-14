@@ -1,6 +1,6 @@
 {
   "schema_version": "2.0",
-  "location_id": "us-tx-austin-msa",
+  "description": "Durable lead ledger: every core lead ever recorded, keyed by external_id. A scrape run consults this FIRST and skips leads already present, so money is not spent re-extracting known leads. Local mirror of the Supabase 'lead' table. evidence_quote is empty on legacy-migrated leads because the original run kept no verbatim quotes.",
   "leads": [
     {
       "external_id": "5c024f743861f427",
