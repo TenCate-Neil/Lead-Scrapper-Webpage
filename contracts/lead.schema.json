@@ -2,58 +2,131 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://tencate.example/contracts/lead.schema.json",
   "title": "Lead",
-  "description": "One artificial-turf lead produced by the Lead Scraper. Field names ending in __c mirror Salesforce custom field API names so the record maps cleanly to a Salesforce Lead. Pipeline-only metadata fields do not sync to Salesforce (see docs/SCHEMAS.md).",
+  "description": "One artificial-turf lead. Two tiers: the flat core (what a BDM sees; maps 1:1 to a Supabase 'lead' row) plus an optional nested 'evidence' block holding the richer extraction detail. Version 2.0: replaces the Salesforce-shaped v1 record; lifecycle fields (status, assigned_bdm, change log) live in Supabase, not in this file contract. See docs/SCHEMAS.md.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["external_id", "location_id", "Company", "Lead_Details__c", "Project_Name__c", "source_ids"],
+  "required": [
+    "external_id",
+    "source",
+    "organization",
+    "state",
+    "county",
+    "summary",
+    "evidence_quote",
+    "source_url",
+    "discovered_at",
+    "location_id"
+  ],
   "properties": {
     "external_id": {
       "type": "string",
-      "description": "Stable, content-derived id (hash of Company + Project_Name__c + primary source URL). Maps to a Salesforce External Id field so upserts are idempotent across runs.",
-      "minLength": 8
+      "minLength": 8,
+      "description": "Stable, content-derived id: hash of normalized organization + project label + primary source URL. Unchanged recipe from v1 so ids stay stable across the version bump. Dedup/upsert key everywhere (ledger, Supabase)."
+    },
+    "source": {
+      "type": "string",
+      "enum": ["web-search", "meeting-minutes"],
+      "description": "Which pipeline surfaced this lead. This repo always writes 'web-search'; the meeting-minutes repo writes 'meeting-minutes'. Kept on every lead so the trial can compare the two pipelines."
+    },
+    "organization": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Name of the entity the lead is about (school district, city, county)."
+    },
+    "organization_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$",
+      "description": "Slug key into organizations/registry.json (e.g. leander-isd-tx). Optional but strongly preferred; links the lead to the org's geography."
+    },
+    "state": {
+      "type": "string",
+      "pattern": "^[A-Z]{2}$",
+      "description": "Two-letter US state of the organization."
+    },
+    "county": {
+      "type": "string",
+      "description": "The organization's PRIMARY county. Districts can span counties; the full coverage set lives on the organization record, not here. Empty string only when genuinely unresolved."
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 400,
+      "description": "One-line, plain-language summary a salesperson can read at a glance: what the project is, which sports, and where it stands."
+    },
+    "evidence_quote": {
+      "type": "string",
+      "description": "The single best verbatim quote from the source that supports the lead (~400 chars max in practice). Empty string if the source is not quotable (e.g. a bid-portal table)."
+    },
+    "source_url": {
+      "type": "string",
+      "minLength": 1,
+      "description": "One deep link to the page the lead was found on, so a BDM can open the source and validate/research the lead. Required and non-empty."
+    },
+    "discovered_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "UTC timestamp when the pipeline first recorded this lead."
     },
     "location_id": {
       "type": "string",
       "pattern": "^us-[a-z]{2}-[a-z0-9-]+$",
-      "description": "Which location this lead was discovered under."
+      "description": "Which search area (locations/registry.yaml) surfaced this lead. Search input, not lead geography."
     },
-    "FirstName": { "type": "string", "description": "Point-of-contact first name. Empty string if unknown." },
-    "LastName": { "type": "string", "description": "Point-of-contact last name. Empty string if unknown." },
-    "Lead_Details__c": {
-      "type": "string",
-      "description": "Project summary: scope, sports, square footage, products needed."
-    },
-    "Project_Address__c": { "type": "string", "description": "Project site address. Empty string if unresolved." },
-    "Phone": { "type": "string", "description": "Contact phone. Empty string if unknown." },
-    "Projected_Start_Date__c": { "type": "string", "description": "Expected start date (free text or ISO). Empty string if unknown." },
-    "Title": { "type": "string", "description": "Contact job title. Empty string if unknown." },
-    "Company": { "type": "string", "description": "Entity name (school district, city, county)." },
-    "Email": { "type": "string", "description": "Contact email. Empty string if unknown." },
-    "Project_Name__c": {
-      "type": "string",
-      "maxLength": 255,
-      "description": "Label: [Site or facility name] - [compact scope]. 3-8 words. Not a sentence."
-    },
-    "source_ids": {
-      "type": "array",
-      "items": { "type": "string", "pattern": "^SRC-[0-9]{3,}$" },
-      "minItems": 1,
-      "description": "Source ids this lead traces back to. Pipeline metadata; not synced to Salesforce as-is."
-    },
-    "source_urls": {
-      "type": "array",
-      "items": { "type": "string" },
-      "description": "Exact page URL(s) the lead was found on. Pipeline metadata."
-    },
-    "confidence": {
-      "type": "number",
-      "minimum": 0,
-      "maximum": 1,
-      "description": "Extraction/validation confidence. Below the review threshold routes to human review before Salesforce."
-    },
-    "needs_review": {
-      "type": "boolean",
-      "description": "True if any required field is missing, sport is unconfirmed, or confidence is below threshold."
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Optional detail tier: everything the agent extracted beyond the core lead. Never shown in the default BDM view; available on demand.",
+      "properties": {
+        "project_name": {
+          "type": "string",
+          "maxLength": 255,
+          "description": "Label: [Site or facility name] - [compact scope]. 3-8 words. Input to the external_id hash."
+        },
+        "project_address": { "type": "string", "description": "Project site address if resolved. Empty string otherwise." },
+        "projected_start_date": { "type": "string", "description": "Expected start (ISO or free text). Empty string if unknown." },
+        "details": { "type": "string", "description": "Full extracted narrative: scope, sports, funding, dollar amounts, caveats." },
+        "contact": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Point of contact, only if stated on the source. Unknown fields are empty strings.",
+          "properties": {
+            "first_name": { "type": "string" },
+            "last_name": { "type": "string" },
+            "title": { "type": "string" },
+            "phone": { "type": "string" },
+            "email": { "type": "string" }
+          }
+        },
+        "source_ids": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^SRC-[0-9]{3,}$" },
+          "description": "All source ids this lead traces back to (the core carries only the one best URL)."
+        },
+        "source_urls": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "All page URLs the lead was found on."
+        },
+        "matched_terms": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Keyword-filter terms that qualified the lead (from config/keyword_filters.yaml)."
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Extraction confidence. Below threshold routes the lead to human review."
+        },
+        "needs_review": {
+          "type": "boolean",
+          "description": "True if a core field is missing, the sport is unconfirmed, or confidence is below threshold."
+        },
+        "run_timestamp": {
+          "type": "string",
+          "description": "Run folder (YYYYMMDDTHHMMSSZ) of the scrape that produced this lead."
+        }
+      }
     }
   }
 }

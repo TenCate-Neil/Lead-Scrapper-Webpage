@@ -6,14 +6,18 @@ the hook payload on stdin, learns which file was written from
 `tool_input.file_path`, and — if that file is a known pipeline artifact — validates
 its on-disk contents against the matching contract:
 
-    output/**/sources.json      -> contracts/source.schema.json        (wrapper doc; each item)
-    output/**/leads.json        -> contracts/lead.schema.json          (wrapper doc; each item)
-    output/**/run_manifest.json -> contracts/run_manifest.schema.json  (whole object)
+    output/**/sources.json        -> contracts/source.schema.json        (wrapper doc; each item)
+    output/**/leads.json          -> contracts/lead.schema.json          (wrapper doc; each item)
+    output/**/run_manifest.json   -> contracts/run_manifest.schema.json  (whole object)
+    sources/registry.json         -> contracts/source.schema.json        (wrapper doc; each item)
+    organizations/registry.json   -> contracts/organization.schema.json  (wrapper doc; each item)
+    leads/ledger.json             -> contracts/lead.schema.json          (wrapper doc; each item)
 
-sources.json / leads.json are wrapper documents of the shape
-{"schema_version": "1.0", "location_id": "...", "sources"|"leads": [ ...items... ]};
-the wrapper's schema_version/location_id are checked and each inner item is
-validated against the item schema. A bare top-level array is also accepted.
+sources.json / leads.json and the durable registries are wrapper documents of the
+shape {"schema_version": "<ver>", ["location_id": "...",] <key>: [ ...items... ]};
+the wrapper's schema_version (per-route expected value) and — for per-run output
+files — location_id are checked, and each inner item is validated against the
+item schema. A bare top-level array is also accepted.
     locations/registry.yaml     -> contracts/location.schema.json       (each record)
     locations/state.json        -> contracts/location_state.schema.json (each record)
 
@@ -59,10 +63,13 @@ def project_dir(script_path):
 
 
 def route(abs_path, root, contracts):
-    """Map an absolute file path to (schema_path, kind, list_keys) or None to skip.
+    """Map an absolute file path to a routing tuple, or None to skip.
 
+    Returns (schema_path, kind, list_keys, expected_version, require_location).
     kind is one of: 'array' (validate each list item), 'object' (validate the
-    whole doc), 'records' (extract records from list/wrapper/map, validate each).
+    whole doc), 'wrapper' (versioned wrapper doc; validate each inner item),
+    'records' (extract records from list/wrapper/map, validate each).
+    expected_version / require_location only apply to 'wrapper' routes.
     """
     rel = os.path.relpath(abs_path, root)
     parts = rel.split(os.sep)
@@ -73,19 +80,29 @@ def route(abs_path, root, contracts):
 
     if top == "output":
         output_map = {
-            "sources.json": ("source.schema.json", "wrapper", ["sources"]),
-            "leads.json": ("lead.schema.json", "wrapper", ["leads"]),
-            "run_manifest.json": ("run_manifest.schema.json", "object", []),
+            "sources.json": ("source.schema.json", "wrapper", ["sources"], "2.0", True),
+            "leads.json": ("lead.schema.json", "wrapper", ["leads"], "2.0", True),
+            "run_manifest.json": ("run_manifest.schema.json", "object", [], None, False),
         }
         if base in output_map:
-            schema_file, kind, keys = output_map[base]
-            return (os.path.join(contracts, schema_file), kind, keys)
+            schema_file, kind, keys, version, req_loc = output_map[base]
+            return (os.path.join(contracts, schema_file), kind, keys, version, req_loc)
+    elif top == "sources" and base == "registry.json":
+        return (os.path.join(contracts, "source.schema.json"), "wrapper", ["sources"],
+                "2.0", False)
+    elif top == "organizations" and base == "registry.json":
+        return (os.path.join(contracts, "organization.schema.json"), "wrapper",
+                ["organizations"], "1.0", False)
+    elif top == "leads" and base == "ledger.json":
+        return (os.path.join(contracts, "lead.schema.json"), "wrapper", ["leads"],
+                "2.0", False)
     elif top == "locations":
         if base == "registry.yaml":
-            return (os.path.join(contracts, "location.schema.json"), "records", ["locations"])
+            return (os.path.join(contracts, "location.schema.json"), "records",
+                    ["locations"], None, False)
         if base == "state.json":
             return (os.path.join(contracts, "location_state.schema.json"), "records",
-                    ["states", "locations"])
+                    ["states", "locations"], None, False)
     return None
 
 
@@ -148,16 +165,29 @@ def validate_instance(instance, schema, label):
 
 
 def run(script_path):
-    raw = sys.stdin.read()
-    try:
-        payload = json.loads(raw) if raw.strip() else {}
-    except Exception:
-        payload = {}
+    # Manual CLI use: `python3 validate_schema.py <file> [...]` validates the
+    # given path(s) directly, without a hook payload on stdin.
+    if len(sys.argv) > 1:
+        file_paths = sys.argv[1:]
+    else:
+        raw = sys.stdin.read()
+        try:
+            payload = json.loads(raw) if raw.strip() else {}
+        except Exception:
+            payload = {}
+        tool_input = payload.get("tool_input") or {}
+        file_path = tool_input.get("file_path") or payload.get("file_path") or ""
+        if not file_path:
+            return 0  # nothing to validate
+        file_paths = [file_path]
 
-    tool_input = payload.get("tool_input") or {}
-    file_path = tool_input.get("file_path") or payload.get("file_path") or ""
-    if not file_path:
-        return 0  # nothing to validate
+    rc = 0
+    for fp in file_paths:
+        rc = max(rc, run_one(script_path, fp))
+    return rc
+
+
+def run_one(script_path, file_path):
 
     root = project_dir(script_path)
     contracts = os.path.join(root, "contracts")
@@ -168,7 +198,7 @@ def run(script_path):
     routed = route(abs_path, root, contracts)
     if routed is None:
         return 0  # not a pipeline artifact
-    schema_path, kind, list_keys = routed
+    schema_path, kind, list_keys, expected_version, require_location = routed
 
     if jsonschema is None:
         _warn("jsonschema not installed; skipping validation of " + os.path.basename(abs_path))
@@ -211,14 +241,15 @@ def run(script_path):
             for i, item in enumerate(doc):
                 errors.extend(validate_instance(item, schema, "{0}[{1}]".format(base, i)))
     elif kind == "wrapper":
-        # {"schema_version": "1.0", "location_id": "...", <key>: [ ...items... ]}
+        # {"schema_version": "<ver>", ["location_id": "...",] <key>: [ ...items... ]}
         # Also tolerate a bare top-level array of items.
         if isinstance(doc, list):
             items = doc
         elif isinstance(doc, dict):
-            if doc.get("schema_version") != "1.0":
-                errors.append("{0}: at 'schema_version': must equal '1.0'".format(base))
-            if not doc.get("location_id"):
+            if expected_version and doc.get("schema_version") != expected_version:
+                errors.append("{0}: at 'schema_version': must equal '{1}'".format(
+                    base, expected_version))
+            if require_location and not doc.get("location_id"):
                 errors.append("{0}: at 'location_id': required and non-empty".format(base))
             items = None
             for key in list_keys:

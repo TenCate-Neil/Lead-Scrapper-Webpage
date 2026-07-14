@@ -7,7 +7,7 @@
   "additionalProperties": false,
   "required": ["schema_version", "location_id", "status"],
   "properties": {
-    "schema_version": { "type": "string", "const": "1.0" },
+    "schema_version": { "type": "string", "pattern": "^1\\.[0-9]+$" },
     "location_id": {
       "type": "string",
       "pattern": "^us-[a-z]{2}-[a-z0-9-]+$",
@@ -63,6 +63,24 @@
     "latest_run": {
       "type": ["string", "null"],
       "description": "Run-timestamp folder name of the current run, e.g. 20260701T184158Z. Points into output/<location_id>/."
+    },
+    "last_discovered": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "UTC timestamp of the most recent completed DISCOVERY run for this location. Answers 'when did we last look for sources here' without opening output files."
+    },
+    "last_scraped": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "UTC timestamp of the most recent completed SCRAPE run for this location. Answers 'when did we last extract leads here'."
+    },
+    "latest_discovery_run": {
+      "type": ["string", "null"],
+      "description": "Run folder of the most recent discovery run (latest_run can point at either stage)."
+    },
+    "latest_scrape_run": {
+      "type": ["string", "null"],
+      "description": "Run folder of the most recent scrape run."
     },
     "lease": {
       "type": ["object", "null"],

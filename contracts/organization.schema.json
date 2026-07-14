@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tencate.example/contracts/organization.schema.json",
+  "title": "Organization",
+  "description": "A public entity a lead can be about (school district, city, county). Leads anchor on the organization, not on a county or city, because districts are independent and can span multiple counties. Geography is many-to-many via the 'geography' array; the primary state/county are always populated. Durable store: organizations/registry.json. Maps to Supabase 'organization' + 'organization_geography' tables.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["organization_id", "name", "type", "state", "primary_county"],
+  "properties": {
+    "organization_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$",
+      "description": "Stable slug, e.g. leander-isd-tx. Referenced by lead.organization_id."
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Official name, e.g. Leander ISD, City of Round Rock."
+    },
+    "type": {
+      "type": "string",
+      "enum": ["school_district", "city", "county", "university", "college", "state_agency", "other"],
+      "description": "Kind of public entity."
+    },
+    "website": {
+      "type": "string",
+      "format": "uri",
+      "description": "Official homepage."
+    },
+    "state": {
+      "type": "string",
+      "pattern": "^[A-Z]{2}$",
+      "description": "Two-letter US state."
+    },
+    "primary_county": {
+      "type": "string",
+      "minLength": 1,
+      "description": "The one primary county (administrative seat / largest share). Always populated; the full multi-county coverage goes in 'geography'."
+    },
+    "geography": {
+      "type": "array",
+      "description": "Full geographic coverage, filled in opportunistically. Join rows: organization <-> county and organization <-> place. Mirrors the Supabase organization_geography table.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["kind", "value"],
+        "properties": {
+          "kind": { "type": "string", "enum": ["county", "place"] },
+          "value": { "type": "string", "minLength": 1, "description": "County name or city/place name." }
+        }
+      }
+    },
+    "location_ids": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^us-[a-z]{2}-[a-z0-9-]+$" },
+      "description": "Search areas (locations/registry.yaml) whose scope overlaps this organization."
+    },
+    "first_seen": {
+      "type": "string",
+      "format": "date-time",
+      "description": "UTC timestamp when the pipeline first recorded this organization."
+    },
+    "notes": {
+      "type": "string",
+      "description": "Free text, e.g. known bond programs or access constraints."
+    }
+  }
+}

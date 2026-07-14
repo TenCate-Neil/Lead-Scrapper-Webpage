@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://tencate.example/contracts/source.schema.json",
   "title": "Source",
-  "description": "One verified data source produced by the Source Finder. The array of these is the sources.json contract consumed by the Lead Scraper.",
+  "description": "One verified data source. Lives in two places with the same shape: the durable registry sources/registry.json (deduplicated on normalized_url; consulted BEFORE any new web discovery so a re-run re-checks known sources instead of re-searching the web) and the per-run snapshot output/<location_id>/<run>/sources.json consumed by the Lead Scraper. Version 2.0 adds the registry fields (normalized_url, location_ids, first_seen, last_checked, last_result).",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -110,6 +110,29 @@
       "type": "string",
       "format": "date-time",
       "description": "UTC timestamp of the last successful validation."
+    },
+    "normalized_url": {
+      "type": "string",
+      "description": "Dedup key in the durable registry: lowercase scheme+host, fragment and tracking params stripped, no trailing slash. Two sources with the same normalized_url are the same source."
+    },
+    "location_ids": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^us-[a-z]{2}-[a-z0-9-]+$" },
+      "description": "All search areas this source covers (a state portal or aggregator can serve several). Superset of location_id."
+    },
+    "first_seen": {
+      "type": "string",
+      "format": "date-time",
+      "description": "UTC timestamp when the source first entered the durable registry."
+    },
+    "last_checked": {
+      "type": "string",
+      "format": "date-time",
+      "description": "UTC timestamp of the most recent re-check (validation or scrape), whatever its outcome."
+    },
+    "last_result": {
+      "type": "string",
+      "description": "Short note on the most recent check, e.g. 'verified; 3 leads in run 20260701T184158Z' or 'broken: 404'."
     }
   }
 }
