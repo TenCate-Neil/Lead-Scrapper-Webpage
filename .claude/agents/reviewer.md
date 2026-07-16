@@ -42,9 +42,8 @@ keep it or send it back for re-discovery.
   or unverifiable. State why briefly.
 
 ## Output
-A single JSON object:
+Score the full rubric internally, but return only a compact object — the five
+sub-scores stay in your context and are not sent back:
 { "url": "...", "confidence": 0.0, "accept": true,
-  "rubric": { "deep_link": 0.0, "freshness": 0.0, "sport_confirmed": 0.0,
-              "searchability": 0.0, "corroboration": 0.0 },
-  "rationale": "<one or two sentences>" }
+  "reason": "<short; why, mainly when accept is false>" }
 Nothing else.
