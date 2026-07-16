@@ -1,389 +1,7 @@
 {
   "schema_version": "2.0",
-  "description": "Durable lead ledger: every core lead ever recorded, keyed by external_id. A scrape run consults this FIRST and skips leads already present, so money is not spent re-extracting known leads. Local mirror of the Supabase 'lead' table. evidence_quote is empty on legacy-migrated leads because the original run kept no verbatim quotes.",
+  "location_id": "us-tx-austin-msa",
   "leads": [
-    {
-      "external_id": "5c024f743861f427",
-      "source": "web-search",
-      "organization": "Leander ISD",
-      "organization_id": "leander-isd-tx",
-      "state": "TX",
-      "county": "Williamson",
-      "summary": "Leander ISD's turf replacement at A.C. Bible Jr. Memorial Stadium (football/soccer) is part of a $1.6M Bond 2023 savings reallocation shared with Monroe Stadium, approved by the Board Jan. 22, 2026; installation is reported underway as of the district's May 2026 status update (inferred from the shared project line item).",
-      "evidence_quote": "The Board approved this recommendation brought forward by the Bond Oversight Committee after reviewing the condition and remaining lifespan of the existing turf, which has reached the end of its usable life and presents growing safety concerns for student-athletes.",
-      "source_url": "https://www.leanderisd.org/bond_athleticsprojects/",
-      "discovered_at": "2026-07-01T18:41:58Z",
-      "location_id": "us-tx-austin-msa",
-      "evidence": {
-        "project_name": "Bible Stadium - turf replacement, football/soccer field",
-        "project_address": "3301 S Bagdad Rd, Leander, TX 78641",
-        "projected_start_date": "Summer 2026 (commencing later in May 2026, after Monroe Stadium, per shared bond line item)",
-        "details": "Leander ISD Board (Jan. 22, 2026) approved reallocating $1.6 million in savings from the 2023 bond's high-school baseball/softball turf projects to replace end-of-life artificial turf at A.C. Bible, Jr. Memorial Stadium, alongside the same reallocation for Monroe Stadium. Bond Oversight Committee cited safety concerns from aged turf; replacement scheduled for summer 2026 to avoid disrupting the athletic season. The district's most recent page update (May 2026) confirms turf is actively being laid out at Monroe Stadium; Bible Stadium's status is inferred from the shared line item and reported to commence later in May 2026, after Monroe -- not yet independently confirmed by a Bible-specific status sentence, hence needs_review.",
-        "contact": {
-          "first_name": "",
-          "last_name": "",
-          "title": "",
-          "phone": "",
-          "email": ""
-        },
-        "source_ids": [
-          "SRC-001",
-          "SRC-002"
-        ],
-        "source_urls": [
-          "https://www.leanderisd.org/bond_athleticsprojects/",
-          "https://news.leanderisd.org/board-briefs-jan-22-2026/"
-        ],
-        "needs_review": true,
-        "run_timestamp": "20260716T091500Z",
-        "confidence": 0.75
-      }
-    },
-    {
-      "external_id": "970b96a01eacd60a",
-      "source": "web-search",
-      "organization": "Leander ISD",
-      "organization_id": "leander-isd-tx",
-      "state": "TX",
-      "county": "Williamson",
-      "summary": "Leander ISD's turf replacement at Ed W. Monroe Memorial Stadium (football/soccer) is actively underway as of a May 2026 status update ('the new turf is being laid out'), funded by a $1.6M Bond 2023 reallocation shared with Bible Stadium, approved by the Board Jan. 22, 2026.",
-      "evidence_quote": "May 2026 The new turf is being laid out at Monroe Stadium.",
-      "source_url": "https://www.leanderisd.org/bond_athleticsprojects/",
-      "discovered_at": "2026-07-01T18:41:58Z",
-      "location_id": "us-tx-austin-msa",
-      "evidence": {
-        "project_name": "Monroe Stadium - turf replacement, football/soccer field",
-        "project_address": "9500 McNeil Dr, Austin, TX 78750",
-        "projected_start_date": "Summer 2026 (turf removal/installation underway as of May 2026)",
-        "details": "Leander ISD Board (Jan. 22, 2026) approved reallocating $1.6 million in 2023 bond project savings to fund artificial turf replacement at Ed W. Monroe Memorial Stadium (adjacent to Vandegrift HS), alongside the same reallocation for Bible Stadium. Bond Oversight Committee recommended reallocation after finding the existing turf had reached end of usable life and posed growing safety concerns; replacement scheduled for summer to avoid disrupting the athletic season. As of the district's May 2026 status update, crews had begun removing old turf with new turf installation underway. Field supports football and soccer.",
-        "contact": {
-          "first_name": "",
-          "last_name": "",
-          "title": "",
-          "phone": "",
-          "email": ""
-        },
-        "source_ids": [
-          "SRC-001",
-          "SRC-002"
-        ],
-        "source_urls": [
-          "https://www.leanderisd.org/bond_athleticsprojects/",
-          "https://news.leanderisd.org/board-briefs-jan-22-2026/"
-        ],
-        "needs_review": false,
-        "run_timestamp": "20260716T091500Z",
-        "confidence": 0.85
-      }
-    },
-    {
-      "external_id": "1d3cb0f9ecf08208",
-      "source": "web-search",
-      "organization": "Leander ISD",
-      "organization_id": "leander-isd-tx",
-      "state": "TX",
-      "county": "Williamson",
-      "summary": "Completed Leander ISD 2023 bond project: baseball/softball turf installed at five high schools (Cedar Park, Leander, Rouse, Vandegrift, Vista Ridge), awarded to Hellas Construction for $27,601,380; all five campuses confirmed complete with ribbon-cuttings Nov 2024-Mar 2025.",
-      "evidence_quote": "Now all high schools in Leander ISD have fields with artificial turf.",
-      "source_url": "https://www.leanderisd.org/bond_athleticsprojects/",
-      "discovered_at": "2026-07-01T18:41:58Z",
-      "location_id": "us-tx-austin-msa",
-      "evidence": {
-        "project_name": "LISD High Schools - baseball/softball turf installation",
-        "project_address": "",
-        "projected_start_date": "",
-        "details": "Bond 2023 project: installation of artificial turf on baseball and softball fields at five high schools (Cedar Park HS, Leander HS, Rouse HS, Vandegrift HS, Vista Ridge HS); Glenn HS already had turf prior to this bond. Awarded to Hellas Construction; cost $27,601,380. Completion now confirmed with specific ribbon-cutting dates: Rouse HS (Nov 2024), Leander HS (Jan 2025), Cedar Park HS and Vista Ridge HS (Mar 2025), Vandegrift HS (Mar 2025). All five campuses complete; no further procurement action expected.",
-        "contact": {
-          "first_name": "",
-          "last_name": "",
-          "title": "",
-          "phone": "",
-          "email": ""
-        },
-        "source_ids": [
-          "SRC-001"
-        ],
-        "source_urls": [
-          "https://www.leanderisd.org/bond_athleticsprojects/"
-        ],
-        "needs_review": false,
-        "run_timestamp": "20260716T091500Z",
-        "confidence": 0.9
-      }
-    },
-    {
-      "external_id": "2b030bd4bc212e5a",
-      "source": "web-search",
-      "organization": "Leander ISD",
-      "organization_id": "leander-isd-tx",
-      "state": "TX",
-      "county": "Williamson",
-      "summary": "Completed Leander ISD 2023 bond project: artificial turf on the Running Brushy Middle School competition field ($1,186,500), confirmed complete as of August 2025, ready for the school year.",
-      "evidence_quote": "August 2025 The artificial turf project is complete and ready for the first day of school.",
-      "source_url": "https://www.leanderisd.org/bond_athleticsprojects/",
-      "discovered_at": "2026-07-01T18:41:58Z",
-      "location_id": "us-tx-austin-msa",
-      "evidence": {
-        "project_name": "Running Brushy MS - competition field turf",
-        "project_address": "2303 N. Lakeline Blvd, Cedar Park, TX 78613",
-        "projected_start_date": "",
-        "details": "Bond 2023 project: installation of artificial turf on the competition field at Running Brushy MS, used for sub-varsity games and community rentals. Estimated project budget $1,186,500, funded by Bond 2023. Prior known lead was in-progress (Summer 2024 start); page now confirms completion as of August 2025, ready for the school year.",
-        "contact": {
-          "first_name": "",
-          "last_name": "",
-          "title": "",
-          "phone": "",
-          "email": ""
-        },
-        "source_ids": [
-          "SRC-001"
-        ],
-        "source_urls": [
-          "https://www.leanderisd.org/bond_athleticsprojects/",
-          "https://www.leanderisd.org/bond_runningbrushyms/"
-        ],
-        "needs_review": false,
-        "run_timestamp": "20260716T091500Z",
-        "confidence": 0.85
-      }
-    },
-    {
-      "external_id": "15cba1457029d357",
-      "source": "web-search",
-      "organization": "Round Rock ISD",
-      "organization_id": "round-rock-isd-tx",
-      "state": "TX",
-      "county": "Williamson",
-      "summary": "Round Rock ISD 2024 bond: replacement of the competition football/soccer turf at Chisholm Trail Middle School, one of a five-campus middle-school package; construction cited for fall 2026 (source dates conflict).",
-      "evidence_quote": "",
-      "source_url": "https://bond.roundrockisd.org/",
-      "discovered_at": "2026-07-01T18:41:58Z",
-      "location_id": "us-tx-austin-msa",
-      "evidence": {
-        "project_name": "Chisholm Trail MS - competition football/soccer turf replacement",
-        "project_address": "500 Oakridge Drive, Round Rock, TX 78681",
-        "projected_start_date": "2026-09-01",
-        "details": "Round Rock ISD 2024 Bond Program ($932M, second tranche $300M): replacement of competition football/soccer field synthetic turf at Chisholm Trail Middle School, part of a five-campus middle school turf replacement package (Chisholm Trail, Hernandez, Hopewell, Pearson Ranch, Walsh). HPM is the bond program manager. Note: source dates conflict \u2014 the 2024 Bond Tracker cites construction beginning fall 2026 and completing late 2027; the Purchasing/e-bid portal cites beginning fall 2025 and completing late 2026. Projected_Start_Date__c below reflects the Bond Tracker figure pending confirmation.",
-        "contact": {
-          "first_name": "Mike",
-          "last_name": "Brooks",
-          "title": "Executive Director of Bond Projects",
-          "phone": "512-464-6950",
-          "email": ""
-        },
-        "source_ids": [
-          "SRC-003",
-          "SRC-004"
-        ],
-        "source_urls": [],
-        "needs_review": true,
-        "run_timestamp": "20260701T184158Z"
-      }
-    },
-    {
-      "external_id": "59a0ed3e822da300",
-      "source": "web-search",
-      "organization": "Round Rock ISD",
-      "organization_id": "round-rock-isd-tx",
-      "state": "TX",
-      "county": "Williamson",
-      "summary": "Round Rock ISD 2024 bond: replacement of the competition football/soccer turf at Hernandez Middle School, one of a five-campus middle-school package; construction cited for fall 2026 (source dates conflict).",
-      "evidence_quote": "",
-      "source_url": "https://bond.roundrockisd.org/",
-      "discovered_at": "2026-07-01T18:41:58Z",
-      "location_id": "us-tx-austin-msa",
-      "evidence": {
-        "project_name": "Hernandez MS - competition football/soccer turf replacement",
-        "project_address": "1901 Sunrise Rd, Round Rock, TX 78664",
-        "projected_start_date": "2026-09-01",
-        "details": "Round Rock ISD 2024 Bond Program ($932M, second tranche $300M): replacement of competition football/soccer field synthetic turf at Hernandez Middle School, part of a five-campus middle school turf replacement package (Chisholm Trail, Hernandez, Hopewell, Pearson Ranch, Walsh). HPM is the bond program manager. Note: source dates conflict \u2014 the 2024 Bond Tracker cites construction beginning fall 2026 and completing late 2027; the Purchasing/e-bid portal cites beginning fall 2025 and completing late 2026. Projected_Start_Date__c below reflects the Bond Tracker figure pending confirmation.",
-        "contact": {
-          "first_name": "Mike",
-          "last_name": "Brooks",
-          "title": "Executive Director of Bond Projects",
-          "phone": "512-464-6950",
-          "email": ""
-        },
-        "source_ids": [
-          "SRC-003",
-          "SRC-004"
-        ],
-        "source_urls": [],
-        "needs_review": true,
-        "run_timestamp": "20260701T184158Z"
-      }
-    },
-    {
-      "external_id": "ebdf79ca73926ef5",
-      "source": "web-search",
-      "organization": "Round Rock ISD",
-      "organization_id": "round-rock-isd-tx",
-      "state": "TX",
-      "county": "Williamson",
-      "summary": "Round Rock ISD 2024 bond: replacement of the competition football/soccer turf at Hopewell Middle School, one of a five-campus middle-school package; construction cited for fall 2026 (source dates conflict).",
-      "evidence_quote": "",
-      "source_url": "https://bond.roundrockisd.org/",
-      "discovered_at": "2026-07-01T18:41:58Z",
-      "location_id": "us-tx-austin-msa",
-      "evidence": {
-        "project_name": "Hopewell MS - competition football/soccer turf replacement",
-        "project_address": "1535 Gulf Way, Round Rock, TX 78664",
-        "projected_start_date": "2026-09-01",
-        "details": "Round Rock ISD 2024 Bond Program ($932M, second tranche $300M): replacement of competition football/soccer field synthetic turf at Hopewell Middle School, part of a five-campus middle school turf replacement package (Chisholm Trail, Hernandez, Hopewell, Pearson Ranch, Walsh). HPM is the bond program manager. Note: source dates conflict \u2014 the 2024 Bond Tracker cites construction beginning fall 2026 and completing late 2027; the Purchasing/e-bid portal cites beginning fall 2025 and completing late 2026. Projected_Start_Date__c below reflects the Bond Tracker figure pending confirmation.",
-        "contact": {
-          "first_name": "Mike",
-          "last_name": "Brooks",
-          "title": "Executive Director of Bond Projects",
-          "phone": "512-464-6950",
-          "email": ""
-        },
-        "source_ids": [
-          "SRC-003",
-          "SRC-004"
-        ],
-        "source_urls": [],
-        "needs_review": true,
-        "run_timestamp": "20260701T184158Z"
-      }
-    },
-    {
-      "external_id": "4f6d9e610111d4b5",
-      "source": "web-search",
-      "organization": "Round Rock ISD",
-      "organization_id": "round-rock-isd-tx",
-      "state": "TX",
-      "county": "Williamson",
-      "summary": "Round Rock ISD 2024 bond: replacement of the competition football/soccer turf at Pearson Ranch Middle School, one of a five-campus middle-school package; construction cited for fall 2026 (source dates conflict).",
-      "evidence_quote": "",
-      "source_url": "https://bond.roundrockisd.org/",
-      "discovered_at": "2026-07-01T18:41:58Z",
-      "location_id": "us-tx-austin-msa",
-      "evidence": {
-        "project_name": "Pearson Ranch MS - competition football/soccer turf replacement",
-        "project_address": "8901 Pearson Ranch Road, Round Rock, TX 78717",
-        "projected_start_date": "2026-09-01",
-        "details": "Round Rock ISD 2024 Bond Program ($932M, second tranche $300M): replacement of competition football/soccer field synthetic turf at Pearson Ranch Middle School, part of a five-campus middle school turf replacement package (Chisholm Trail, Hernandez, Hopewell, Pearson Ranch, Walsh). HPM is the bond program manager. Note: source dates conflict \u2014 the 2024 Bond Tracker cites construction beginning fall 2026 and completing late 2027; the Purchasing/e-bid portal cites beginning fall 2025 and completing late 2026. Projected_Start_Date__c below reflects the Bond Tracker figure pending confirmation.",
-        "contact": {
-          "first_name": "Mike",
-          "last_name": "Brooks",
-          "title": "Executive Director of Bond Projects",
-          "phone": "512-464-6950",
-          "email": ""
-        },
-        "source_ids": [
-          "SRC-003",
-          "SRC-004"
-        ],
-        "source_urls": [],
-        "needs_review": true,
-        "run_timestamp": "20260701T184158Z"
-      }
-    },
-    {
-      "external_id": "456eec5a6aba2d72",
-      "source": "web-search",
-      "organization": "Round Rock ISD",
-      "organization_id": "round-rock-isd-tx",
-      "state": "TX",
-      "county": "Williamson",
-      "summary": "Round Rock ISD 2024 bond: replacement of the competition football/soccer turf at Walsh Middle School, one of a five-campus middle-school package; construction cited for fall 2026 (source dates conflict).",
-      "evidence_quote": "",
-      "source_url": "https://bond.roundrockisd.org/",
-      "discovered_at": "2026-07-01T18:41:58Z",
-      "location_id": "us-tx-austin-msa",
-      "evidence": {
-        "project_name": "Walsh MS - competition football/soccer turf replacement",
-        "project_address": "3850 Walsh Ranch Blvd, Round Rock, TX 78681",
-        "projected_start_date": "2026-09-01",
-        "details": "Round Rock ISD 2024 Bond Program ($932M, second tranche $300M): replacement of competition football/soccer field synthetic turf at Walsh Middle School, part of a five-campus middle school turf replacement package (Chisholm Trail, Hernandez, Hopewell, Pearson Ranch, Walsh). HPM is the bond program manager. Note: source dates conflict \u2014 the 2024 Bond Tracker cites construction beginning fall 2026 and completing late 2027; the Purchasing/e-bid portal cites beginning fall 2025 and completing late 2026. Projected_Start_Date__c below reflects the Bond Tracker figure pending confirmation.",
-        "contact": {
-          "first_name": "Mike",
-          "last_name": "Brooks",
-          "title": "Executive Director of Bond Projects",
-          "phone": "512-464-6950",
-          "email": ""
-        },
-        "source_ids": [
-          "SRC-003",
-          "SRC-004"
-        ],
-        "source_urls": [],
-        "needs_review": true,
-        "run_timestamp": "20260701T184158Z"
-      }
-    },
-    {
-      "external_id": "01c9a4a604c64938",
-      "source": "web-search",
-      "organization": "Round Rock ISD",
-      "organization_id": "round-rock-isd-tx",
-      "state": "TX",
-      "county": "Williamson",
-      "summary": "Round Rock ISD's Westwood HS Athletic Improvements Phase 1 (baseball/softball field turf, track resurfacing), funded by the $932M 2024 bond, is confirmed as RFP #14629365 on the district's procurement aggregator; the solicitation closed after its Feb 19, 2026 due date with no award status yet shown.",
-      "evidence_quote": "School athletic improvements - phase 1.",
-      "source_url": "https://www.texasbids.net/government-agencies/williamson/round-rock-independent-school-district-purchasing-2070/",
-      "discovered_at": "2026-07-01T18:41:58Z",
-      "location_id": "us-tx-austin-msa",
-      "evidence": {
-        "project_name": "Westwood HS - baseball/softball turf, athletic improvements",
-        "project_address": "12400 Mellow Meadow Drive, Austin, TX 78750",
-        "projected_start_date": "",
-        "details": "2024 bond package ($932M) funds installation of artificial turf on the baseball and softball fields at Westwood High School, plus running track resurfacing and other athletics facility renovations. Originally listed on the district's own procurement board (now broken, SRC-004); the district's Williamson County procurement aggregator (texasbids.net, SRC-008) confirms the formal solicitation number (RFP #14629365, due 02/19/26) and shows it as closed/past-due with no award status yet disclosed. Follow-up needed to confirm award.",
-        "contact": {
-          "first_name": "",
-          "last_name": "",
-          "title": "",
-          "phone": "",
-          "email": ""
-        },
-        "source_ids": [
-          "SRC-004",
-          "SRC-008"
-        ],
-        "source_urls": [
-          "https://www.texasbids.net/government-agencies/williamson/round-rock-independent-school-district-purchasing-2070/"
-        ],
-        "needs_review": true,
-        "run_timestamp": "20260716T091500Z",
-        "confidence": 0.55
-      }
-    },
-    {
-      "external_id": "bb507db8a034c467",
-      "source": "web-search",
-      "organization": "Round Rock ISD",
-      "organization_id": "round-rock-isd-tx",
-      "state": "TX",
-      "county": "Williamson",
-      "summary": "Round Rock ISD's Stony Point HS Package 1 (softball/baseball field and fencing renovation, track resurfacing, new batting cages, plus roof/HVAC replacement), funded by the 2024 bond, is confirmed as RFP/bid #14492704 on the district's procurement aggregator; due 11/25/25, now past due (closed) with no award status shown.",
-      "evidence_quote": "Renovations of softball and baseball field and fencing, renovations of track surfacing, addition of new pemb batting cages, replacement of roof and curbs, replacement of hvac units to include plumbing, controls and electrical connections and renovati...",
-      "source_url": "https://www.texasbids.net/government-agencies/williamson/round-rock-independent-school-district-purchasing-2070/",
-      "discovered_at": "2026-07-01T18:41:58Z",
-      "location_id": "us-tx-austin-msa",
-      "evidence": {
-        "project_name": "Stony Point HS - softball/baseball field renovation Package 1",
-        "project_address": "1801 Tiger Trail, Round Rock, TX 78664",
-        "projected_start_date": "",
-        "details": "Active bid 'Stony Point HS - Package 1' for renovation of softball and baseball fields and fencing, track surfacing renovation, new PEMB batting cage addition. Originally listed on the district's own e-bid page (now broken, SRC-004); the district's Williamson County procurement aggregator (texasbids.net, SRC-008) confirms the formal bid number (#14492704, due 11/25/25), shows it closed/past-due with no award disclosed, and adds roof/curb and HVAC replacement scope not previously recorded. Turf-material specifics for the softball/baseball fields still require validation.",
-        "contact": {
-          "first_name": "",
-          "last_name": "",
-          "title": "",
-          "phone": "",
-          "email": ""
-        },
-        "source_ids": [
-          "SRC-004",
-          "SRC-008"
-        ],
-        "source_urls": [
-          "https://www.texasbids.net/government-agencies/williamson/round-rock-independent-school-district-purchasing-2070/"
-        ],
-        "needs_review": true,
-        "run_timestamp": "20260716T091500Z",
-        "confidence": 0.6
-      }
-    },
     {
       "external_id": "df0cf8e90e10d745",
       "source": "web-search",
@@ -836,6 +454,223 @@
         "confidence": 0.65,
         "needs_review": true,
         "run_timestamp": "20260716T091500Z"
+      }
+    },
+    {
+      "external_id": "5c024f743861f427",
+      "source": "web-search",
+      "organization": "Leander ISD",
+      "organization_id": "leander-isd-tx",
+      "state": "TX",
+      "county": "Williamson",
+      "summary": "Leander ISD's turf replacement at A.C. Bible Jr. Memorial Stadium (football/soccer) is part of a $1.6M Bond 2023 savings reallocation shared with Monroe Stadium, approved by the Board Jan. 22, 2026; installation is reported underway as of the district's May 2026 status update (inferred from the shared project line item).",
+      "evidence_quote": "The Board approved this recommendation brought forward by the Bond Oversight Committee after reviewing the condition and remaining lifespan of the existing turf, which has reached the end of its usable life and presents growing safety concerns for student-athletes.",
+      "source_url": "https://www.leanderisd.org/bond_athleticsprojects/",
+      "discovered_at": "2026-07-01T18:41:58Z",
+      "location_id": "us-tx-austin-msa",
+      "evidence": {
+        "project_name": "Bible Stadium - turf replacement, football/soccer field",
+        "project_address": "3301 S Bagdad Rd, Leander, TX 78641",
+        "projected_start_date": "Summer 2026 (commencing later in May 2026, after Monroe Stadium, per shared bond line item)",
+        "details": "Leander ISD Board (Jan. 22, 2026) approved reallocating $1.6 million in savings from the 2023 bond's high-school baseball/softball turf projects to replace end-of-life artificial turf at A.C. Bible, Jr. Memorial Stadium, alongside the same reallocation for Monroe Stadium. Bond Oversight Committee cited safety concerns from aged turf; replacement scheduled for summer 2026 to avoid disrupting the athletic season. The district's most recent page update (May 2026) confirms turf is actively being laid out at Monroe Stadium; Bible Stadium's status is inferred from the shared line item and reported to commence later in May 2026, after Monroe -- not yet independently confirmed by a Bible-specific status sentence, hence needs_review.",
+        "contact": {
+          "first_name": "",
+          "last_name": "",
+          "title": "",
+          "phone": "",
+          "email": ""
+        },
+        "source_ids": [
+          "SRC-001",
+          "SRC-002"
+        ],
+        "source_urls": [
+          "https://www.leanderisd.org/bond_athleticsprojects/",
+          "https://news.leanderisd.org/board-briefs-jan-22-2026/"
+        ],
+        "needs_review": true,
+        "run_timestamp": "20260716T091500Z",
+        "confidence": 0.75
+      }
+    },
+    {
+      "external_id": "970b96a01eacd60a",
+      "source": "web-search",
+      "organization": "Leander ISD",
+      "organization_id": "leander-isd-tx",
+      "state": "TX",
+      "county": "Williamson",
+      "summary": "Leander ISD's turf replacement at Ed W. Monroe Memorial Stadium (football/soccer) is actively underway as of a May 2026 status update ('the new turf is being laid out'), funded by a $1.6M Bond 2023 reallocation shared with Bible Stadium, approved by the Board Jan. 22, 2026.",
+      "evidence_quote": "May 2026 The new turf is being laid out at Monroe Stadium.",
+      "source_url": "https://www.leanderisd.org/bond_athleticsprojects/",
+      "discovered_at": "2026-07-01T18:41:58Z",
+      "location_id": "us-tx-austin-msa",
+      "evidence": {
+        "project_name": "Monroe Stadium - turf replacement, football/soccer field",
+        "project_address": "9500 McNeil Dr, Austin, TX 78750",
+        "projected_start_date": "Summer 2026 (turf removal/installation underway as of May 2026)",
+        "details": "Leander ISD Board (Jan. 22, 2026) approved reallocating $1.6 million in 2023 bond project savings to fund artificial turf replacement at Ed W. Monroe Memorial Stadium (adjacent to Vandegrift HS), alongside the same reallocation for Bible Stadium. Bond Oversight Committee recommended reallocation after finding the existing turf had reached end of usable life and posed growing safety concerns; replacement scheduled for summer to avoid disrupting the athletic season. As of the district's May 2026 status update, crews had begun removing old turf with new turf installation underway. Field supports football and soccer.",
+        "contact": {
+          "first_name": "",
+          "last_name": "",
+          "title": "",
+          "phone": "",
+          "email": ""
+        },
+        "source_ids": [
+          "SRC-001",
+          "SRC-002"
+        ],
+        "source_urls": [
+          "https://www.leanderisd.org/bond_athleticsprojects/",
+          "https://news.leanderisd.org/board-briefs-jan-22-2026/"
+        ],
+        "needs_review": false,
+        "run_timestamp": "20260716T091500Z",
+        "confidence": 0.85
+      }
+    },
+    {
+      "external_id": "1d3cb0f9ecf08208",
+      "source": "web-search",
+      "organization": "Leander ISD",
+      "organization_id": "leander-isd-tx",
+      "state": "TX",
+      "county": "Williamson",
+      "summary": "Completed Leander ISD 2023 bond project: baseball/softball turf installed at five high schools (Cedar Park, Leander, Rouse, Vandegrift, Vista Ridge), awarded to Hellas Construction for $27,601,380; all five campuses confirmed complete with ribbon-cuttings Nov 2024-Mar 2025.",
+      "evidence_quote": "Now all high schools in Leander ISD have fields with artificial turf.",
+      "source_url": "https://www.leanderisd.org/bond_athleticsprojects/",
+      "discovered_at": "2026-07-01T18:41:58Z",
+      "location_id": "us-tx-austin-msa",
+      "evidence": {
+        "project_name": "LISD High Schools - baseball/softball turf installation",
+        "project_address": "",
+        "projected_start_date": "",
+        "details": "Bond 2023 project: installation of artificial turf on baseball and softball fields at five high schools (Cedar Park HS, Leander HS, Rouse HS, Vandegrift HS, Vista Ridge HS); Glenn HS already had turf prior to this bond. Awarded to Hellas Construction; cost $27,601,380. Completion now confirmed with specific ribbon-cutting dates: Rouse HS (Nov 2024), Leander HS (Jan 2025), Cedar Park HS and Vista Ridge HS (Mar 2025), Vandegrift HS (Mar 2025). All five campuses complete; no further procurement action expected.",
+        "contact": {
+          "first_name": "",
+          "last_name": "",
+          "title": "",
+          "phone": "",
+          "email": ""
+        },
+        "source_ids": [
+          "SRC-001"
+        ],
+        "source_urls": [
+          "https://www.leanderisd.org/bond_athleticsprojects/"
+        ],
+        "needs_review": false,
+        "run_timestamp": "20260716T091500Z",
+        "confidence": 0.9
+      }
+    },
+    {
+      "external_id": "2b030bd4bc212e5a",
+      "source": "web-search",
+      "organization": "Leander ISD",
+      "organization_id": "leander-isd-tx",
+      "state": "TX",
+      "county": "Williamson",
+      "summary": "Completed Leander ISD 2023 bond project: artificial turf on the Running Brushy Middle School competition field ($1,186,500), confirmed complete as of August 2025, ready for the school year.",
+      "evidence_quote": "August 2025 The artificial turf project is complete and ready for the first day of school.",
+      "source_url": "https://www.leanderisd.org/bond_athleticsprojects/",
+      "discovered_at": "2026-07-01T18:41:58Z",
+      "location_id": "us-tx-austin-msa",
+      "evidence": {
+        "project_name": "Running Brushy MS - competition field turf",
+        "project_address": "2303 N. Lakeline Blvd, Cedar Park, TX 78613",
+        "projected_start_date": "",
+        "details": "Bond 2023 project: installation of artificial turf on the competition field at Running Brushy MS, used for sub-varsity games and community rentals. Estimated project budget $1,186,500, funded by Bond 2023. Prior known lead was in-progress (Summer 2024 start); page now confirms completion as of August 2025, ready for the school year.",
+        "contact": {
+          "first_name": "",
+          "last_name": "",
+          "title": "",
+          "phone": "",
+          "email": ""
+        },
+        "source_ids": [
+          "SRC-001"
+        ],
+        "source_urls": [
+          "https://www.leanderisd.org/bond_athleticsprojects/",
+          "https://www.leanderisd.org/bond_runningbrushyms/"
+        ],
+        "needs_review": false,
+        "run_timestamp": "20260716T091500Z",
+        "confidence": 0.85
+      }
+    },
+    {
+      "external_id": "01c9a4a604c64938",
+      "source": "web-search",
+      "organization": "Round Rock ISD",
+      "organization_id": "round-rock-isd-tx",
+      "state": "TX",
+      "county": "Williamson",
+      "summary": "Round Rock ISD's Westwood HS Athletic Improvements Phase 1 (baseball/softball field turf, track resurfacing), funded by the $932M 2024 bond, is confirmed as RFP #14629365 on the district's procurement aggregator; the solicitation closed after its Feb 19, 2026 due date with no award status yet shown.",
+      "evidence_quote": "School athletic improvements - phase 1.",
+      "source_url": "https://www.texasbids.net/government-agencies/williamson/round-rock-independent-school-district-purchasing-2070/",
+      "discovered_at": "2026-07-01T18:41:58Z",
+      "location_id": "us-tx-austin-msa",
+      "evidence": {
+        "project_name": "Westwood HS - baseball/softball turf, athletic improvements",
+        "project_address": "12400 Mellow Meadow Drive, Austin, TX 78750",
+        "projected_start_date": "",
+        "details": "2024 bond package ($932M) funds installation of artificial turf on the baseball and softball fields at Westwood High School, plus running track resurfacing and other athletics facility renovations. Originally listed on the district's own procurement board (now broken, SRC-004); the district's Williamson County procurement aggregator (texasbids.net, SRC-008) confirms the formal solicitation number (RFP #14629365, due 02/19/26) and shows it as closed/past-due with no award status yet disclosed. Follow-up needed to confirm award.",
+        "contact": {
+          "first_name": "",
+          "last_name": "",
+          "title": "",
+          "phone": "",
+          "email": ""
+        },
+        "source_ids": [
+          "SRC-004",
+          "SRC-008"
+        ],
+        "source_urls": [
+          "https://www.texasbids.net/government-agencies/williamson/round-rock-independent-school-district-purchasing-2070/"
+        ],
+        "needs_review": true,
+        "run_timestamp": "20260716T091500Z",
+        "confidence": 0.55
+      }
+    },
+    {
+      "external_id": "bb507db8a034c467",
+      "source": "web-search",
+      "organization": "Round Rock ISD",
+      "organization_id": "round-rock-isd-tx",
+      "state": "TX",
+      "county": "Williamson",
+      "summary": "Round Rock ISD's Stony Point HS Package 1 (softball/baseball field and fencing renovation, track resurfacing, new batting cages, plus roof/HVAC replacement), funded by the 2024 bond, is confirmed as RFP/bid #14492704 on the district's procurement aggregator; due 11/25/25, now past due (closed) with no award status shown.",
+      "evidence_quote": "Renovations of softball and baseball field and fencing, renovations of track surfacing, addition of new pemb batting cages, replacement of roof and curbs, replacement of hvac units to include plumbing, controls and electrical connections and renovati...",
+      "source_url": "https://www.texasbids.net/government-agencies/williamson/round-rock-independent-school-district-purchasing-2070/",
+      "discovered_at": "2026-07-01T18:41:58Z",
+      "location_id": "us-tx-austin-msa",
+      "evidence": {
+        "project_name": "Stony Point HS - softball/baseball field renovation Package 1",
+        "project_address": "1801 Tiger Trail, Round Rock, TX 78664",
+        "projected_start_date": "",
+        "details": "Active bid 'Stony Point HS - Package 1' for renovation of softball and baseball fields and fencing, track surfacing renovation, new PEMB batting cage addition. Originally listed on the district's own e-bid page (now broken, SRC-004); the district's Williamson County procurement aggregator (texasbids.net, SRC-008) confirms the formal bid number (#14492704, due 11/25/25), shows it closed/past-due with no award disclosed, and adds roof/curb and HVAC replacement scope not previously recorded. Turf-material specifics for the softball/baseball fields still require validation.",
+        "contact": {
+          "first_name": "",
+          "last_name": "",
+          "title": "",
+          "phone": "",
+          "email": ""
+        },
+        "source_ids": [
+          "SRC-004",
+          "SRC-008"
+        ],
+        "source_urls": [
+          "https://www.texasbids.net/government-agencies/williamson/round-rock-independent-school-district-purchasing-2070/"
+        ],
+        "needs_review": true,
+        "run_timestamp": "20260716T091500Z",
+        "confidence": 0.6
       }
     }
   ]

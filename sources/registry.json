@@ -5,7 +5,9 @@
     {
       "id": "SRC-001",
       "location_id": "us-tx-austin-msa",
-      "location_ids": ["us-tx-austin-msa"],
+      "location_ids": [
+        "us-tx-austin-msa"
+      ],
       "entity": "Leander ISD",
       "entity_type": "school_district",
       "source_type": "bond_program",
@@ -13,24 +15,39 @@
       "url": "https://www.leanderisd.org/bond_athleticsprojects/",
       "normalized_url": "https://www.leanderisd.org/bond_athleticsprojects",
       "contains": "stadium turf replacement, HS baseball/softball turf, MS competition field turf",
-      "relevant_sports": ["football", "baseball_softball", "multipurpose"],
-      "lead_stage": ["early_planning", "funding", "awarded"],
+      "relevant_sports": [
+        "football",
+        "baseball_softball",
+        "multipurpose"
+      ],
+      "lead_stage": [
+        "early_planning",
+        "funding",
+        "awarded"
+      ],
       "searchability": "good",
       "monitor_frequency": "monthly",
       "sport_confirmed": true,
       "validation_status": "verified",
-      "validation_tier": ["live", "relevant", "fresh", "sport_confirmed"],
+      "validation_tier": [
+        "live",
+        "relevant",
+        "fresh",
+        "sport_confirmed"
+      ],
       "confidence": 0.81,
       "reviewed": true,
       "last_validated": "2026-07-16T07:44:40Z",
       "first_seen": "2026-07-01T18:41:58Z",
-      "last_checked": "2026-07-16T07:44:40Z",
-      "last_result": "re-checked 2026-07-16: still verified, live, fresh (dated milestones through May 2026), sport_confirmed; re-reviewed, confidence 0.81."
+      "last_checked": "2026-07-16T09:15:00Z",
+      "last_result": "scraped 2026-07-16: 4 material updates found (LISD 5-HS turf now complete, Running Brushy MS turf now complete, Bible/Monroe Stadium turf replacement now in progress) -- all merged into existing ledger entries, no new leads."
     },
     {
       "id": "SRC-002",
       "location_id": "us-tx-austin-msa",
-      "location_ids": ["us-tx-austin-msa"],
+      "location_ids": [
+        "us-tx-austin-msa"
+      ],
       "entity": "Leander ISD",
       "entity_type": "school_district",
       "source_type": "procurement",
@@ -38,23 +55,32 @@
       "url": "https://www.leanderisd.org/purchasing/",
       "normalized_url": "https://www.leanderisd.org/purchasing",
       "contains": "District moved from Bonfire to Ion Wave Technologies as its sourcing solution; page links an 'Open Solicitations on Ion Wave' portal and lists cooperative purchasing affiliations (BuyBoard, HGAC, OMNIA, Sourcewell, TIPS).",
-      "relevant_sports": ["needs_validation"],
-      "lead_stage": ["active_bid"],
+      "relevant_sports": [
+        "needs_validation"
+      ],
+      "lead_stage": [
+        "active_bid"
+      ],
       "searchability": "good",
       "monitor_frequency": "weekly",
       "sport_confirmed": false,
       "validation_status": "verified",
-      "validation_tier": ["live", "relevant"],
+      "validation_tier": [
+        "live",
+        "relevant"
+      ],
       "confidence": 0.42,
       "reviewed": true,
       "first_seen": "2026-07-01T18:41:58Z",
-      "last_checked": "2026-07-16T07:44:40Z",
-      "last_result": "old URL (departments/business-operations/purchasing) now 404s; site reorganized to /purchasing/ and platform changed Bonfire -> Ion Wave. Re-reviewed 2026-07-16: confidence 0.42, below quality_threshold, so excluded from this run's confident set, but URL corrected and kept live in registry."
+      "last_checked": "2026-07-16T09:15:00Z",
+      "last_result": "scraped 2026-07-16: purchasing page itself only links a login-gated Ion Wave portal (no visible bids); actionable info came from linked district pages describing material updates to the known Bible/Monroe Stadium turf projects -- merged into existing ledger entries, no new leads."
     },
     {
       "id": "SRC-003",
       "location_id": "us-tx-austin-msa",
-      "location_ids": ["us-tx-austin-msa"],
+      "location_ids": [
+        "us-tx-austin-msa"
+      ],
       "entity": "Round Rock ISD",
       "entity_type": "school_district",
       "source_type": "bond_program",
@@ -62,23 +88,33 @@
       "url": "https://roundrockisd.org/o/rrisd/page/bond-projects",
       "normalized_url": "https://roundrockisd.org/o/rrisd/page/bond-projects",
       "contains": "bond project tracker, turf field replacements (page is a JS-rendered SPA; content could not be independently re-confirmed by automated fetch this run)",
-      "relevant_sports": ["needs_validation"],
-      "lead_stage": ["funding", "active_bid"],
+      "relevant_sports": [
+        "needs_validation"
+      ],
+      "lead_stage": [
+        "funding",
+        "active_bid"
+      ],
       "searchability": "medium",
       "monitor_frequency": "monthly",
       "sport_confirmed": false,
       "validation_status": "verified",
-      "validation_tier": ["live", "relevant"],
+      "validation_tier": [
+        "live",
+        "relevant"
+      ],
       "confidence": 0.25,
       "reviewed": true,
       "first_seen": "2026-07-01T18:41:58Z",
-      "last_checked": "2026-07-16T07:44:40Z",
-      "last_result": "old URL bond.roundrockisd.org 301-redirects here; page is a JS-rendered SPA so turf/sport content could not be reconfirmed. Re-reviewed 2026-07-16: confidence 0.25 (rejected), excluded from this run's confident set. Superseded by SRC-008 (texasbids.net aggregator) as Round Rock ISD's confident source this run."
+      "last_checked": "2026-07-16T09:15:00Z",
+      "last_result": "scraped 2026-07-16: still unrenderable (JS SPA); no content extracted, no leads found. See failed_sources in run_manifest."
     },
     {
       "id": "SRC-004",
       "location_id": "us-tx-austin-msa",
-      "location_ids": ["us-tx-austin-msa"],
+      "location_ids": [
+        "us-tx-austin-msa"
+      ],
       "entity": "Round Rock ISD",
       "entity_type": "school_district",
       "source_type": "procurement",
@@ -86,8 +122,12 @@
       "url": "https://www.roundrockisd.org/departments/purchasing/",
       "normalized_url": "https://www.roundrockisd.org/departments/purchasing",
       "contains": "construction and turf bids",
-      "relevant_sports": ["needs_validation"],
-      "lead_stage": ["active_bid"],
+      "relevant_sports": [
+        "needs_validation"
+      ],
+      "lead_stage": [
+        "active_bid"
+      ],
       "searchability": "good",
       "monitor_frequency": "weekly",
       "sport_confirmed": false,
@@ -101,7 +141,9 @@
     {
       "id": "SRC-005",
       "location_id": "us-tx-austin-msa",
-      "location_ids": ["us-tx-austin-msa"],
+      "location_ids": [
+        "us-tx-austin-msa"
+      ],
       "entity": "Williamson County",
       "entity_type": "county",
       "source_type": "cip",
@@ -109,24 +151,37 @@
       "url": "https://www.wilcotx.gov/CivicAlerts.aspx?AID=735",
       "normalized_url": "https://www.wilcotx.gov/civicalerts.aspx?aid=735",
       "contains": "Official county announcement (Jan 14, 2026) of Commissioners Court-approved sponsorship agreement with Lonestar Soccer Club to convert 4 grass soccer fields to FIFA-certified synthetic turf at Southwest Williamson County Regional Park; $8,925,020 total project cost; over 12,000 annual activities for soccer and football; 8-20 year agreement term.",
-      "relevant_sports": ["soccer", "football"],
-      "lead_stage": ["awarded", "funding"],
+      "relevant_sports": [
+        "soccer",
+        "football"
+      ],
+      "lead_stage": [
+        "awarded",
+        "funding"
+      ],
       "searchability": "medium",
       "monitor_frequency": "quarterly",
       "sport_confirmed": true,
       "validation_status": "verified",
-      "validation_tier": ["live", "relevant", "fresh", "sport_confirmed"],
+      "validation_tier": [
+        "live",
+        "relevant",
+        "fresh",
+        "sport_confirmed"
+      ],
       "confidence": 0.72,
       "reviewed": true,
       "last_validated": "2026-07-16T07:44:40Z",
       "first_seen": "2026-07-16T07:44:40Z",
-      "last_checked": "2026-07-16T07:44:40Z",
-      "last_result": "verified; confidence 0.72"
+      "last_checked": "2026-07-16T09:15:00Z",
+      "last_result": "scraped 2026-07-16: 1 new lead (Southwest Williamson County Regional Park synthetic turf conversion)."
     },
     {
       "id": "SRC-006",
       "location_id": "us-tx-austin-msa",
-      "location_ids": ["us-tx-austin-msa"],
+      "location_ids": [
+        "us-tx-austin-msa"
+      ],
       "entity": "Hays County",
       "entity_type": "county",
       "source_type": "bond_program",
@@ -134,24 +189,36 @@
       "url": "https://www.haysparksbond.com/projects/nho-youth-sportsplex",
       "normalized_url": "https://www.haysparksbond.com/projects/nho-youth-sportsplex",
       "contains": "$2M Parks Bond commitment to the North Hays Optimist (NHO) Youth Sportsplex, a Pop Warner league facility offering football, baseball, softball and cheer programs for ages 3-15.",
-      "relevant_sports": ["football", "baseball_softball"],
-      "lead_stage": ["funding", "early_planning"],
+      "relevant_sports": [
+        "football",
+        "baseball_softball"
+      ],
+      "lead_stage": [
+        "funding",
+        "early_planning"
+      ],
       "searchability": "good",
       "monitor_frequency": "monthly",
       "sport_confirmed": true,
       "validation_status": "verified",
-      "validation_tier": ["live", "relevant", "sport_confirmed"],
+      "validation_tier": [
+        "live",
+        "relevant",
+        "sport_confirmed"
+      ],
       "confidence": 0.65,
       "reviewed": true,
       "last_validated": "2026-07-16T07:44:40Z",
       "first_seen": "2026-07-16T07:44:40Z",
-      "last_checked": "2026-07-16T07:44:40Z",
-      "last_result": "verified; confidence 0.65"
+      "last_checked": "2026-07-16T09:15:00Z",
+      "last_result": "scraped 2026-07-16: 1 new lead (NHO Youth Sportsplex field renovation), needs_review -- surface type not confirmed on source."
     },
     {
       "id": "SRC-007",
       "location_id": "us-tx-austin-msa",
-      "location_ids": ["us-tx-austin-msa"],
+      "location_ids": [
+        "us-tx-austin-msa"
+      ],
       "entity": "City of Round Rock",
       "entity_type": "city",
       "source_type": "bond_program",
@@ -159,24 +226,38 @@
       "url": "https://www.roundrocktexas.gov/bondprojects/old-settlers-park-expansion-overall/",
       "normalized_url": "https://www.roundrocktexas.gov/bondprojects/old-settlers-park-expansion-overall",
       "contains": "Umbrella 2023 GO Bond project page: Athletic Performance Center, Rock'N River expansion, Lakeview Pavilion, Multipurpose Complex expansion, tennis/pickleball relocation. Park includes a 20-field baseball complex, five-field softball complex, and soccer facilities. Status 'Under construction', completion phased through 2027.",
-      "relevant_sports": ["soccer", "baseball_softball", "multipurpose"],
-      "lead_stage": ["funding", "awarded"],
+      "relevant_sports": [
+        "soccer",
+        "baseball_softball",
+        "multipurpose"
+      ],
+      "lead_stage": [
+        "funding",
+        "awarded"
+      ],
       "searchability": "good",
       "monitor_frequency": "monthly",
       "sport_confirmed": true,
       "validation_status": "verified",
-      "validation_tier": ["live", "relevant", "fresh", "sport_confirmed"],
+      "validation_tier": [
+        "live",
+        "relevant",
+        "fresh",
+        "sport_confirmed"
+      ],
       "confidence": 0.62,
       "reviewed": true,
       "last_validated": "2026-07-16T07:44:40Z",
       "first_seen": "2026-07-16T07:44:40Z",
-      "last_checked": "2026-07-16T07:44:40Z",
-      "last_result": "verified; confidence 0.62"
+      "last_checked": "2026-07-16T09:15:00Z",
+      "last_result": "scraped 2026-07-16: 2 new leads (Athletic Performance Center, Multipurpose Complex Expansion at Old Settlers Park), both needs_review -- surface type/timeline not fully confirmed on the official city page."
     },
     {
       "id": "SRC-008",
       "location_id": "us-tx-austin-msa",
-      "location_ids": ["us-tx-austin-msa"],
+      "location_ids": [
+        "us-tx-austin-msa"
+      ],
       "entity": "Round Rock ISD",
       "entity_type": "school_district",
       "source_type": "procurement",
@@ -184,24 +265,36 @@
       "url": "https://www.texasbids.net/government-agencies/williamson/round-rock-independent-school-district-purchasing-2070/",
       "normalized_url": "https://www.texasbids.net/government-agencies/williamson/round-rock-independent-school-district-purchasing-2070",
       "contains": "Aggregator listing of RRISD solicitations: 'LED Upgrades - HS & MS Sports Fields' RFP, 'Stony Point HS Package 1' (softball/baseball field renovation, fencing, track resurfacing), 'Westwood HS Athletic Improvements Phase 1'.",
-      "relevant_sports": ["baseball_softball", "needs_validation"],
-      "lead_stage": ["active_bid"],
+      "relevant_sports": [
+        "baseball_softball",
+        "needs_validation"
+      ],
+      "lead_stage": [
+        "active_bid"
+      ],
       "searchability": "good",
       "monitor_frequency": "weekly",
       "sport_confirmed": true,
       "validation_status": "verified",
-      "validation_tier": ["live", "relevant", "fresh", "sport_confirmed"],
+      "validation_tier": [
+        "live",
+        "relevant",
+        "fresh",
+        "sport_confirmed"
+      ],
       "confidence": 0.71,
       "reviewed": true,
       "last_validated": "2026-07-16T07:44:40Z",
       "first_seen": "2026-07-16T07:44:40Z",
-      "last_checked": "2026-07-16T07:44:40Z",
-      "last_result": "verified; confidence 0.71. Replaces dead SRC-004 as Round Rock ISD's procurement channel."
+      "last_checked": "2026-07-16T09:15:00Z",
+      "last_result": "scraped 2026-07-16: 2 material updates found (Westwood HS and Stony Point HS now carry confirmed RFP/bid numbers and closed status) -- merged into existing ledger entries (originally sourced from dead SRC-004); core source_url migrated to this aggregator."
     },
     {
       "id": "SRC-009",
       "location_id": "us-tx-austin-msa",
-      "location_ids": ["us-tx-austin-msa"],
+      "location_ids": [
+        "us-tx-austin-msa"
+      ],
       "entity": "Lake Travis ISD",
       "entity_type": "school_district",
       "source_type": "athletic_facility_plan",
@@ -209,24 +302,39 @@
       "url": "https://www.ltisdschools.org/bond/hs2",
       "normalized_url": "https://www.ltisdschools.org/bond/hs2",
       "contains": "New 150-acre $219M campus (opening Aug 2029) explicitly listing Football Stadium, Baseball Field, Softball Field, and Track & Field/Soccer Stadium. CMAR selected March 2025; $46.36M Phase 1 GMP approved Sept 2025; site work began Jan 26, 2026, building construction starting May 11, 2026.",
-      "relevant_sports": ["football", "soccer", "baseball_softball"],
-      "lead_stage": ["funding", "awarded", "early_planning"],
+      "relevant_sports": [
+        "football",
+        "soccer",
+        "baseball_softball"
+      ],
+      "lead_stage": [
+        "funding",
+        "awarded",
+        "early_planning"
+      ],
       "searchability": "good",
       "monitor_frequency": "monthly",
       "sport_confirmed": true,
       "validation_status": "verified",
-      "validation_tier": ["live", "relevant", "fresh", "sport_confirmed"],
+      "validation_tier": [
+        "live",
+        "relevant",
+        "fresh",
+        "sport_confirmed"
+      ],
       "confidence": 0.71,
       "reviewed": true,
       "last_validated": "2026-07-16T07:44:40Z",
       "first_seen": "2026-07-16T07:44:40Z",
-      "last_checked": "2026-07-16T07:44:40Z",
-      "last_result": "verified; confidence 0.71"
+      "last_checked": "2026-07-16T09:15:00Z",
+      "last_result": "scraped 2026-07-16: 1 new lead (Highland Lakes HS / HS2 new stadium and ballfields), needs_review -- turf/surface type not specified on source."
     },
     {
       "id": "SRC-010",
       "location_id": "us-tx-austin-msa",
-      "location_ids": ["us-tx-austin-msa"],
+      "location_ids": [
+        "us-tx-austin-msa"
+      ],
       "entity": "City of Austin",
       "entity_type": "city",
       "source_type": "procurement",
@@ -234,24 +342,37 @@
       "url": "https://financeonline.austintexas.gov/afo/account_services/solicitation/solicitations.cfm",
       "normalized_url": "https://financeonline.austintexas.gov/afo/account_services/solicitation/solicitations.cfm",
       "contains": "Live list of active City of Austin procurement solicitations, filterable by category. Includes IFB 8600 MAS1009 'Athletic Fields Maintenance and Renovation' covering baseball/softball, soccer, and multi-purpose fields at designated recreation centers, due 07/21/2026.",
-      "relevant_sports": ["soccer", "baseball_softball", "multipurpose"],
-      "lead_stage": ["active_bid"],
+      "relevant_sports": [
+        "soccer",
+        "baseball_softball",
+        "multipurpose"
+      ],
+      "lead_stage": [
+        "active_bid"
+      ],
       "searchability": "good",
       "monitor_frequency": "weekly",
       "sport_confirmed": true,
       "validation_status": "verified",
-      "validation_tier": ["live", "relevant", "fresh", "sport_confirmed"],
+      "validation_tier": [
+        "live",
+        "relevant",
+        "fresh",
+        "sport_confirmed"
+      ],
       "confidence": 0.74,
       "reviewed": true,
       "last_validated": "2026-07-16T07:44:40Z",
       "first_seen": "2026-07-16T07:44:40Z",
-      "last_checked": "2026-07-16T07:44:40Z",
-      "last_result": "verified; confidence 0.74"
+      "last_checked": "2026-07-16T09:15:00Z",
+      "last_result": "scraped 2026-07-16: 1 new lead (IFB 8600 MAS1009 Athletic Fields Maintenance and Renovation), needs_review -- solicitation does not explicitly confirm synthetic turf scope."
     },
     {
       "id": "SRC-011",
       "location_id": "us-tx-austin-msa",
-      "location_ids": ["us-tx-austin-msa"],
+      "location_ids": [
+        "us-tx-austin-msa"
+      ],
       "entity": "Austin ISD",
       "entity_type": "school_district",
       "source_type": "bond_program",
@@ -259,24 +380,37 @@
       "url": "https://bond.austinschools.org/bond-projects/central-athletic-facilities",
       "normalized_url": "https://bond.austinschools.org/bond-projects/central-athletic-facilities",
       "contains": "2022 Bond Prop C (Stadiums and Athletic Complexes): Nelson Field baseball turf ($25M); Yellow Jacket Stadium football/soccer turf ($6.99M); Burger Sports Complex baseball turf ($4.77M); Noack Sports Complex softball turf ($2.67M); Delco Activity Center ($15M).",
-      "relevant_sports": ["football", "soccer", "baseball_softball"],
-      "lead_stage": ["funding", "active_bid"],
+      "relevant_sports": [
+        "football",
+        "soccer",
+        "baseball_softball"
+      ],
+      "lead_stage": [
+        "funding",
+        "active_bid"
+      ],
       "searchability": "good",
       "monitor_frequency": "monthly",
       "sport_confirmed": true,
       "validation_status": "verified",
-      "validation_tier": ["live", "relevant", "sport_confirmed"],
+      "validation_tier": [
+        "live",
+        "relevant",
+        "sport_confirmed"
+      ],
       "confidence": 0.78,
       "reviewed": true,
       "last_validated": "2026-07-16T07:44:40Z",
       "first_seen": "2026-07-16T07:44:40Z",
-      "last_checked": "2026-07-16T07:44:40Z",
-      "last_result": "verified; confidence 0.78"
+      "last_checked": "2026-07-16T09:15:00Z",
+      "last_result": "scraped 2026-07-16: 4 new leads (Nelson Field, Yellow Jacket Stadium, Burger Sports Complex, Noack Sports Complex turf projects)."
     },
     {
       "id": "SRC-012",
       "location_id": "us-tx-austin-msa",
-      "location_ids": ["us-tx-austin-msa"],
+      "location_ids": [
+        "us-tx-austin-msa"
+      ],
       "entity": "Taylor ISD",
       "entity_type": "school_district",
       "source_type": "athletic_facility_plan",
@@ -284,19 +418,28 @@
       "url": "https://www.taylorisdvote.org/prop-a",
       "normalized_url": "https://www.taylorisdvote.org/prop-a",
       "contains": "Nov 2025 Prop A bond ($147M, passed 59.61%) itemized list: 'Surface Improvements - Artificial Turf - Baseball, Softball & Other Sites' and Taylor Middle School track and field enhancements.",
-      "relevant_sports": ["baseball_softball"],
-      "lead_stage": ["funding", "early_planning"],
+      "relevant_sports": [
+        "baseball_softball"
+      ],
+      "lead_stage": [
+        "funding",
+        "early_planning"
+      ],
       "searchability": "medium",
       "monitor_frequency": "monthly",
       "sport_confirmed": true,
       "validation_status": "verified",
-      "validation_tier": ["live", "relevant", "sport_confirmed"],
+      "validation_tier": [
+        "live",
+        "relevant",
+        "sport_confirmed"
+      ],
       "confidence": 0.62,
       "reviewed": true,
       "last_validated": "2026-07-16T07:44:40Z",
       "first_seen": "2026-07-16T07:44:40Z",
-      "last_checked": "2026-07-16T07:44:40Z",
-      "last_result": "verified; confidence 0.62. Hosted on district campaign domain (taylorisdvote.org), not the official district site -- re-check monitorability next cycle."
+      "last_checked": "2026-07-16T09:15:00Z",
+      "last_result": "scraped 2026-07-16: 1 new lead (Prop A baseball/softball turf line item)."
     }
   ]
 }

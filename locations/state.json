@@ -3,23 +3,23 @@
     {
       "schema_version": "1.1",
       "location_id": "us-tx-austin-msa",
-      "status": "ready_for_scrape",
-      "last_run": "2026-07-16T07:44:40Z",
+      "status": "scraped",
+      "last_run": "2026-07-16T09:15:00Z",
       "next_due": "2026-07-23T07:44:40Z",
       "coverage": 0.15,
       "quality_score": 0.71,
       "counts": {
         "entities": 60,
         "sources_verified": 9,
-        "leads": 11
+        "leads": 22
       },
-      "latest_run": "20260716T074440Z",
+      "latest_run": "20260716T091500Z",
       "last_discovered": "2026-07-16T07:44:40Z",
-      "last_scraped": "2026-07-01T18:41:58Z",
+      "last_scraped": "2026-07-16T09:15:00Z",
       "latest_discovery_run": "20260716T074440Z",
-      "latest_scrape_run": "20260701T184158Z",
+      "latest_scrape_run": "20260716T091500Z",
       "lease": null,
-      "notes": "First full discovery run over the 5-county MSA (prior state was a legacy 2-org backfill). Enumerated ~60 entities (5 counties, ~25 school districts, ~25 cities, state portal); scouted 21 of them before the discovery budget was exhausted, yielding 9 confident sources (coverage 0.15, below the 0.90 target) at run_quality 0.71 (above the 0.60 threshold). Per CLAUDE.md's definition of done, budget_exhausted also flips status to ready_for_scrape so leads can be extracted from what was found; remaining ~39 entities and 12 rejected candidates are listed as gaps in output/us-tx-austin-msa/20260716T074440Z/run_manifest.json for the next weekly run."
+      "notes": "Scrape run against the 9 confident sources plus 2 lower-confidence-but-verified sources (SRC-002, SRC-003) from the 2026-07-16 discovery run. Fanned out 11 scraper-workers (SRC-004 excluded, not_found). SRC-003 (Round Rock ISD bond tracker) remained an unrenderable JS SPA -- failed_source, no leads. 11 new leads recorded (5 flagged needs_review: Highland Lakes HS/LTISD surface-type unconfirmed, City of Austin IFB turf scope unconfirmed, Hays County NHO surface-type unconfirmed, and both City of Round Rock Old Settlers Park items pending city confirmation). 6 already-known Leander ISD / Round Rock ISD leads received material updates in place (construction status/completion dates confirmed; Westwood HS and Stony Point HS source_url migrated from dead SRC-004 to live SRC-008 aggregator). Ledger total 11 -> 22. Next: re-run discovery to close the coverage gap (39 entities not yet scouted; see output/us-tx-austin-msa/20260716T074440Z/run_manifest.json), then re-scrape any newly confident sources."
     }
   ]
 }

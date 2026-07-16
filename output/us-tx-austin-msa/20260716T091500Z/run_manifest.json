@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.1",
+  "location_id": "us-tx-austin-msa",
+  "run_timestamp": "20260716T091500Z",
+  "stage": "scrape",
+  "agent_versions": {
+    "lead_extraction": "2.0",
+    "scraper_worker": "2.0"
+  },
+  "counts": {
+    "leads": 17,
+    "leads_new": 11,
+    "leads_duplicate": 6,
+    "leads_needs_review": 8
+  },
+  "failed_sources": [
+    {
+      "id": "SRC-003",
+      "reason": "Round Rock ISD 2024 Bond Tracker: JS-rendered SPA remained unrenderable across multiple URL variants and linked sub-pages (roundrockisd.org, bond.roundrockisd.org, timeline and campus sub-pages) -- automated fetch returned only a loading shell with no extractable body content. No leads extracted; did not substitute unverified third-party reporting for the primary source."
+    }
+  ]
+}
