@@ -1,0 +1,113 @@
+{
+  "schema_version": "1.1",
+  "location_id": "us-tx-austin-msa",
+  "run_timestamp": "20260716T074440Z",
+  "stage": "discovery",
+  "agent_versions": {
+    "source_discovery": "2.0",
+    "scout": "1.0",
+    "validator": "1.0",
+    "reviewer": "1.0"
+  },
+  "counts": {
+    "entities": 60,
+    "sources_verified": 9,
+    "sources_new": 8,
+    "sources_known_rechecked": 4
+  },
+  "coverage": 0.15,
+  "run_quality": 0.71,
+  "budget": {
+    "iterations": 2,
+    "tool_calls": 700,
+    "wall_time_seconds": 3000,
+    "stop_reason": "budget_exhausted"
+  },
+  "failed_sources": [
+    {
+      "id": "SRC-003",
+      "reason": "Round Rock ISD 2024 Bond Tracker: old URL redirects to a JS-rendered SPA; automated fetch could not confirm turf/sport content this run. Reviewer confidence 0.25 (rejected)."
+    },
+    {
+      "id": "SRC-004",
+      "reason": "Round Rock ISD Purchasing page: HTTP 404, no verified replacement at a guessed path. Superseded by SRC-008 (texasbids.net aggregator)."
+    }
+  ],
+  "gaps": [
+    {
+      "entity": "Travis County",
+      "strategies_tried": ["own_site", "aggregator"],
+      "note": "Own-site 2023 bond virtual-open-house page (Southeast Metro Park turf soccer/softball, Bee Creek Sports Complex) named sports explicitly but is marked expired/stale (confidence 0.35). TexasBids aggregator mirror shows 70+ live solicitations but none turf/sport-specific (confidence 0.38). Recommend next: county's live Parks CIP/ArcGIS project tracker or a dated news item on Bee Creek Phase II (reported spring 2027 completion)."
+    },
+    {
+      "entity": "Bastrop County",
+      "strategies_tried": ["own_site"],
+      "note": "Bid Opportunities page is live/current but no turf listing (confidence 0.5). 'Our Parks' facility inventory confirms baseball/soccer/football fields at Cedar Creek Park but is a historical-reference inventory, not a monitorable procurement/plan channel. Recommend cooperative/aggregator escalation next run."
+    },
+    {
+      "entity": "Caldwell County",
+      "strategies_tried": ["own_site"],
+      "note": "Bid Requests page is live/current but generic (medical services, restroom remodel, road materials); no turf/sport content (confidence 0.32). Rural county unlikely to be a direct turf procurer; deprioritize vs. its incorporated cities/ISDs next run."
+    },
+    {
+      "entity": "Del Valle ISD",
+      "strategies_tried": ["own_site", "own_site"],
+      "note": "Current-bids page documents a completed 2020 baseball/softball turf bid (confidence 0.5); athletics bond-updates page names baseball/softball but no turf wording and no date (confidence 0.4). Recommend the district's live Bonfire portal with a rendering-capable check, or the High School #2 (Whisper Valley) construction updates once athletic facilities are announced."
+    },
+    {
+      "entity": "Eanes ISD",
+      "strategies_tried": ["own_site", "own_site", "own_site"],
+      "note": "2019 bond turf page names football/soccer/baseball/softball but that work is ~6 years old (confidence 0.32); a Jan 2024 bond-purchase news post referenced in its own headline could not be confirmed to include the turf line item on re-fetch. Recommend the 2023 Bond Prop B Chaparral Stadium page or the Long-Range Facility Planning Committee's forthcoming recommendations."
+    },
+    {
+      "entity": "Manor ISD",
+      "strategies_tried": ["own_site"],
+      "note": "Purchasing portal is live and current (Euna/Bonfire, 16+ cooperative affiliations) but generic, no sport named (confidence 0.52). A completed TDLR-registered baseball/softball fields project (2022-2024) exists but is a closed compliance record, not an ongoing monitor source. Recommend the Facilities Advisory Committee's bond-recommendation output once published."
+    },
+    {
+      "entity": "Lago Vista ISD",
+      "strategies_tried": ["own_site"],
+      "note": "Required-postings page is actively maintained but its only turf reference is a stale 2022 CMAR RFP with no follow-up (confidence 0.28). Recommend checking for a next bond cycle or the district's Long-Range Facilities Plan for a fresher signal."
+    },
+    {
+      "entity": "Pflugerville ISD",
+      "strategies_tried": ["own_site", "own_site"],
+      "note": "A Sept 2025 news post confirms turf installed at two high schools but never names a specific sport (confidence 0.35); the purchasing portal landing page is a generic gateway with no visible current listings (confidence 0.28). Recommend the district's Bond 2022 itemized project list directly rather than a news recap."
+    },
+    {
+      "entity": "Georgetown ISD",
+      "strategies_tried": ["aggregator", "own_site"],
+      "note": "TexasBids aggregator lists a real, sport-explicit 'HS#4 new football/baseball/softball fields' package but the listing is 15+ months stale (confidence 0.34); Bond 2024 overview page names only track repairs and a field house building, no turf/sport (confidence 0.32). Recommend re-checking the aggregator listing for a fresher HS#4 construction package next cycle."
+    },
+    {
+      "entity": "Hutto ISD",
+      "strategies_tried": ["own_site", "own_site"],
+      "note": "Bond 2023 overview funds a new comprehensive high school but names no sport/turf (confidence 0.30); Bonfire procurement portal is live but JS-rendered with no confirmable listing (confidence 0.30). Recommend the 2019 Bond subpage (funded the Hutto Memorial Stadium turf renovation per district history) or a rendering-capable Bonfire check."
+    },
+    {
+      "entity": "Jarrell ISD",
+      "strategies_tried": ["own_site"],
+      "note": "2021 bond baseball/softball turf project is explicit but already completed (Aug 2024), so it's historical, not an active opportunity (confidence 0.32). A 2023-bond CMAR RFP for a new middle school explicitly scoped a football practice field (ConstructConnect, paywalled, already awarded/closed). Recommend watching the 2023 Bond Construction Updates hub for a future stadium/field package."
+    },
+    {
+      "entity": "Texas SmartBuy / Electronic State Business Daily (ESBD)",
+      "strategies_tried": ["state_portal"],
+      "note": "Live, no-login, highly filterable statewide solicitation search confirmed, but the URL is a bare search entry point rather than a turf-keyword-parameterized deep link, so sport is not confirmed by default (confidence 0.42). Recommend constructing and saving a keyword-filtered URL (e.g. 'artificial turf') if the platform supports shareable filtered links."
+    },
+    {
+      "entity": "Remaining Travis/Hays/Bastrop/Caldwell school districts (12): Hays CISD, San Marcos CISD, Dripping Springs ISD, Wimberley ISD, Bastrop ISD, Smithville ISD, McDade ISD, Elgin ISD, Lockhart ISD, Luling ISD, Prairie Lea ISD, Liberty Hill ISD",
+      "strategies_tried": [],
+      "note": "Enumerated in Phase A scoping (locations/registry.yaml scope + web research) but not yet scouted this run -- budget exhausted before reaching them. ISDs have been this run's highest-yield entity type (8 of 9 confident sources); prioritize these first next run."
+    },
+    {
+      "entity": "Remaining incorporated cities (~23): Cedar Park, San Marcos, Kyle, Buda, Dripping Springs, Wimberley, Bastrop, Elgin, Smithville, Lockhart, Luling, Manor, Bee Cave, Lakeway, Lago Vista, Jonestown, Hutto, Taylor, Liberty Hill, Georgetown, and remaining minor municipalities",
+      "strategies_tried": [],
+      "note": "Enumerated in Phase A scoping but not yet scouted this run -- budget exhausted. Recommend prioritizing county-seat and larger cities (Georgetown, San Marcos, Kyle, Buda) next given parks-department capital-project capacity observed elsewhere in this MSA."
+    },
+    {
+      "entity": "Regional aggregators and purchasing cooperatives: BidNet Direct (Texas Purchasing Group), BuyBoard, TIPS, Choice Partners",
+      "strategies_tried": [],
+      "note": "Identified in Phase A research as Texas-relevant but not scouted as standalone entities this run (BidNet Direct and texasbids.net were used opportunistically as candidate sources for individual entities instead). Recommend a dedicated scout pass per cooperative next run, since a single cooperative bid can span many districts in this MSA at once."
+    }
+  ]
+}

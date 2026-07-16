@@ -35,6 +35,268 @@
       ],
       "location_ids": ["us-tx-austin-msa"],
       "first_seen": "2026-07-01T18:41:58Z"
+    },
+    {
+      "organization_id": "travis-county-tx",
+      "name": "Travis County",
+      "type": "other",
+      "website": "https://www.traviscountytx.gov/",
+      "state": "TX",
+      "primary_county": "Travis",
+      "geography": [
+        { "kind": "county", "value": "Travis" },
+        { "kind": "place", "value": "Austin" }
+      ],
+      "location_ids": ["us-tx-austin-msa"],
+      "first_seen": "2026-07-16T00:00:00Z"
+    },
+    {
+      "organization_id": "williamson-county-tx",
+      "name": "Williamson County",
+      "type": "other",
+      "website": "https://www.wilcotx.gov/",
+      "state": "TX",
+      "primary_county": "Williamson",
+      "geography": [
+        { "kind": "county", "value": "Williamson" },
+        { "kind": "place", "value": "Georgetown" }
+      ],
+      "location_ids": ["us-tx-austin-msa"],
+      "first_seen": "2026-07-16T00:00:00Z"
+    },
+    {
+      "organization_id": "hays-county-tx",
+      "name": "Hays County",
+      "type": "other",
+      "website": "https://www.hayscountytx.gov/",
+      "state": "TX",
+      "primary_county": "Hays",
+      "geography": [
+        { "kind": "county", "value": "Hays" },
+        { "kind": "place", "value": "San Marcos" },
+        { "kind": "place", "value": "Kyle" }
+      ],
+      "location_ids": ["us-tx-austin-msa"],
+      "first_seen": "2026-07-16T00:00:00Z"
+    },
+    {
+      "organization_id": "bastrop-county-tx",
+      "name": "Bastrop County",
+      "type": "other",
+      "website": "https://www.bastropcounty.gov/",
+      "state": "TX",
+      "primary_county": "Bastrop",
+      "geography": [
+        { "kind": "county", "value": "Bastrop" },
+        { "kind": "place", "value": "Bastrop" }
+      ],
+      "location_ids": ["us-tx-austin-msa"],
+      "first_seen": "2026-07-16T00:00:00Z"
+    },
+    {
+      "organization_id": "caldwell-county-tx",
+      "name": "Caldwell County",
+      "type": "other",
+      "website": "https://www.co.caldwell.tx.us/",
+      "state": "TX",
+      "primary_county": "Caldwell",
+      "geography": [
+        { "kind": "county", "value": "Caldwell" },
+        { "kind": "place", "value": "Lockhart" }
+      ],
+      "location_ids": ["us-tx-austin-msa"],
+      "first_seen": "2026-07-16T00:00:00Z"
+    },
+    {
+      "organization_id": "city-of-austin-tx",
+      "name": "City of Austin",
+      "type": "city",
+      "website": "https://www.austintexas.gov/",
+      "state": "TX",
+      "primary_county": "Travis",
+      "geography": [
+        { "kind": "county", "value": "Travis" },
+        { "kind": "county", "value": "Williamson" },
+        { "kind": "county", "value": "Hays" },
+        { "kind": "place", "value": "Austin" }
+      ],
+      "location_ids": ["us-tx-austin-msa"],
+      "first_seen": "2026-07-16T00:00:00Z"
+    },
+    {
+      "organization_id": "city-of-round-rock-tx",
+      "name": "City of Round Rock",
+      "type": "city",
+      "website": "https://www.roundrocktexas.gov/",
+      "state": "TX",
+      "primary_county": "Williamson",
+      "geography": [
+        { "kind": "county", "value": "Williamson" },
+        { "kind": "county", "value": "Travis" },
+        { "kind": "place", "value": "Round Rock" }
+      ],
+      "location_ids": ["us-tx-austin-msa"],
+      "first_seen": "2026-07-16T00:00:00Z"
+    },
+    {
+      "organization_id": "austin-isd-tx",
+      "name": "Austin ISD",
+      "type": "school_district",
+      "website": "https://www.austinisd.org/",
+      "state": "TX",
+      "primary_county": "Travis",
+      "geography": [
+        { "kind": "county", "value": "Travis" },
+        { "kind": "place", "value": "Austin" }
+      ],
+      "location_ids": ["us-tx-austin-msa"],
+      "first_seen": "2026-07-16T00:00:00Z"
+    },
+    {
+      "organization_id": "del-valle-isd-tx",
+      "name": "Del Valle ISD",
+      "type": "school_district",
+      "website": "https://www.dvisd.net/",
+      "state": "TX",
+      "primary_county": "Travis",
+      "geography": [
+        { "kind": "county", "value": "Travis" },
+        { "kind": "place", "value": "Del Valle" },
+        { "kind": "place", "value": "Austin" }
+      ],
+      "location_ids": ["us-tx-austin-msa"],
+      "first_seen": "2026-07-16T00:00:00Z"
+    },
+    {
+      "organization_id": "eanes-isd-tx",
+      "name": "Eanes ISD",
+      "type": "school_district",
+      "website": "https://www.eanesisd.net/",
+      "state": "TX",
+      "primary_county": "Travis",
+      "geography": [
+        { "kind": "county", "value": "Travis" },
+        { "kind": "place", "value": "West Lake Hills" },
+        { "kind": "place", "value": "Rollingwood" }
+      ],
+      "location_ids": ["us-tx-austin-msa"],
+      "first_seen": "2026-07-16T00:00:00Z"
+    },
+    {
+      "organization_id": "manor-isd-tx",
+      "name": "Manor ISD",
+      "type": "school_district",
+      "website": "https://www.manorisd.net/",
+      "state": "TX",
+      "primary_county": "Travis",
+      "geography": [
+        { "kind": "county", "value": "Travis" },
+        { "kind": "place", "value": "Manor" }
+      ],
+      "location_ids": ["us-tx-austin-msa"],
+      "first_seen": "2026-07-16T00:00:00Z"
+    },
+    {
+      "organization_id": "lago-vista-isd-tx",
+      "name": "Lago Vista ISD",
+      "type": "school_district",
+      "website": "https://www.lagovistaisd.net/",
+      "state": "TX",
+      "primary_county": "Travis",
+      "geography": [
+        { "kind": "county", "value": "Travis" },
+        { "kind": "place", "value": "Lago Vista" }
+      ],
+      "location_ids": ["us-tx-austin-msa"],
+      "first_seen": "2026-07-16T00:00:00Z"
+    },
+    {
+      "organization_id": "lake-travis-isd-tx",
+      "name": "Lake Travis ISD",
+      "type": "school_district",
+      "website": "https://www.ltisdschools.org/",
+      "state": "TX",
+      "primary_county": "Travis",
+      "geography": [
+        { "kind": "county", "value": "Travis" },
+        { "kind": "place", "value": "Lakeway" },
+        { "kind": "place", "value": "Bee Cave" }
+      ],
+      "location_ids": ["us-tx-austin-msa"],
+      "first_seen": "2026-07-16T00:00:00Z",
+      "notes": "District's own domain laketravisisd.org does not resolve; live site is ltisdschools.org."
+    },
+    {
+      "organization_id": "pflugerville-isd-tx",
+      "name": "Pflugerville ISD",
+      "type": "school_district",
+      "website": "https://www.pfisd.net/",
+      "state": "TX",
+      "primary_county": "Travis",
+      "geography": [
+        { "kind": "county", "value": "Travis" },
+        { "kind": "county", "value": "Williamson" },
+        { "kind": "place", "value": "Pflugerville" }
+      ],
+      "location_ids": ["us-tx-austin-msa"],
+      "first_seen": "2026-07-16T00:00:00Z"
+    },
+    {
+      "organization_id": "georgetown-isd-tx",
+      "name": "Georgetown ISD",
+      "type": "school_district",
+      "website": "https://www.georgetownisd.org/",
+      "state": "TX",
+      "primary_county": "Williamson",
+      "geography": [
+        { "kind": "county", "value": "Williamson" },
+        { "kind": "place", "value": "Georgetown" }
+      ],
+      "location_ids": ["us-tx-austin-msa"],
+      "first_seen": "2026-07-16T00:00:00Z"
+    },
+    {
+      "organization_id": "taylor-isd-tx",
+      "name": "Taylor ISD",
+      "type": "school_district",
+      "website": "https://www.taylorisd.org/",
+      "state": "TX",
+      "primary_county": "Williamson",
+      "geography": [
+        { "kind": "county", "value": "Williamson" },
+        { "kind": "place", "value": "Taylor" }
+      ],
+      "location_ids": ["us-tx-austin-msa"],
+      "first_seen": "2026-07-16T00:00:00Z"
+    },
+    {
+      "organization_id": "hutto-isd-tx",
+      "name": "Hutto ISD",
+      "type": "school_district",
+      "website": "https://www.hipponation.org/",
+      "state": "TX",
+      "primary_county": "Williamson",
+      "geography": [
+        { "kind": "county", "value": "Williamson" },
+        { "kind": "place", "value": "Hutto" }
+      ],
+      "location_ids": ["us-tx-austin-msa"],
+      "first_seen": "2026-07-16T00:00:00Z",
+      "notes": "District's own domain huttoisd.net returns 503; live site is hipponation.org."
+    },
+    {
+      "organization_id": "jarrell-isd-tx",
+      "name": "Jarrell ISD",
+      "type": "school_district",
+      "website": "https://www.jarrellisd.org/",
+      "state": "TX",
+      "primary_county": "Williamson",
+      "geography": [
+        { "kind": "county", "value": "Williamson" },
+        { "kind": "place", "value": "Jarrell" }
+      ],
+      "location_ids": ["us-tx-austin-msa"],
+      "first_seen": "2026-07-16T00:00:00Z"
     }
   ]
 }
