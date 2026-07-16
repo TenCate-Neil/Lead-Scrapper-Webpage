@@ -232,6 +232,30 @@ file contracts here mirror those tables:
 Salesforce is deliberately out of scope for the trial; it comes after proof of
 value and will be fed from Supabase, keyed on the same `external_id`.
 
+### Implementation
+
+- **`sql/schema.sql`** is the DDL for the tables above. Run it once against the
+  Supabase project (SQL editor or `psql`); it is safe to re-run. Enums are
+  `text` + `CHECK` (so adding a value is a one-line change), the lead `evidence`
+  block is one JSONB column, and the lead lifecycle columns are Supabase-only.
+- **`sync/push_to_supabase.py`** reads the durable stores + run manifests and
+  upserts them into these tables, keyed on the same dedup keys used locally.
+  It is idempotent and never writes the lifecycle columns, so a BDM's edits in
+  Retool survive every re-sync. See the RUNBOOK's "Push to Supabase" section and
+  `sync/README.md`.
+
+### Staging layer (planned, not yet built)
+
+Comparing a run against existing data before promoting it is deferred. The
+intended shape: land each run's leads in a `staging_lead` table (same columns as
+`lead`, no lifecycle fields), then diff against `lead` on `external_id` — new
+ids insert, existing ids refresh only pipeline-owned fields, and ids absent from
+the run are left untouched. Because both pipelines share `lead` and carry a
+`source` field, the same diff also yields the web-search vs meeting-minutes
+trial comparison as a query. Until then, `sync/push_to_supabase.py` upserts
+straight into the live tables, which is safe because upserts are idempotent and
+lifecycle fields are preserved.
+
 ---
 
 ## Enforcement
