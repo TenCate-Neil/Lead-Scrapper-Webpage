@@ -1,0 +1,51 @@
+name: Sync to Supabase
+
+# Pushes the pipeline's durable stores into Supabase whenever they change on the
+# default branch, plus a manual trigger. The pipeline agents run elsewhere (Claude
+# Code) and commit their data here; this workflow only reads the committed files
+# and upserts them, so it needs no Anthropic credentials — just the Supabase ones.
+#
+# Required repo secrets (Settings -> Secrets and variables -> Actions):
+#   SUPABASE_URL                 e.g. https://<project>.supabase.co
+#   SUPABASE_SERVICE_ROLE_KEY    service_role key (secret; bypasses RLS)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "leads/ledger.json"
+      - "sources/registry.json"
+      - "organizations/registry.json"
+      - "locations/registry.yaml"
+      - "locations/state.json"
+      - "output/**"
+      - "sync/push_to_supabase.py"
+  workflow_dispatch: {}
+
+# One sync at a time. Upserts are idempotent, so a superseded run is harmless.
+concurrency:
+  group: sync-supabase
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: python3 -m pip install pyyaml
+
+      # Transforms only, no network — fails fast if the stores are malformed.
+      - name: Dry run
+        run: python3 sync/push_to_supabase.py --dry-run
+
+      - name: Push to Supabase
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: python3 sync/push_to_supabase.py
