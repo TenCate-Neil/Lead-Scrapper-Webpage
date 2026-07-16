@@ -146,19 +146,29 @@ shared Supabase tables that the Retool BDM UI reads. Nothing in a run calls
 Supabase — you run the sync yourself after discovery/scrape (or wire it in as a
 post-run step later). The mapping from files to tables is in `docs/SCHEMAS.md`.
 
-**One-time setup.** Create the tables and set credentials:
+**One-time setup.** Create the tables and make credentials available:
 
 ```bash
 # 1. Create the tables: Supabase dashboard -> SQL editor -> paste and run:
 sql/schema.sql            # safe to re-run (every statement is `if not exists`)
-
-# 2. Credentials for the sync (Supabase dashboard -> Project Settings -> API):
-cp sync/.env.example sync/.env    # then edit sync/.env
-#   SUPABASE_URL=https://<project>.supabase.co
-#   SUPABASE_SERVICE_ROLE_KEY=<service-role key>   # secret; bypasses RLS
 ```
 
-`sync/.env` is gitignored — never commit real credentials.
+The sync reads two variables **from the environment** (Supabase dashboard ->
+Project Settings -> API):
+
+```
+SUPABASE_URL=https://<project>.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=<service-role key>   # secret; bypasses RLS
+```
+
+Set them wherever the sync runs — the service-role key is never committed:
+
+- **Claude Code (web/session):** set as environment variables on the environment
+  (Settings). The session picks them up directly; no file involved.
+- **CI:** repo secrets, passed as `env:` in `.github/workflows/sync-supabase.yml`.
+- **Local machine:** `export` them, or `cp sync/.env.example sync/.env` and edit it.
+  `sync/.env` is gitignored and read only as a fallback — a variable already set
+  in the environment always wins over it.
 
 **Run the sync** from the repo root:
 
