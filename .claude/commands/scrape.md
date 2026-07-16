@@ -16,11 +16,13 @@ condition fails:
 If refusing, explain what is missing and suggest running `/discover $ARGUMENTS`
 first.
 
-Otherwise, invoke the `lead-extraction` skill for `$ARGUMENTS`: fan out one
-scraper-worker per verified source (each told which project labels are already
-known so it skips them), consolidate, dedup by `external_id` against
-`leads/ledger.json`, write only NEW leads to
-`output/$ARGUMENTS/<run-timestamp>/leads.json`, and append them to the ledger.
+Otherwise, delegate the run to the `scrape-coordinator` sub-agent (Task tool),
+passing `$ARGUMENTS`. It runs the full `lead-extraction` loop in its own context
+so the main session stays lean, then returns a compact summary. The coordinator
+fans out one scraper-worker per verified source (each told which project labels
+are already known so it skips them), consolidates, dedups by `external_id`
+against `leads/ledger.json`, writes only NEW leads to
+`output/$ARGUMENTS/<run-timestamp>/leads.json`, and appends them to the ledger.
 
 When done, report: leads found (new vs already-known duplicates), leads flagged
 `needs_review`, and any `failed_sources` with their reasons.
