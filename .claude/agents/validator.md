@@ -35,8 +35,8 @@ You do not discover sources and you do not score quality.
    - 404 / page gone with no replacement → not_found.
 5. Confirm content. The page must contain procurement content ("bid",
    "solicitation", "RFP", "RFQ", "CSP", "vendor", "purchasing") OR planning
-   content ("bond", "capital improvement", "CIP", "master plan"). Capture a
-   short snippet as evidence.
+   content ("bond", "capital improvement", "CIP", "master plan"). The presence of
+   that content is what clears the `relevant` tier; you need not quote it back.
 
 ## validation_tier (cumulative; include each tier cleared)
 - live: the page loads.
@@ -49,8 +49,8 @@ verified | needs_redirect | broken | retry | not_found. Use `verified` only when
 the page is both live AND relevant.
 
 ## Output
-A single JSON object:
+A single compact JSON object — no evidence prose, since `validation_tier` already
+carries the finding (live / relevant / fresh / sport_confirmed):
 { "url": "<input url>", "resolved_url": "<final url or empty>",
-  "validation_status": "...", "validation_tier": ["..."],
-  "evidence": "<short quote or reason>" }
+  "validation_status": "...", "validation_tier": ["..."] }
 Nothing else.

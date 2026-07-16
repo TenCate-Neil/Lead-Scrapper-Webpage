@@ -16,6 +16,14 @@ cap is hit.
 location is mostly "re-check known sources + look for new ones", not "search the
 entire web again". Web discovery TOPS UP the registry; it never replaces it.
 
+## Execution model (keep the main session lean)
+Run this loop inside the `discovery-coordinator` sub-agent, not the main session.
+The main session's only job is to confirm the `location_id`, dispatch
+`discovery-coordinator` via the Task tool, and relay its compact summary. All
+intermediate candidates, validation results, and review scores live in the
+coordinator's context and are discarded when it returns — so a large run never
+lands in the main window. Below, "the orchestrator" means the coordinator.
+
 ## Inputs
 - One `location_id` slug, e.g. `us-tx-austin-msa`. Read its definition from
   `locations/registry.yaml` (name, type, scope.counties, priority, cadence,
@@ -36,10 +44,10 @@ entire web again". Web discovery TOPS UP the registry; it never replaces it.
   Read both before writing so field names and enums match exactly.
 - Keyword filters live ONLY in `config/keyword_filters.yaml`. Reference that path;
   never copy the lists into this skill, a source, or a sub-agent prompt.
-- Sub-agents (defined in `.claude/agents/`): `scout` finds candidates, `validator`
-  checks URL liveness + relevance, `reviewer` scores confidence independently.
-  Dispatch them via the Task tool; each runs in an isolated context and returns
-  only JSON.
+- Sub-agents (defined in `.claude/agents/`): `discovery-coordinator` owns this
+  loop (see "Execution model"); `scout` finds candidates, `validator` checks URL
+  liveness + relevance, `reviewer` scores confidence independently. Dispatch via
+  the Task tool; each runs in an isolated context and returns only compact JSON.
 
 ## Goal metrics and default thresholds (tunable per run)
 - `coverage` = entities with >= 1 confident source / total enumerated entities.
@@ -87,11 +95,13 @@ sources need no scout in Phase B.
 Fan out one `scout` sub-agent per entity still lacking a confident source. Pass
 each scout `{ name, entity_type, homepage }` and the `location_id`. Scouts return
 arrays of candidate source objects (without ids or validation fields). Cap
-concurrency in batches; hold candidates in the orchestrator.
+concurrency in batches; hold candidates in the coordinator's context, never the
+main session.
 
 ### Phase C — Validate (`validating`)
 Fan out one `validator` sub-agent per candidate URL. Validators return
-`{ url, resolved_url, validation_status, validation_tier, evidence }`. Apply the
+`{ url, resolved_url, validation_status, validation_tier }` — `validation_tier`
+already encodes relevant/fresh/sport_confirmed, so no evidence prose crosses back. Apply the
 liveness loop rules the validator enforces: follow 301/302 redirects (adopt
 `resolved_url` as the source `url`), retry transient failures up to 3 times, and
 require real procurement/planning content — HTTP 200 alone is not `verified`.
@@ -100,10 +110,11 @@ Keep only candidates that reach `verified`.
 ### Phase D — Review (`review`)
 Fan out one `reviewer` sub-agent per verified candidate (generator/critic
 separation: the reviewer is never the scout that found it). Reviewers return
-`{ url, confidence, accept, rubric, rationale }`. Set `confidence`, `reviewed:
-true`. Accepted + `confidence >= quality_threshold` become confident sources.
-A rejected source (`accept: false`) does NOT enter the inventory — re-queue its
-entity for Phase E.
+`{ url, confidence, accept, reason }` — a short `reason` (mainly for rejects); the
+five rubric sub-scores are computed inside the reviewer and not returned. Set
+`confidence`, `reviewed: true`. Accepted + `confidence >= quality_threshold`
+become confident sources. A rejected source (`accept: false`) does NOT enter the
+inventory — re-queue its entity for Phase E and use its `reason` in the gap note.
 
 ### Phase E — Refine
 For every entity still without a confident source, re-queue it with the NEXT
@@ -124,7 +135,7 @@ Stop and set `budget.stop_reason` accordingly:
 
 Always emit a gap report regardless of stop reason.
 
-## Assembling each Source object (orchestrator)
+## Assembling each Source object (coordinator)
 - `id`: keep the registry id for known sources; assign the next free `SRC-NNN`
   (registry-wide, not per-run) for new ones.
 - `location_id`: the run's slug (echoed by scouts; verify it).
