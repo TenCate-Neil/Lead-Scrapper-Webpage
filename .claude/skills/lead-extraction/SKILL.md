@@ -16,13 +16,21 @@ every lead ever recorded, keyed by `external_id`. A scrape run skips leads
 already in the ledger and appends only new ones, so re-runs extract only what is
 genuinely new.
 
+## Execution model (keep the main session lean)
+Run this orchestration inside the `scrape-coordinator` sub-agent, not the main
+session. The main session's only job is to confirm a ready-for-scrape inventory,
+dispatch `scrape-coordinator` via the Task tool, and relay its compact summary.
+Every worker's lead array, the ledger index, and the consolidate/dedup work live
+in the coordinator's context and are discarded when it returns — so a large scrape
+never lands in the main window. Below, "the orchestrator" means the coordinator.
+
 ## Inputs
 - One `location_id` slug, e.g. `us-tx-austin-msa`.
 - The source inventory: verified sources for this location from the durable
   registry `sources/registry.json` (entries whose `location_ids` include the
   slug), cross-checked against the latest run snapshot under
   `output/<location_id>/` (use `state.latest_discovery_run` from
-  `locations/state.json` as a hint). Read once, in the orchestrator.
+  `locations/state.json` as a hint). Read once, in the coordinator.
 - The lead ledger `leads/ledger.json` (known `external_id`s and project labels).
 - The organization registry `organizations/registry.json` (for
   `organization_id`, `state`, primary `county` on each lead).
@@ -38,13 +46,16 @@ genuinely new.
   to `contracts/run_manifest.schema.json` (`stage: scrape`). Read both first.
 - Keyword filters live ONLY in `config/keyword_filters.yaml`. Reference that path;
   never copy the lists here or into a worker prompt.
-- Sub-agent `scraper-worker` (in `.claude/agents/`) does the per-source
-  extraction. Dispatch via the Task tool.
+- Sub-agents (in `.claude/agents/`): `scrape-coordinator` owns this orchestration
+  (see "Execution model"); `scraper-worker` does the per-source extraction.
+  Dispatch via the Task tool.
 
 ## Orchestration
-1. Load the verified sources for the location once. Load the ledger once and
-   index known leads by `external_id`; also collect, per source, the known
-   project labels (`evidence.project_name`) already recorded from it.
+1. Load the verified sources for the location once. Index the ledger with a
+   narrow `jq` read — pull only `external_id`s and per-source project labels
+   (`evidence.project_name`), not whole lead records — so the growing ledger never
+   loads whole into context. This gives both the dedup id set and each source's
+   known-label skip list.
 2. Dispatch one `scraper-worker` per verified source. Pass each worker the source
    fields `{ id, entity, url, relevant_sports, sport_confirmed }`, its
    `location_id`, the list of ALREADY-KNOWN project labels for that source (so
@@ -55,8 +66,8 @@ genuinely new.
    `external_id`. It fills the core fields (`organization`, `summary`,
    `evidence_quote`, `source_url`, `location_id`) and the `evidence` block
    (project_name, details, contact, source_ids, source_urls, confidence,
-   needs_review). Hold each array in memory as it returns; do not write
-   per-source files.
+   needs_review). Hold each array in the coordinator's context as it returns,
+   never in the main session; do not write per-source files.
 4. If a worker fails, times out, or returns malformed JSON, record its source
    `id` and a short reason in a `failed_sources` list and continue. Do not
    silently drop it. Update the source's `last_checked`/`last_result` in
