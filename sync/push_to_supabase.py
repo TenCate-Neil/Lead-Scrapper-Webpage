@@ -171,7 +171,7 @@ def rows_lead() -> list[dict]:
     core = [
         "external_id", "source", "organization", "organization_id", "state",
         "county", "summary", "evidence_quote", "source_url", "discovered_at",
-        "location_id",
+        "bid_due_date", "location_id",
     ]
     rows = []
     for lead in doc.get("leads", []):
