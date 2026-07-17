@@ -113,6 +113,7 @@ create table if not exists lead (
     evidence_quote  text not null default '',
     source_url      text not null,
     discovered_at   timestamptz not null,
+    bid_due_date    date,
     location_id     text,
     evidence        jsonb,          -- the optional detail tier, verbatim
 
