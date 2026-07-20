@@ -139,6 +139,55 @@ it can be held for a human.
 State moves `ready_for_scrape → scraped`, and `counts.leads`, `last_scraped`,
 and `latest_scrape_run` are updated.
 
+## Push to Supabase
+
+The pipeline writes to local files; a separate step pushes those files into the
+shared Supabase tables that the Retool BDM UI reads. Nothing in a run calls
+Supabase — you run the sync yourself after discovery/scrape (or wire it in as a
+post-run step later). The mapping from files to tables is in `docs/SCHEMAS.md`.
+
+**One-time setup.** Create the tables and set credentials:
+
+```bash
+# 1. Create the tables: Supabase dashboard -> SQL editor -> paste and run:
+sql/schema.sql            # safe to re-run (every statement is `if not exists`)
+
+# 2. Credentials for the sync (Supabase dashboard -> Project Settings -> API):
+cp sync/.env.example sync/.env    # then edit sync/.env
+#   SUPABASE_URL=https://<project>.supabase.co
+#   SUPABASE_SERVICE_ROLE_KEY=<service-role key>   # secret; bypasses RLS
+```
+
+`sync/.env` is gitignored — never commit real credentials.
+
+**Run the sync** from the repo root:
+
+```bash
+python3 sync/push_to_supabase.py --dry-run          # transform + print, no network
+python3 sync/push_to_supabase.py                    # push everything
+python3 sync/push_to_supabase.py --tables lead,source   # push a subset
+```
+
+`--dry-run` needs no credentials and prints a row count plus a sample row per
+table — use it to sanity-check the transforms. Reading `search_area` uses
+`pyyaml` (already a prerequisite above).
+
+What the sync guarantees:
+
+- **Idempotent.** Each table upserts on its stable key (`external_id`, `id`,
+  `organization_id`, `location_id`, …), so re-running only refreshes rows.
+- **Lifecycle-safe.** The lead columns a BDM edits in Retool (`status`,
+  `rejected_reason`, `assigned_bdm`) are never sent, so those edits survive every
+  re-sync. An upsert only touches the columns in the payload.
+- **Run manifests.** It pushes every `run_manifest.json` under `output/`. Most
+  run folders are gitignored, so on a fresh clone it typically finds only the
+  tracked example run — that is expected.
+
+Comparing a run against existing data before promoting it (a `staging_lead`
+table + a diff) is planned but not built yet; see the "Staging layer" note in
+`docs/SCHEMAS.md`. For now the sync upserts straight into the live tables, which
+is safe for the reasons above.
+
 ## Check status
 
 ```bash

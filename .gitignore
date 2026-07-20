@@ -23,6 +23,10 @@ __pycache__/
 .venv/
 venv/
 
+# Supabase sync credentials — never commit. Only .env.example is tracked.
+/sync/.env
+.env
+
 # OS / editor
 .DS_Store
 *.swp

@@ -43,6 +43,8 @@ Stages are decoupled through shared storage + the location state machine in
 - `.claude/commands/` — entry points: `/discover`, `/scrape`, `/status`.
 - `.claude/hooks/` — schema-validation hook run on file writes.
 - `output/` — generated run artifacts. **Never commit** (gitignored) except the one tracked example run.
+- `sql/` — `schema.sql`, the Supabase (Postgres) DDL for the tables the durable stores mirror. Run once per project.
+- `sync/` — `push_to_supabase.py` upserts the durable stores into Supabase (idempotent; never writes BDM lifecycle fields). `.env` is gitignored; see `sync/README.md`.
 - `docs/` — `ARCHITECTURE.md` (design), `SCHEMAS.md` (fields + Supabase mapping), `RUNBOOK.md` (operations).
 
 ## How to run

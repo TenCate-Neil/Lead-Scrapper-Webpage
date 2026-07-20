@@ -15,6 +15,7 @@
     "evidence_quote",
     "source_url",
     "discovered_at",
+    "bid_due_date",
     "location_id"
   ],
   "properties": {
