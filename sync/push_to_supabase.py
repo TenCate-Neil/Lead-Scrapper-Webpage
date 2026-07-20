@@ -17,16 +17,30 @@ Idempotent: every table upserts on its stable key, so re-running only refreshes.
 The lead lifecycle columns (status, rejected_reason, assigned_bdm) are Supabase-only
 and are NEVER sent, so a BDM's edits in Retool survive every re-sync.
 
-Setup: create the tables with sql/schema.sql, then set two environment variables
-(or put them in sync/.env — see sync/.env.example):
+Environments: each Supabase environment is a separate project with its own URL
+and service_role key. The target is chosen with --env (or SUPABASE_ENV) and
+defaults to "staging" so the safe target is the one you get by forgetting to set
+it. Credentials load from sync/.env.<env> (falling back to sync/.env), so:
+
+    sync/.env.staging       -> SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY for staging
+    sync/.env.production     -> the same two values for production
+
+Pushing to production is gated behind --confirm-production so it can never happen
+by accident. "Promoting" a run is not a database-to-database copy: the local
+durable stores are the source of truth, so you re-run the same idempotent sync
+against production once the staging push looks right.
+
+Setup: create the tables with sql/schema.sql in EACH project, then fill in
+sync/.env.<env> — see sync/.env.staging.example / sync/.env.production.example.
 
     SUPABASE_URL=https://<project>.supabase.co
     SUPABASE_SERVICE_ROLE_KEY=<service-role key>   # bypasses RLS; keep secret
 
 Usage:
-    python3 sync/push_to_supabase.py --dry-run            # transform + print, no network
-    python3 sync/push_to_supabase.py                      # push everything
-    python3 sync/push_to_supabase.py --tables lead,source # push a subset
+    python3 sync/push_to_supabase.py --dry-run                    # transform + print, no network
+    python3 sync/push_to_supabase.py                              # push to staging (default)
+    python3 sync/push_to_supabase.py --env production --confirm-production
+    python3 sync/push_to_supabase.py --tables lead,source        # push a subset
 
 See docs/RUNBOOK.md ("Push to Supabase") for the operator walkthrough.
 """
@@ -81,8 +95,11 @@ def load_json(path: Path) -> dict:
         return json.load(fh)
 
 
+ENVIRONMENTS = ("staging", "production")
+
+
 def load_env_file(path: Path) -> None:
-    """Load KEY=VALUE lines from sync/.env into os.environ if not already set.
+    """Load KEY=VALUE lines from an env file into os.environ if not already set.
 
     Deliberately tiny (no python-dotenv dependency). Ignores blanks and # comments.
     """
@@ -94,6 +111,16 @@ def load_env_file(path: Path) -> None:
             continue
         key, _, value = line.partition("=")
         os.environ.setdefault(key.strip(), value.strip().strip('"').strip("'"))
+
+
+def load_env_for(env: str) -> None:
+    """Load credentials for one environment.
+
+    Reads sync/.env.<env> first, then falls back to the legacy sync/.env for any
+    key not already set. setdefault means the more specific file wins.
+    """
+    load_env_file(ROOT / "sync" / f".env.{env}")
+    load_env_file(ROOT / "sync" / ".env")
 
 
 # --------------------------------------------------------------------------- #
@@ -268,9 +295,26 @@ def main() -> int:
                         help="Transform and print row counts + a sample row; no network calls.")
     parser.add_argument("--tables", default="",
                         help="Comma-separated subset to sync (default: all, in dependency order).")
+    parser.add_argument("--env", choices=ENVIRONMENTS, default=None,
+                        help="Target environment (default: SUPABASE_ENV, else staging).")
+    parser.add_argument("--confirm-production", action="store_true",
+                        help="Required to actually push to production (guards against accidents).")
     args = parser.parse_args()
 
-    load_env_file(ROOT / "sync" / ".env")
+    # Resolve target env: --env > SUPABASE_ENV > staging. Default to the safe one.
+    env = args.env or os.environ.get("SUPABASE_ENV", "staging")
+    if env not in ENVIRONMENTS:
+        raise SystemExit(f"Unknown --env '{env}'. Choose one of: {', '.join(ENVIRONMENTS)}")
+
+    # Pushing to production must be explicit — never a default or an accident.
+    if env == "production" and not args.dry_run and not args.confirm_production:
+        raise SystemExit(
+            "Refusing to push to production without --confirm-production. "
+            "Push to staging first (the default), verify, then re-run with "
+            "--env production --confirm-production."
+        )
+
+    load_env_for(env)
 
     selected = TABLE_ORDER
     if args.tables:
@@ -284,9 +328,15 @@ def main() -> int:
     key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "")
     if not args.dry_run and (not base_url or not key):
         raise SystemExit(
-            "Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY (env or sync/.env), "
-            "or pass --dry-run. See sync/.env.example."
+            f"Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY for '{env}' "
+            f"(env vars or sync/.env.{env}), or pass --dry-run. "
+            f"See sync/.env.{env}.example."
         )
+
+    if args.dry_run:
+        print(f"target: {env} (dry run — no network)")
+    else:
+        print(f"target: {env} -> {base_url}")
 
     for table in selected:
         rows = BUILDERS[table]()
@@ -302,7 +352,7 @@ def main() -> int:
         upsert(table, rows, base_url, key)
         print(f"{table}: upserted {len(rows)} row(s)")
 
-    print("dry run complete — nothing was sent." if args.dry_run else "sync complete.")
+    print("dry run complete — nothing was sent." if args.dry_run else f"sync complete ({env}).")
     return 0
 
 

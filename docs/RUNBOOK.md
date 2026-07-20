@@ -91,6 +91,13 @@ repeats until it meets its coverage and quality target or hits a budget cap.
 A re-run of a location is therefore mostly "re-check known sources + look for
 new ones", never "search the entire web again".
 
+The whole loop runs inside the `discovery-coordinator` sub-agent, which fans out
+one `scout` per uncovered entity, one `validator` per candidate URL, and one
+`reviewer` per verified candidate (the reviewer is never the scout that found it).
+All the intermediate candidate/validation data stays in the coordinator's context
+and is discarded when it returns a compact summary, so a large run never lands in
+the main session.
+
 Output lands in a new timestamped run folder (a snapshot; the registry is the
 durable store):
 
@@ -123,6 +130,11 @@ dedups every extracted lead against `leads/ledger.json` by `external_id`.
 Only genuinely NEW leads are written and appended to the ledger — money is not
 spent re-extracting leads already recorded.
 
+This too runs inside a coordinator: `scrape-coordinator` fans out one
+`scraper-worker` per verified source, holds each returned lead array in its own
+context, consolidates and dedups by `external_id`, then writes the run artifacts
+and appends the ledger — returning only a compact summary to the main session.
+
 ```
 output/us-tx-austin-msa/20260701T184158Z/
     leads.json          # wrapper of NEW Lead records (contract: lead.schema.json)
@@ -146,26 +158,37 @@ shared Supabase tables that the Retool BDM UI reads. Nothing in a run calls
 Supabase — you run the sync yourself after discovery/scrape (or wire it in as a
 post-run step later). The mapping from files to tables is in `docs/SCHEMAS.md`.
 
-**One-time setup.** Create the tables and set credentials:
+**Environments.** Each environment is a separate Supabase project. The sync
+targets one with `--env staging|production` (or `SUPABASE_ENV`), defaulting to
+`staging`. Production is the data the Retool BDM UI reads; the sync refuses to
+write there without `--confirm-production`. Promoting a run is not a
+database-to-database copy — the local durable stores are the source of truth, so
+you push to staging, verify, then re-run the same idempotent sync against
+production.
+
+**One-time setup.** Create the tables in each project and set per-env credentials:
 
 ```bash
-# 1. Create the tables: Supabase dashboard -> SQL editor -> paste and run:
+# 1. Create the tables in EACH project: Supabase dashboard -> SQL editor -> run:
 sql/schema.sql            # safe to re-run (every statement is `if not exists`)
 
-# 2. Credentials for the sync (Supabase dashboard -> Project Settings -> API):
-cp sync/.env.example sync/.env    # then edit sync/.env
+# 2. Credentials per environment (Supabase dashboard -> Project Settings -> API):
+cp sync/.env.staging.example    sync/.env.staging      # then edit
+cp sync/.env.production.example sync/.env.production    # then edit
 #   SUPABASE_URL=https://<project>.supabase.co
 #   SUPABASE_SERVICE_ROLE_KEY=<service-role key>   # secret; bypasses RLS
 ```
 
-`sync/.env` is gitignored — never commit real credentials.
+`sync/.env*` are gitignored (only `*.example` is tracked) — never commit real
+credentials.
 
 **Run the sync** from the repo root:
 
 ```bash
 python3 sync/push_to_supabase.py --dry-run          # transform + print, no network
-python3 sync/push_to_supabase.py                    # push everything
+python3 sync/push_to_supabase.py                    # push to staging (default)
 python3 sync/push_to_supabase.py --tables lead,source   # push a subset
+python3 sync/push_to_supabase.py --env production --confirm-production  # promote
 ```
 
 `--dry-run` needs no credentials and prints a row count plus a sample row per

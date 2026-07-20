@@ -23,8 +23,14 @@ __pycache__/
 .venv/
 venv/
 
-# Supabase sync credentials — never commit. Only .env.example is tracked.
+# Supabase sync credentials — never commit. Only *.example files are tracked.
+# One file per environment (sync/.env.staging, sync/.env.production); sync/.env
+# stays supported as a legacy fallback.
 /sync/.env
+/sync/.env.*
+!/sync/.env.example
+!/sync/.env.staging.example
+!/sync/.env.production.example
 .env
 
 # OS / editor

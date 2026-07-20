@@ -38,13 +38,15 @@ Stages are decoupled through shared storage + the location state machine in
 - `sources/registry.json` — **durable source registry**: every source ever found, deduped on `normalized_url`. Consult before any new web discovery; never rebuild from scratch.
 - `organizations/registry.json` — **durable organization registry**: entities leads anchor on, with primary county + many-to-many county/place geography.
 - `leads/ledger.json` — **durable lead ledger** keyed by `external_id`: every lead ever recorded. Scrapes skip known ids so nothing is extracted twice.
-- `.claude/agents/` — sub-agents: `scout`, `validator`, `reviewer`, `scraper-worker`.
+- `.claude/agents/` — sub-agents, in two tiers:
+  - **Coordinators** (run one location's full loop in their own context, then return a compact summary so the main session never accumulates it): `discovery-coordinator` (drives scope→discover→validate→review, upserts the registries + state) and `scrape-coordinator` (fans out workers, consolidates + dedups leads by `external_id`, appends the ledger + state).
+  - **Workers** (each does one narrow job, invoked by a coordinator): `scout` (discovers candidate sources for one entity), `validator` (checks one candidate URL's reachability + content), `reviewer` (scores a validated source against the quality rubric — must not be the agent that found it), `scraper-worker` (extracts new leads from one verified source).
 - `.claude/skills/` — procedures: `source-discovery`, `lead-extraction`.
 - `.claude/commands/` — entry points: `/discover`, `/scrape`, `/status`.
 - `.claude/hooks/` — schema-validation hook run on file writes.
 - `output/` — generated run artifacts. **Never commit** (gitignored) except the one tracked example run.
 - `sql/` — `schema.sql`, the Supabase (Postgres) DDL for the tables the durable stores mirror. Run once per project.
-- `sync/` — `push_to_supabase.py` upserts the durable stores into Supabase (idempotent; never writes BDM lifecycle fields). `.env` is gitignored; see `sync/README.md`.
+- `sync/` — `push_to_supabase.py` upserts the durable stores into Supabase (idempotent; never writes BDM lifecycle fields). Environment-aware: `--env staging|production` (default `staging`) selects a separate Supabase project, reading credentials from `sync/.env.<env>`; production writes require `--confirm-production`. `.env*` are gitignored (only `*.example` tracked); see `sync/README.md`.
 - `docs/` — `ARCHITECTURE.md` (design), `SCHEMAS.md` (fields + Supabase mapping), `RUNBOOK.md` (operations).
 
 ## How to run
