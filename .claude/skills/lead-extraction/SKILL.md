@@ -52,27 +52,51 @@ never lands in the main window. Below, "the orchestrator" means the coordinator.
 
 ## Orchestration
 1. Load the verified sources for the location once. Index the ledger with a
-   narrow `jq` read — pull only `external_id`s and per-source project labels
-   (`evidence.project_name`), not whole lead records — so the growing ledger never
-   loads whole into context. This gives both the dedup id set and each source's
-   known-label skip list.
-2. Dispatch one `scraper-worker` per verified source. Pass each worker the source
-   fields `{ id, entity, url, relevant_sports, sport_confirmed }`, its
-   `location_id`, the list of ALREADY-KNOWN project labels for that source (so
-   the worker skips re-extracting them and reports only new or changed
-   projects), and point it at `config/keyword_filters.yaml`. Cap concurrency in
-   batches to respect rate limits and tool-call budget.
-3. Each worker returns a JSON array of lead objects (empty `[]` if none), WITHOUT
+   narrow `jq` read — pull only `external_id`, `organization`, `source_url`,
+   `summary`, `discovered_at`, and per-source project labels
+   (`evidence.project_name` keyed by `evidence.source_ids`), not whole lead
+   records — so the growing ledger never loads whole into context. This gives
+   the dedup id set, each source's known-lead skip list, and the
+   org+source_url index for the consolidate backstop (step 3 there).
+2. **Change-detection gate — skip sources whose content has not changed.**
+   Before dispatching any worker, fingerprint each verified source with a cheap
+   fetch in Bash (no sub-agent):
+   ```
+   curl -sL --max-time 30 <url> | tr -s '[:space:]' ' ' | sha256sum
+   ```
+   - If the hash equals the source's stored `content_hash` AND the source has a
+     prior successful scrape → SKIP the worker. Update only
+     `last_checked`/`last_result` ("unchanged; scrape skipped") and count it in
+     `counts.sources_skipped_unchanged`.
+   - Staleness valve: dispatch anyway if `content_hash_at` is older than twice
+     the source's `monitor_frequency` window (sub-pages can change without the
+     index page changing).
+   - Hash mismatch, no stored `content_hash`, or curl failure → fail OPEN:
+     dispatch the worker normally. A noisy dynamic page just costs status quo;
+     the gate must never cause a missed lead.
+3. Dispatch one `scraper-worker` per remaining source. Pass each worker the
+   source fields `{ id, entity, url, relevant_sports, sport_confirmed }`, its
+   `location_id`, the list of ALREADY-KNOWN leads for that source — objects
+   `{ project_name, summary, discovered_at }`, not bare labels — (so the worker
+   skips re-extracting them and reports only new or materially changed
+   projects, reusing the known `project_name` verbatim for changes), and point
+   it at `config/keyword_filters.yaml`. Cap concurrency in batches to respect
+   rate limits and tool-call budget.
+4. Each worker returns a JSON array of lead objects (empty `[]` if none), WITHOUT
    `external_id`. It fills the core fields (`organization`, `summary`,
    `evidence_quote`, `source_url`, `location_id`) and the `evidence` block
    (project_name, details, contact, source_ids, source_urls, confidence,
    needs_review). Hold each array in the coordinator's context as it returns,
    never in the main session; do not write per-source files.
-4. If a worker fails, times out, or returns malformed JSON, record its source
+5. If a worker fails, times out, or returns malformed JSON, record its source
    `id` and a short reason in a `failed_sources` list and continue. Do not
    silently drop it. Update the source's `last_checked`/`last_result` in
    `sources/registry.json` either way (e.g. "scraped: 2 new leads" or the
    failure reason).
+6. After each SUCCESSFUL worker run, store that source's fingerprint from step 2
+   in `sources/registry.json` (`content_hash`, `content_hash_at` = UTC now). A
+   failed or malformed run must NOT update the hash — the page is not "done"
+   until its extraction succeeded.
 
 ## Keyword qualification (enforced by the worker, verified here)
 A candidate qualifies as a lead only if it matches at least one turf keyword AND
@@ -114,7 +138,15 @@ unless a target sport is also clearly present. The canonical lists are in
    re-append it (if the source shows a material change, update the existing
    ledger entry's evidence in place instead). Leads with unseen ids are
    `leads_new`.
-5. Set `evidence.needs_review: true` on any lead missing a core field, with an
+5. **Label-drift backstop:** before counting a lead as new, check the ledger
+   index (step 1) for an existing entry with the same normalized
+   `organization` + `source_url`. If one exists and the two clearly describe
+   the same facility and project (a judgment call — the page merely reworded
+   the label), treat the lead as that entry's duplicate/update: keep the
+   EXISTING entry's `project_name` and `external_id`, merge the new evidence
+   in place, and count it `leads_duplicate`. Never mint a second id for a
+   reworded label.
+6. Set `evidence.needs_review: true` on any lead missing a core field, with an
    unconfirmed sport, or below the review confidence threshold.
 
 ## Output
@@ -126,16 +158,18 @@ unless a target sport is also clearly present. The canonical lists are in
 2. Append the new leads to `leads/ledger.json` (same record shape; keyed by
    `external_id`; never delete an entry).
 3. Write `output/<location_id>/<run-timestamp>/run_manifest.json` with
-   `schema_version: "1.1"`, `location_id`, `run_timestamp`, `stage: "scrape"`,
-   `agent_versions` (e.g. `{ "lead_extraction": "2.0", "scraper_worker": "2.0" }`),
+   `schema_version: "1.2"`, `location_id`, `run_timestamp`, `stage: "scrape"`,
+   `agent_versions` (e.g. `{ "lead_extraction": "2.1", "scraper_worker": "2.1" }`),
    `counts.leads`, `counts.leads_new`, `counts.leads_duplicate`,
-   `counts.leads_needs_review`, and the `failed_sources` array
+   `counts.leads_needs_review`, `counts.sources_skipped_unchanged` (from the
+   change-detection gate), and the `failed_sources` array
    (each `{ id, reason }`). Populate `budget` if tracked.
 4. Update `locations/state.json` for this location: set `counts.leads` (ledger
    total for the location), `latest_run` and `latest_scrape_run` (this scrape
    run folder), `last_run`, `last_scraped` (UTC now), and `status: "scraped"`.
    Update `sources/registry.json` `last_checked`/`last_result` for every source
-   touched.
+   touched, and `content_hash`/`content_hash_at` for every source whose worker
+   run succeeded (orchestration step 6).
 
 The PostToolUse hook validates every written `leads.json` and `run_manifest.json`
 against `contracts/`. If it reports errors, fix the data and rewrite.
@@ -143,20 +177,22 @@ against `contracts/`. If it reports errors, fix the data and rewrite.
 ## Execution checklist
 ```
 [ ] location_id given; verified sources loaded (registry + latest snapshot)
-[ ] leads/ledger.json loaded; known project labels indexed per source
+[ ] leads/ledger.json indexed (ids, org+source_url, known leads per source)
 [ ] verified sources filtered (>= 1 present, else stop)
-[ ] one scraper-worker dispatched per verified source (with known-lead labels)
+[ ] change-detection gate run per source (curl+sha256); unchanged sources skipped
+[ ] one scraper-worker dispatched per remaining source (with known-lead objects)
 [ ] every worker result collected; failures logged to failed_sources
 [ ] arrays merged; stable external_id assigned to each lead
 [ ] cross-source dedup by external_id (evidence source lists unioned)
 [ ] ledger dedup: known ids counted as leads_duplicate, not re-appended
+[ ] label-drift backstop: same org+source_url near-matches merged, not re-minted
 [ ] core fields completed from registries (organization_id, state, county)
 [ ] needs_review flags set
 [ ] leads.json (new leads only) written and schema-valid
 [ ] new leads appended to leads/ledger.json
-[ ] run_manifest.json (stage=scrape) written with new/duplicate counts
+[ ] run_manifest.json (stage=scrape) written with new/duplicate/skipped counts
 [ ] locations/state.json updated (status=scraped, last_scraped, latest_scrape_run)
-[ ] sources/registry.json last_checked/last_result updated
+[ ] sources/registry.json updated (last_checked/last_result; content_hash on success)
 ```
 
 ## Rules

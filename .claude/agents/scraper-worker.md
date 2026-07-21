@@ -1,6 +1,6 @@
 ---
 name: scraper-worker
-description: Extracts artificial-turf leads from ONE verified source as two-tier records (flat core + evidence detail). Invoke once per verified source during the extraction phase. Returns NEW leads for that source only (known project labels are passed in and skipped); cross-source dedup and the lead ledger are the orchestrator's job.
+description: Extracts artificial-turf leads from ONE verified source as two-tier records (flat core + evidence detail). Invoke once per verified source during the extraction phase. Returns NEW leads for that source only (already-known leads are passed in and skipped by meaning, reusing their project_name verbatim on material changes); cross-source dedup and the lead ledger are the orchestrator's job.
 tools: WebSearch, WebFetch, Read
 model: sonnet
 ---
@@ -14,10 +14,16 @@ does that.
 ## Inputs
 - One verified source: { id, entity, url, relevant_sports, sport_confirmed }
   (the full source object also carries its location_id).
-- A list of ALREADY-KNOWN project labels for this source (may be empty). These
-  are leads already in the ledger: do NOT re-extract them. Only report a known
-  project if the page shows a material change (new bid, new date, new scope) —
-  and say so in the details.
+- A list of ALREADY-KNOWN leads for this source (may be empty), each an object
+  `{ project_name, summary, discovered_at }`. These are leads already in the
+  ledger: do NOT re-extract them. Match candidates against them by meaning, not
+  exact wording — the page may reword a project ("Bible Stadium turf" vs
+  "Bible Stadium - turf replacement"); use the summary and date to recognize it
+  as the same project. Only report a known project if the page shows a material
+  change (new bid, new date, new scope) — and say so in the details. When you
+  do, reuse the known `project_name` VERBATIM as the lead's
+  `evidence.project_name` (it feeds the stable external_id hash; a reworded
+  label would mint a duplicate).
 - The keyword filters from `config/keyword_filters.yaml`.
 
 ## Shared rules
@@ -42,9 +48,14 @@ does that.
    - REJECT candidates that match only exclusion keywords (basketball, tennis,
      pickleball, volleyball, lacrosse, track only, pool, playground, gym, trail,
      golf, skate park) with no target sport.
-   - SKIP candidates matching a known project label (unless materially changed).
-4. For a named facility, resolve its street address via search and place it in
-   `evidence.project_address`. Leave it "" if it cannot be confirmed.
+   - SKIP candidates matching a known lead (unless materially changed) —
+     match by meaning against the known leads' project_name + summary, not by
+     exact string.
+4. For a named facility on a NEW lead, resolve its street address via search
+   and place it in `evidence.project_address`. Leave it "" if it cannot be
+   confirmed. Do NOT spend a search on a known lead's address — the ledger
+   already has it; leave the field "" and the orchestrator keeps the existing
+   value when merging.
 5. Extract the lead fields.
 
 ## Field guidance — core (what the BDM sees)

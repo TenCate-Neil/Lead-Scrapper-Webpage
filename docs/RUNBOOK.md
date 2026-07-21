@@ -89,7 +89,10 @@ deleted, broken sources just record their failure in `last_result`). The loop
 repeats until it meets its coverage and quality target or hits a budget cap.
 
 A re-run of a location is therefore mostly "re-check known sources + look for
-new ones", never "search the entire web again".
+new ones", never "search the entire web again". Verified sources whose
+`last_checked` falls within their own `monitor_frequency` window are not even
+re-fetched — they enter the run as-is (`counts.sources_skipped_fresh`); broken
+or redirected sources are always rechecked.
 
 The whole loop runs inside the `discovery-coordinator` sub-agent, which fans out
 one `scout` per uncovered entity, one `validator` per candidate URL, and one
@@ -129,6 +132,16 @@ scraper-worker which project labels are already known from its source, and
 dedups every extracted lead against `leads/ledger.json` by `external_id`.
 Only genuinely NEW leads are written and appended to the ledger — money is not
 spent re-extracting leads already recorded.
+
+**Change-detection gate.** Before dispatching any extraction worker, the
+coordinator fingerprints each source page with a cheap `curl` + sha256. If the
+hash matches the source's stored `content_hash` (recorded at its last successful
+scrape), the source is skipped outright — no worker, no extraction cost — and
+counted in `counts.sources_skipped_unchanged`. Any doubt (hash mismatch, no
+stored hash, fetch failure, or a hash older than 2x the source's
+`monitor_frequency`) fails open to a normal scrape, so the gate can reduce cost
+but never cause a missed lead. To force a full re-scrape of a source, delete its
+`content_hash`/`content_hash_at` in `sources/registry.json`.
 
 This too runs inside a coordinator: `scrape-coordinator` fans out one
 `scraper-worker` per verified source, holds each returned lead array in its own

@@ -80,7 +80,7 @@ def route(abs_path, root, contracts):
 
     if top == "output":
         output_map = {
-            "sources.json": ("source.schema.json", "wrapper", ["sources"], "2.0", True),
+            "sources.json": ("source.schema.json", "wrapper", ["sources"], "2.1", True),
             "leads.json": ("lead.schema.json", "wrapper", ["leads"], "2.0", True),
             "run_manifest.json": ("run_manifest.schema.json", "object", [], None, False),
         }
@@ -89,7 +89,7 @@ def route(abs_path, root, contracts):
             return (os.path.join(contracts, schema_file), kind, keys, version, req_loc)
     elif top == "sources" and base == "registry.json":
         return (os.path.join(contracts, "source.schema.json"), "wrapper", ["sources"],
-                "2.0", False)
+                "2.1", False)
     elif top == "organizations" and base == "registry.json":
         return (os.path.join(contracts, "organization.schema.json"), "wrapper",
                 ["organizations"], "1.0", False)

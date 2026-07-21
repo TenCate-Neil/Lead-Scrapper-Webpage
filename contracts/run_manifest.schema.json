@@ -32,6 +32,8 @@
         "sources_verified": { "type": "integer", "minimum": 0 },
         "sources_new": { "type": "integer", "minimum": 0, "description": "Sources added to the durable registry this run (web discovery top-up)." },
         "sources_known_rechecked": { "type": "integer", "minimum": 0, "description": "Registry sources re-checked instead of re-discovered." },
+        "sources_skipped_unchanged": { "type": "integer", "minimum": 0, "description": "Scrape only: verified sources skipped because their content_hash matched the last successful scrape (no worker dispatched)." },
+        "sources_skipped_fresh": { "type": "integer", "minimum": 0, "description": "Discovery only: verified sources whose validator re-check was skipped because last_checked was within their monitor_frequency window." },
         "leads": { "type": "integer", "minimum": 0 },
         "leads_new": { "type": "integer", "minimum": 0, "description": "Leads whose external_id was NOT already in leads/ledger.json." },
         "leads_duplicate": { "type": "integer", "minimum": 0, "description": "Leads skipped because their external_id was already in the ledger." },

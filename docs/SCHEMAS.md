@@ -123,7 +123,7 @@ from this file's git history.
 
 ---
 
-## Source (v2.0)
+## Source (v2.1)
 
 One verified data source. Same shape in both homes: the durable registry
 `sources/registry.json` and the per-run snapshot
@@ -146,6 +146,13 @@ New registry fields (all optional in the schema, expected in the registry):
 | `first_seen` | date-time | When the source first entered the registry. |
 | `last_checked` | date-time | Most recent re-check (validation or scrape), whatever the outcome. |
 | `last_result` | `string` | Short note on that check, e.g. `verified; 3 leads in run 20260701T184158Z` or `broken: 404`. |
+
+New change-detection fields in 2.1 (optional; written by the scrape stage):
+
+| Field | Type | Meaning |
+|---|---|---|
+| `content_hash` | `sha256:<hex>` | Fingerprint of the page body (plain `curl`, whitespace-collapsed) at the last SUCCESSFUL scrape. A scrape re-hashes the page first and skips extraction when unchanged; a missing or stale hash fails open. |
+| `content_hash_at` | date-time | When `content_hash` was recorded. Clearing both fields forces a full re-scrape of the source. |
 
 ---
 
@@ -195,7 +202,7 @@ machine: `pending` … `ready_for_scrape`, `scraped`, `stale`, `blocked`,
 | `latest_discovery_run` | Run folder of the last discovery run. |
 | `latest_scrape_run` | Run folder of the last scrape run. |
 
-## RunManifest (v1.1)
+## RunManifest (v1.2)
 
 Per-run metadata written alongside `sources.json` / `leads.json` in each output
 run folder; together with the state fields above it forms the run log. Unchanged
@@ -207,6 +214,8 @@ v1 fields: `schema_version`, `location_id`, `run_timestamp`, `stage`
 |---|---|
 | `counts.sources_new` | Sources added to the durable registry this run (web-discovery top-up). |
 | `counts.sources_known_rechecked` | Registry sources re-checked instead of re-discovered. |
+| `counts.sources_skipped_unchanged` | (1.2, scrape) Sources skipped by the change-detection gate: `content_hash` unchanged, no worker dispatched. |
+| `counts.sources_skipped_fresh` | (1.2, discovery) Verified sources whose validator re-check was skipped: `last_checked` within their `monitor_frequency` window. |
 | `counts.leads_new` | Leads whose `external_id` was not yet in the ledger. |
 | `counts.leads_duplicate` | Leads skipped because the ledger already had them. |
 
@@ -269,10 +278,10 @@ the content, and blocks a write that does not conform. Routed files:
 
 | File | Contract | Wrapper version |
 |---|---|---|
-| `output/**/sources.json` | source | `2.0` (+ `location_id` required) |
+| `output/**/sources.json` | source | `2.1` (+ `location_id` required) |
 | `output/**/leads.json` | lead | `2.0` (+ `location_id` required) |
 | `output/**/run_manifest.json` | run_manifest | — (whole object) |
-| `sources/registry.json` | source | `2.0` |
+| `sources/registry.json` | source | `2.1` |
 | `organizations/registry.json` | organization | `1.0` |
 | `leads/ledger.json` | lead | `2.0` |
 | `locations/registry.yaml` | location | — (each record) |

@@ -1,11 +1,13 @@
 {
-  "schema_version": "2.0",
+  "schema_version": "2.1",
   "description": "Durable source registry. Every source ever discovered, deduplicated on normalized_url. Discovery consults this FIRST and re-checks known sources; web search only tops up gaps. Never rebuilt from scratch.",
   "sources": [
     {
       "id": "SRC-001",
       "location_id": "us-tx-austin-msa",
-      "location_ids": ["us-tx-austin-msa"],
+      "location_ids": [
+        "us-tx-austin-msa"
+      ],
       "entity": "Leander ISD",
       "entity_type": "school_district",
       "source_type": "bond_program",
@@ -13,13 +15,25 @@
       "url": "https://www.leanderisd.org/bond_athleticsprojects/",
       "normalized_url": "https://www.leanderisd.org/bond_athleticsprojects",
       "contains": "stadium turf replacement, HS baseball/softball turf, MS competition field turf",
-      "relevant_sports": ["football", "baseball_softball", "multipurpose"],
-      "lead_stage": ["early_planning", "funding", "awarded"],
+      "relevant_sports": [
+        "football",
+        "baseball_softball",
+        "multipurpose"
+      ],
+      "lead_stage": [
+        "early_planning",
+        "funding",
+        "awarded"
+      ],
       "searchability": "good",
       "monitor_frequency": "monthly",
       "sport_confirmed": true,
       "validation_status": "verified",
-      "validation_tier": ["live", "relevant", "sport_confirmed"],
+      "validation_tier": [
+        "live",
+        "relevant",
+        "sport_confirmed"
+      ],
       "reviewed": true,
       "first_seen": "2026-07-01T18:41:58Z",
       "last_checked": "2026-07-01T18:41:58Z",
@@ -28,7 +42,9 @@
     {
       "id": "SRC-002",
       "location_id": "us-tx-austin-msa",
-      "location_ids": ["us-tx-austin-msa"],
+      "location_ids": [
+        "us-tx-austin-msa"
+      ],
       "entity": "Leander ISD",
       "entity_type": "school_district",
       "source_type": "procurement",
@@ -36,13 +52,20 @@
       "url": "https://www.leanderisd.org/departments/business-operations/purchasing/",
       "normalized_url": "https://www.leanderisd.org/departments/business-operations/purchasing",
       "contains": "IFB, RFP, CSP, CMAR solicitations",
-      "relevant_sports": ["needs_validation"],
-      "lead_stage": ["active_bid"],
+      "relevant_sports": [
+        "needs_validation"
+      ],
+      "lead_stage": [
+        "active_bid"
+      ],
       "searchability": "good",
       "monitor_frequency": "weekly",
       "sport_confirmed": false,
       "validation_status": "verified",
-      "validation_tier": ["live", "relevant"],
+      "validation_tier": [
+        "live",
+        "relevant"
+      ],
       "reviewed": true,
       "first_seen": "2026-07-01T18:41:58Z",
       "last_checked": "2026-07-01T18:41:58Z",
@@ -51,7 +74,9 @@
     {
       "id": "SRC-003",
       "location_id": "us-tx-austin-msa",
-      "location_ids": ["us-tx-austin-msa"],
+      "location_ids": [
+        "us-tx-austin-msa"
+      ],
       "entity": "Round Rock ISD",
       "entity_type": "school_district",
       "source_type": "bond_program",
@@ -59,13 +84,22 @@
       "url": "https://bond.roundrockisd.org/",
       "normalized_url": "https://bond.roundrockisd.org",
       "contains": "bond project tracker, turf field replacements",
-      "relevant_sports": ["football", "multipurpose"],
-      "lead_stage": ["funding", "active_bid"],
+      "relevant_sports": [
+        "football",
+        "multipurpose"
+      ],
+      "lead_stage": [
+        "funding",
+        "active_bid"
+      ],
       "searchability": "good",
       "monitor_frequency": "monthly",
       "sport_confirmed": false,
       "validation_status": "verified",
-      "validation_tier": ["live", "relevant"],
+      "validation_tier": [
+        "live",
+        "relevant"
+      ],
       "reviewed": true,
       "first_seen": "2026-07-01T18:41:58Z",
       "last_checked": "2026-07-01T18:41:58Z",
@@ -74,7 +108,9 @@
     {
       "id": "SRC-004",
       "location_id": "us-tx-austin-msa",
-      "location_ids": ["us-tx-austin-msa"],
+      "location_ids": [
+        "us-tx-austin-msa"
+      ],
       "entity": "Round Rock ISD",
       "entity_type": "school_district",
       "source_type": "procurement",
@@ -82,13 +118,20 @@
       "url": "https://www.roundrockisd.org/departments/purchasing/",
       "normalized_url": "https://www.roundrockisd.org/departments/purchasing",
       "contains": "construction and turf bids",
-      "relevant_sports": ["needs_validation"],
-      "lead_stage": ["active_bid"],
+      "relevant_sports": [
+        "needs_validation"
+      ],
+      "lead_stage": [
+        "active_bid"
+      ],
       "searchability": "good",
       "monitor_frequency": "weekly",
       "sport_confirmed": false,
       "validation_status": "verified",
-      "validation_tier": ["live", "relevant"],
+      "validation_tier": [
+        "live",
+        "relevant"
+      ],
       "reviewed": true,
       "first_seen": "2026-07-01T18:41:58Z",
       "last_checked": "2026-07-01T18:41:58Z",
