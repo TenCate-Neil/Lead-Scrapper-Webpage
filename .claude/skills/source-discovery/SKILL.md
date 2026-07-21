@@ -82,14 +82,22 @@ multi-county district.
 
 ### Phase A2 — Recheck known sources (registry-first)
 Before any new web discovery, load every registry source whose `location_ids`
-include this location and fan out one `validator` per source URL. For each:
+include this location. **Freshness gate first:** a `verified` source whose
+`last_checked` falls within its own `monitor_frequency` window (weekly = 7 days,
+monthly = 31, quarterly = 92) needs NO validator fetch — it goes straight into
+this run's inventory as-is and is counted in `sources_skipped_fresh`. Scrape
+runs also update `last_checked`, so a recently scraped source is spared here for
+free. Sources with `broken`, `needs_redirect`, `retry`, or `not_found` status
+are ALWAYS rechecked regardless of freshness.
+
+Fan out one `validator` per remaining source URL. For each:
 - Update `last_checked` (UTC now) and `last_result` in the registry.
 - Still-verified sources go straight into this run's inventory (skip the scout;
   re-review only if older than the location's cadence window).
 - Broken/moved sources keep their registry entry (with the failure in
   `last_result`) and re-queue their entity for discovery.
 Count these as `sources_known_rechecked`. Entities fully covered by rechecked
-sources need no scout in Phase B.
+or fresh-skipped sources need no scout in Phase B.
 
 ### Phase B — Discover (`discovering`)
 Fan out one `scout` sub-agent per entity still lacking a confident source. Pass
@@ -172,16 +180,17 @@ After assembly, upsert every confident source into `sources/registry.json`:
 1. Upsert `sources/registry.json` (see "Merging into the durable registry") and
    `organizations/registry.json` (Phase A upserts).
 2. Write `output/<location_id>/<run-timestamp>/sources.json` — a wrapper document
-   `{ "schema_version": "2.0", "location_id": "<slug>", "sources": [ ... ] }` whose
+   `{ "schema_version": "2.1", "location_id": "<slug>", "sources": [ ... ] }` whose
    `sources` array holds this run's confident Source objects, each valid against
    `contracts/source.schema.json`. This is the run snapshot; the registry is the
    durable store.
 3. Write `output/<location_id>/<run-timestamp>/run_manifest.json` with
-   `schema_version: "1.1"`, `location_id`, `run_timestamp`, `stage: "discovery"`,
-   `agent_versions` (e.g. `{ "source_discovery": "2.0", "scout": "1.0",
+   `schema_version: "1.2"`, `location_id`, `run_timestamp`, `stage: "discovery"`,
+   `agent_versions` (e.g. `{ "source_discovery": "2.1", "scout": "1.0",
    "validator": "1.0", "reviewer": "1.0" }`), `counts.entities`,
    `counts.sources_verified`, `counts.sources_new`,
-   `counts.sources_known_rechecked`, `coverage`, `run_quality`, `budget`
+   `counts.sources_known_rechecked`, `counts.sources_skipped_fresh`,
+   `coverage`, `run_quality`, `budget`
    (iterations, tool_calls, wall_time_seconds, stop_reason), and `gaps`
    (each `{ entity, strategies_tried, note }`).
 4. Update `locations/state.json` for this location: set `coverage`,

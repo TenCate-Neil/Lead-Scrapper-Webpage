@@ -38,13 +38,15 @@ Stages are decoupled through shared storage + the location state machine in
 - `sources/registry.json` — **durable source registry**: every source ever found, deduped on `normalized_url`. Consult before any new web discovery; never rebuild from scratch.
 - `organizations/registry.json` — **durable organization registry**: entities leads anchor on, with primary county + many-to-many county/place geography.
 - `leads/ledger.json` — **durable lead ledger** keyed by `external_id`: every lead ever recorded. Scrapes skip known ids so nothing is extracted twice.
-- `.claude/agents/` — sub-agents: `scout`, `validator`, `reviewer`, `scraper-worker`.
+- `.claude/agents/` — sub-agents, in two tiers:
+  - **Coordinators** (run one location's full loop in their own context, then return a compact summary so the main session never accumulates it): `discovery-coordinator` (drives scope→discover→validate→review, upserts the registries + state) and `scrape-coordinator` (fans out workers, consolidates + dedups leads by `external_id`, appends the ledger + state).
+  - **Workers** (each does one narrow job, invoked by a coordinator): `scout` (discovers candidate sources for one entity), `validator` (checks one candidate URL's reachability + content), `reviewer` (scores a validated source against the quality rubric — must not be the agent that found it), `scraper-worker` (extracts new leads from one verified source).
 - `.claude/skills/` — procedures: `source-discovery`, `lead-extraction`.
 - `.claude/commands/` — entry points: `/discover`, `/scrape`, `/status`.
 - `.claude/hooks/` — schema-validation hook run on file writes.
 - `output/` — generated run artifacts. **Never commit** (gitignored) except the one tracked example run.
 - `sql/` — `schema.sql`, the Supabase (Postgres) DDL for the tables the durable stores mirror. Run once per project.
-- `sync/` — `push_to_supabase.py` upserts the durable stores into Supabase (idempotent; never writes BDM lifecycle fields). `.env` is gitignored; see `sync/README.md`.
+- `sync/` — `push_to_supabase.py` upserts the durable stores into Supabase (idempotent; never writes BDM lifecycle fields). Environment-aware: `--env staging|production` (default `staging`) selects a separate Supabase project, reading credentials from `sync/.env.<env>`; production writes require `--confirm-production`. `.env*` are gitignored (only `*.example` tracked); see `sync/README.md`.
 - `docs/` — `ARCHITECTURE.md` (design), `SCHEMAS.md` (fields + Supabase mapping), `RUNBOOK.md` (operations).
 
 ## How to run
@@ -58,7 +60,7 @@ Stages are decoupled through shared storage + the location state machine in
 - **`location_id`** is a stable slug `us-<state>-<area>` (e.g. `us-tx-austin-msa`), used identically in inputs, state, and output paths. It is search INPUT; a lead's geography anchors on its organization (see `contracts/organization.schema.json`).
 - **Output path**: `output/<location_id>/<run-timestamp>/` where the timestamp is UTC `YYYYMMDDTHHMMSSZ`. Never overwrite a prior run. Run files are snapshots; the registries/ledger are the durable stores.
 - **Leads are two-tier**: a flat core the BDMs read (organization, state/county, summary, evidence_quote, source_url, discovered_at) plus an optional nested `evidence` block with the extraction detail. Every lead carries a stable `external_id` (idempotent upsert key) and `source: "web-search"`.
-- **Every wrapper document carries a top-level `schema_version`** (`lead`/`source` wrappers are `2.0`; `location`, `location_state`, `run_manifest` records carry `1.x` inline).
+- **Every wrapper document carries a top-level `schema_version`** (`lead` wrappers are `2.0`, `source` wrappers `2.1`; `location`, `location_state`, `run_manifest` records carry `1.x` inline).
 - **Definition of done for a location**: coverage ≥ target AND run quality ≥ threshold, or the discovery budget is exhausted — then state flips to `ready_for_scrape`. See `docs/ARCHITECTURE.md`.
 
 ## Ground rules
@@ -66,5 +68,5 @@ Stages are decoupled through shared storage + the location state machine in
 - Do not fabricate sources, contacts, dates, or solicitation numbers. Missing data stays empty. Resolving a named facility's real address is retrieval, not fabrication.
 - Only football, soccer, and baseball/softball turf. Exclude other sports unless the source also covers a target sport.
 - Only official public sources; deep-link, don't link to homepages. Every lead's `source_url` must let a BDM open the source and validate the lead.
-- Consult the durable stores first: re-check known sources instead of re-searching the web; skip leads already in the ledger instead of re-extracting them.
+- Consult the durable stores first: re-check known sources instead of re-searching the web; skip leads already in the ledger instead of re-extracting them; skip scraping sources whose `content_hash` is unchanged since the last successful scrape (a missing/stale hash fails open to a normal scrape).
 - Validate against the contracts before writing; the hook will reject non-conforming output.

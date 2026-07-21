@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://tencate.example/contracts/source.schema.json",
   "title": "Source",
-  "description": "One verified data source. Lives in two places with the same shape: the durable registry sources/registry.json (deduplicated on normalized_url; consulted BEFORE any new web discovery so a re-run re-checks known sources instead of re-searching the web) and the per-run snapshot output/<location_id>/<run>/sources.json consumed by the Lead Scraper. Version 2.0 adds the registry fields (normalized_url, location_ids, first_seen, last_checked, last_result).",
+  "description": "One verified data source. Lives in two places with the same shape: the durable registry sources/registry.json (deduplicated on normalized_url; consulted BEFORE any new web discovery so a re-run re-checks known sources instead of re-searching the web) and the per-run snapshot output/<location_id>/<run>/sources.json consumed by the Lead Scraper. Version 2.0 adds the registry fields (normalized_url, location_ids, first_seen, last_checked, last_result). Version 2.1 adds the change-detection fingerprint (content_hash, content_hash_at) so a scrape can skip re-extracting a page whose content has not changed.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -33,7 +33,14 @@
     },
     "entity_type": {
       "type": "string",
-      "enum": ["school_district", "city", "county", "state", "cooperative", "aggregator"]
+      "enum": [
+        "school_district",
+        "city",
+        "county",
+        "state",
+        "cooperative",
+        "aggregator"
+      ]
     },
     "source_type": {
       "type": "string",
@@ -64,23 +71,43 @@
       "type": "array",
       "items": {
         "type": "string",
-        "enum": ["football", "soccer", "baseball_softball", "multipurpose", "needs_validation"]
+        "enum": [
+          "football",
+          "soccer",
+          "baseball_softball",
+          "multipurpose",
+          "needs_validation"
+        ]
       }
     },
     "lead_stage": {
       "type": "array",
       "items": {
         "type": "string",
-        "enum": ["early_planning", "funding", "active_bid", "awarded", "historical_reference"]
+        "enum": [
+          "early_planning",
+          "funding",
+          "active_bid",
+          "awarded",
+          "historical_reference"
+        ]
       }
     },
     "searchability": {
       "type": "string",
-      "enum": ["good", "medium", "poor"]
+      "enum": [
+        "good",
+        "medium",
+        "poor"
+      ]
     },
     "monitor_frequency": {
       "type": "string",
-      "enum": ["weekly", "monthly", "quarterly"]
+      "enum": [
+        "weekly",
+        "monthly",
+        "quarterly"
+      ]
     },
     "sport_confirmed": {
       "type": "boolean",
@@ -88,12 +115,26 @@
     },
     "validation_status": {
       "type": "string",
-      "enum": ["verified", "needs_redirect", "broken", "retry", "not_found"],
+      "enum": [
+        "verified",
+        "needs_redirect",
+        "broken",
+        "retry",
+        "not_found"
+      ],
       "description": "Result of the Phase 3 validation loop. Only verified sources are passed downstream."
     },
     "validation_tier": {
       "type": "array",
-      "items": { "type": "string", "enum": ["live", "relevant", "fresh", "sport_confirmed"] },
+      "items": {
+        "type": "string",
+        "enum": [
+          "live",
+          "relevant",
+          "fresh",
+          "sport_confirmed"
+        ]
+      },
       "description": "Cumulative validation tiers the source cleared."
     },
     "confidence": {
@@ -117,7 +158,10 @@
     },
     "location_ids": {
       "type": "array",
-      "items": { "type": "string", "pattern": "^us-[a-z]{2}-[a-z0-9-]+$" },
+      "items": {
+        "type": "string",
+        "pattern": "^us-[a-z]{2}-[a-z0-9-]+$"
+      },
       "description": "All search areas this source covers (a state portal or aggregator can serve several). Superset of location_id."
     },
     "first_seen": {
@@ -133,6 +177,16 @@
     "last_result": {
       "type": "string",
       "description": "Short note on the most recent check, e.g. 'verified; 3 leads in run 20260701T184158Z' or 'broken: 404'."
+    },
+    "content_hash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "description": "Change-detection fingerprint: sha256 of the page body fetched with plain curl, whitespace-collapsed, recorded after the last SUCCESSFUL scrape of this source. A scrape run re-hashes the page first and skips extraction when the hash is unchanged. Absent/stale hash fails open (the source is scraped normally)."
+    },
+    "content_hash_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "UTC timestamp when content_hash was recorded (i.e. the last successful scrape whose extraction the hash represents)."
     }
   }
 }
