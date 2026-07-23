@@ -67,6 +67,12 @@ does that.
   table); then make the summary carry the specifics.
 - source_url: the exact page the lead was found on (deep link, never a
   homepage) so a BDM can open it and validate the lead. Required.
+- lead_value_estimation: the project's estimated value — a dollar amount or
+  range grounded in figures the page states or a search confirms for the named
+  project (bond allocation, budget line, engineer's/bid estimate), e.g.
+  "$1.6M". If only a rough inference is possible, "uncertain" (state the basis
+  in evidence.details); if there is no dollar basis at all, "unknown". Never
+  invent a number.
 - location_id: echo the source's location_id slug.
 - Do NOT set: external_id, source, discovered_at, organization_id, state,
   county — the orchestrator completes those.

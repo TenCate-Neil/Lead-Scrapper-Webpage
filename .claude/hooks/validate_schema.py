@@ -81,7 +81,7 @@ def route(abs_path, root, contracts):
     if top == "output":
         output_map = {
             "sources.json": ("source.schema.json", "wrapper", ["sources"], "2.1", True),
-            "leads.json": ("lead.schema.json", "wrapper", ["leads"], "2.0", True),
+            "leads.json": ("lead.schema.json", "wrapper", ["leads"], "2.1", True),
             "run_manifest.json": ("run_manifest.schema.json", "object", [], None, False),
         }
         if base in output_map:
@@ -95,7 +95,7 @@ def route(abs_path, root, contracts):
                 ["organizations"], "1.0", False)
     elif top == "leads" and base == "ledger.json":
         return (os.path.join(contracts, "lead.schema.json"), "wrapper", ["leads"],
-                "2.0", False)
+                "2.1", False)
     elif top == "locations":
         if base == "registry.yaml":
             return (os.path.join(contracts, "location.schema.json"), "records",

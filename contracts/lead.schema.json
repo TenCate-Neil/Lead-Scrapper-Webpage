@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://tencate.example/contracts/lead.schema.json",
   "title": "Lead",
-  "description": "One artificial-turf lead. Two tiers: the flat core (what a BDM sees; maps 1:1 to a Supabase 'lead' row) plus an optional nested 'evidence' block holding the richer extraction detail. Version 2.0: replaces the Salesforce-shaped v1 record; lifecycle fields (status, assigned_bdm, change log) live in Supabase, not in this file contract. See docs/SCHEMAS.md.",
+  "description": "One artificial-turf lead. Two tiers: the flat core (what a BDM sees; maps 1:1 to a staging 'lead_entry' row, entry_id = external_id) plus an optional nested 'evidence' block holding the richer extraction detail. Version 2.0 replaced the Salesforce-shaped v1 record; triage fields live in Supabase staging, lifecycle fields in production, not in this file contract. Version 2.1 (additive): adds lead_value_estimation and defines bid_due_date (optional). See docs/SCHEMAS.md.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -15,7 +15,6 @@
     "evidence_quote",
     "source_url",
     "discovered_at",
-    "bid_due_date",
     "location_id"
   ],
   "properties": {
@@ -67,6 +66,14 @@
       "type": "string",
       "format": "date-time",
       "description": "UTC timestamp when the pipeline first recorded this lead."
+    },
+    "bid_due_date": {
+      "type": "string",
+      "description": "Bid/proposal due date if the source states one (ISO date preferred). Empty string when the source gives none."
+    },
+    "lead_value_estimation": {
+      "type": "string",
+      "description": "Estimated project value for the BDM, grounded ONLY in figures the source states or that retrieval confirms (bond allocation, budget line, engineer's/bid estimate) — a dollar amount or range, e.g. '$1.6M' or '$500,000-$800,000'. 'uncertain' when only a rough, source-grounded inference is possible (basis in evidence.details); 'unknown' when the source gives no dollar basis. Never a fabricated number."
     },
     "location_id": {
       "type": "string",

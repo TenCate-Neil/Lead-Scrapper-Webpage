@@ -166,29 +166,31 @@ and `latest_scrape_run` are updated.
 
 ## Push to Supabase
 
-The pipeline writes to local files; a separate step pushes those files into the
-shared Supabase tables that the Retool BDM UI reads. Nothing in a run calls
-Supabase — you run the sync yourself after discovery/scrape (or wire it in as a
-post-run step later). The mapping from files to tables is in `docs/SCHEMAS.md`.
+The pipeline writes to local files; a separate step pushes those files into
+Supabase. Nothing in a run calls Supabase — you run the sync yourself after
+discovery/scrape (or wire it in as a post-run step later). The mapping from
+files to tables is in `docs/SCHEMAS.md`.
 
-**Environments.** Each environment is a separate Supabase project. The sync
-targets one with `--env staging|production` (or `SUPABASE_ENV`), defaulting to
-`staging`. Production is the data the Retool BDM UI reads; the sync refuses to
-write there without `--confirm-production`. Promoting a run is not a
-database-to-database copy — the local durable stores are the source of truth, so
-you push to staging, verify, then re-run the same idempotent sync against
-production.
+**Two databases, two roles.** Staging and production are separate Supabase
+projects with *different schemas* (see `sql/`). **Staging** is the landing zone:
+both scrape pipelines write `lead_entry` rows there (one per scrape mention,
+`entry_id` = the pipeline's `external_id`), a BDM triages them
+(`review_status`), and the resolution step links them to resolved opportunities
+(`lead`, keyed by `dedup_key`). **Production** is the system of record for sales
+work (`lifecycle_status`, `assigned_bdm`); the sync never writes it — the only
+pipeline writer there is the promotion job (not yet built), which moves
+accepted+resolved entries out of staging.
 
-**One-time setup.** Create the tables in each project and set per-env credentials:
+**One-time setup.** Create each project's tables and set staging credentials:
 
 ```bash
-# 1. Create the tables in EACH project: Supabase dashboard -> SQL editor -> run:
-sql/schema.sql            # safe to re-run (every statement is `if not exists`)
+# 1. Tables: Supabase dashboard -> SQL editor -> run (safe to re-run):
+sql/staging_schema.sql       # in the STAGING project
+sql/production_schema.sql    # in the PRODUCTION project (for the promotion job)
 
-# 2. Credentials per environment (Supabase dashboard -> Project Settings -> API):
-cp sync/.env.staging.example    sync/.env.staging      # then edit
-cp sync/.env.production.example sync/.env.production    # then edit
-#   SUPABASE_URL=https://<project>.supabase.co
+# 2. Staging credentials (Supabase dashboard -> Project Settings -> API):
+cp sync/.env.staging.example sync/.env.staging      # then edit
+#   SUPABASE_URL=https://<staging-project>.supabase.co
 #   SUPABASE_SERVICE_ROLE_KEY=<service-role key>   # secret; bypasses RLS
 ```
 
@@ -199,9 +201,8 @@ credentials.
 
 ```bash
 python3 sync/push_to_supabase.py --dry-run          # transform + print, no network
-python3 sync/push_to_supabase.py                    # push to staging (default)
-python3 sync/push_to_supabase.py --tables lead,source   # push a subset
-python3 sync/push_to_supabase.py --env production --confirm-production  # promote
+python3 sync/push_to_supabase.py                    # push to staging
+python3 sync/push_to_supabase.py --tables lead_entry,source   # push a subset
 ```
 
 `--dry-run` needs no credentials and prints a row count plus a sample row per
@@ -210,19 +211,22 @@ table — use it to sanity-check the transforms. Reading `search_area` uses
 
 What the sync guarantees:
 
-- **Idempotent.** Each table upserts on its stable key (`external_id`, `id`,
+- **Idempotent.** Each table upserts on its stable key (`entry_id`, `id`,
   `organization_id`, `location_id`, …), so re-running only refreshes rows.
-- **Lifecycle-safe.** The lead columns a BDM edits in Retool (`status`,
-  `rejected_reason`, `assigned_bdm`) are never sent, so those edits survive every
-  re-sync. An upsert only touches the columns in the payload.
+- **Triage-safe.** `lead_entry`'s triage/resolution columns (`review_status`,
+  `rejected_reason`, `reviewed_by`, `lead_id`, `observation_type`,
+  `match_confidence`) are never sent, so a BDM's triage decisions and the
+  resolution linkage survive every re-sync. An upsert only touches the columns
+  in the payload. The staging `lead` table and everything in production are
+  never written by the sync.
 - **Run manifests.** It pushes every `run_manifest.json` under `output/`. Most
   run folders are gitignored, so on a fresh clone it typically finds only the
   tracked example run — that is expected.
 
-Comparing a run against existing data before promoting it (a `staging_lead`
-table + a diff) is planned but not built yet; see the "Staging layer" note in
-`docs/SCHEMAS.md`. For now the sync upserts straight into the live tables, which
-is safe for the reasons above.
+Promotion to production (accepted+resolved entries → production `lead` +
+`lead_observation`) is a separate job, not yet built; its contract is documented
+in `sql/production_schema.sql` and the "Supabase mapping" section of
+`docs/SCHEMAS.md`.
 
 ## Check status
 

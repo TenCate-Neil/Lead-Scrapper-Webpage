@@ -24,7 +24,7 @@ Two notes on terminology:
 ## Conventions used by all contracts
 
 - Schemas are JSON Schema draft 2020-12. Current versions: `lead` and `source`
-  are **2.0**; `organization` is **1.0**; `location`, `location_state`, and
+  are **2.1**; `organization` is **1.0**; `location`, `location_state`, and
   `run_manifest` are **1.1** (their `schema_version` accepts any `1.x`).
 - Objects are strict: `additionalProperties: false`. An unexpected or misspelled
   field is a validation error, not a silent extra. The two exceptions are noted
@@ -66,14 +66,16 @@ contract. They are the local mirrors of the future Supabase tables.
 
 ---
 
-## Lead (v2.0)
+## Lead (v2.1)
 
 One artificial-turf lead, in **two tiers**: a flat core a BDM can read at a
-glance (and which maps 1:1 onto a Supabase row), plus an optional nested
+glance (and which maps 1:1 onto a staging `lead_entry` row), plus an optional nested
 `evidence` block holding the richer extraction detail — demoted, not deleted.
 Both pipelines (this repo and the meeting-minutes repo) emit the same core.
+v2.1 is additive: it adds `lead_value_estimation` and defines `bid_due_date`
+(both optional, so v2.0 records remain valid).
 
-### Core fields (all required except `organization_id` and `evidence`)
+### Core fields (all required except `organization_id`, `bid_due_date`, `lead_value_estimation`, and `evidence`)
 
 | Field | Type | Meaning |
 |---|---|---|
@@ -87,6 +89,8 @@ Both pipelines (this repo and the meeting-minutes repo) emit the same core.
 | `evidence_quote` | `string` | The single best verbatim quote from the source supporting the lead. `""` if the source is not quotable. |
 | `source_url` | `string`, non-empty | One deep link to the page the lead was found on, so a BDM can open the source, validate the lead, and research further. |
 | `discovered_at` | date-time | UTC timestamp the pipeline first recorded the lead. |
+| `bid_due_date` | `string`, optional | Bid/proposal due date if the source states one (ISO preferred). `""` when none. |
+| `lead_value_estimation` | `string`, optional (2.1) | Estimated project value: a dollar amount or range grounded in figures the source states or retrieval confirms (bond allocation, budget line, bid estimate). `"uncertain"` when only a rough source-grounded inference is possible (basis in `evidence.details`); `"unknown"` when the source gives no dollar basis. Never a fabricated number. |
 | `location_id` | slug | Which search area surfaced the lead (search input, not lead geography). |
 
 ### `evidence` (optional detail tier — never in the default BDM view)
@@ -105,11 +109,12 @@ Both pipelines (this repo and the meeting-minutes repo) emit the same core.
 | `needs_review` | boolean | True if a core field is missing, sport unconfirmed, or confidence low. |
 | `run_timestamp` | `string` | Run folder that produced the lead. |
 
-Lifecycle/tracking fields (`status` New → Reviewing → Qualified → Contacted →
+Triage fields (`review_status`, reviewer, resolution linkage) and lifecycle
+fields (`lifecycle_status` New → Reviewing → Qualified → Contacted →
 Opportunity, plus Rejected with a required reason; `assigned_bdm`; the status
-change log) are **Supabase-only** — they are mutable UI state, not pipeline
-output, so they live in the database and not in this file contract. See the
-Supabase mapping below.
+change log) are **Supabase-only** — mutable UI state, not pipeline output, so
+they live in the databases (triage in staging, lifecycle in production) and not
+in this file contract. See the Supabase mapping below.
 
 ### What happened to the v1 Salesforce fields
 
@@ -223,47 +228,62 @@ v1 fields: `schema_version`, `location_id`, `run_timestamp`, `stage`
 
 ## Supabase mapping
 
-Both pipelines write into shared Postgres tables in Supabase; Retool sits on
-top as the BDM UI (filterable lead table + detail view + status buttons). The
-file contracts here mirror those tables:
+Supabase is split into **two projects with different schemas and different
+owners** (DDL in `sql/`):
 
-| Repo artifact | Supabase table | Notes |
+- **Staging** (`sql/staging_schema.sql`) — landing zone + triage + entity
+  resolution. Both scrape pipelines write here. Each scrape mention lands as a
+  `lead_entry` row; a BDM triages entries (`review_status`
+  pending/accepted/rejected); the resolution step links entries to a thin
+  `lead` row per resolved opportunity. Triage state lives ONLY here.
+- **Production** (`sql/production_schema.sql`) — system of record for sales
+  work; Retool's BDM funnel sits on it. One `lead` row per opportunity with
+  `lifecycle_status` (New → … → Opportunity / Rejected), `assigned_bdm`, the
+  status log, and one `lead_observation` row per promoted mention. Lifecycle
+  state lives ONLY here — the two databases can never disagree.
+
+The pipeline's file artifacts map to **staging**:
+
+| Repo artifact | Staging table | Notes |
 |---|---|---|
-| Core lead (ledger / run `leads.json`) | `lead` | One row per core lead; upsert on `external_id`. `source` distinguishes the two pipelines for the trial measurement. |
-| `evidence` block | `lead_evidence` (or a JSONB column on `lead`) | Detail on demand, never in the default view. |
-| — (Supabase-only) | `lead_status_log` + `status`, `rejected_reason`, `assigned_bdm` on `lead` | Lifecycle: New → Reviewing → Qualified → Contacted → Opportunity; Rejected requires a reason. The log records who changed status and when — this is what makes the 3-month trial quantifiable per source pipeline. |
-| `organizations/registry.json` | `organization` | Primary state/county on the row. |
+| Core lead (ledger / run `leads.json`) | `lead_entry` | One row per scrape mention; upsert on `entry_id` = the lead's `external_id`. `source` distinguishes the two pipelines; the `evidence` block is a JSONB column. |
+| — (resolution step) | `lead` | Thin row per RESOLVED opportunity, keyed by `dedup_key`; created by resolution, never by the sync. |
+| `organizations/registry.json` | `organization` | Primary state/county on the row. Also the blocking key for resolution. |
 | `organization.geography[]` | `organization_geography` | Join rows org ↔ county and org ↔ place. |
-| `locations/registry.yaml` | `search_area` | `location_id`, name, state, type, status, coverage_target. |
+| `locations/registry.yaml` | `search_area` | `location_id`, name, type, priority, coverage_target. |
 | `sources/registry.json` | `source` | Deduplicated on `normalized_url`. |
 | `run_manifest.json` + state fields | `run` / `location_state` | The run log: what ran, when, and what it found. |
 
+**The two keys.** `entry_id` identifies a *mention* and reuses the pipelines'
+content-derived `external_id` (hash of organization + project label +
+source_url — already per-mention). `dedup_key` identifies the *opportunity* and
+is deliberately coarser: hash of `organization_id` + normalized project
+descriptor, **no URL** (the two pipelines find the same opportunity at
+different URLs). It is assigned by the resolution step, never the scraper —
+the scraper cannot know the canonical opportunity yet — and promotion carries
+it to production as the upsert key.
+
+**Promotion** (a GitHub Actions cron, not yet built) is the only pipeline
+writer to production: it inserts accepted+resolved entries as production `lead`
+rows (upsert on `dedup_key`, refreshing only ingestion fields — never
+`lifecycle_status`, `rejected_reason`, `assigned_bdm`) and appends
+`lead_observation` rows (upsert on `source_entry_id` = the staging `entry_id`,
+so re-promotion is idempotent).
+
 Salesforce is deliberately out of scope for the trial; it comes after proof of
-value and will be fed from Supabase, keyed on the same `external_id`.
+value and will be fed from production, keyed on the same ids.
 
 ### Implementation
 
-- **`sql/schema.sql`** is the DDL for the tables above. Run it once against the
-  Supabase project (SQL editor or `psql`); it is safe to re-run. Enums are
-  `text` + `CHECK` (so adding a value is a one-line change), the lead `evidence`
-  block is one JSONB column, and the lead lifecycle columns are Supabase-only.
+- **`sql/staging_schema.sql`** / **`sql/production_schema.sql`** are the DDL,
+  one file per project. Run each once in its project (SQL editor or `psql`);
+  both are safe to re-run. Enums are `text` + `CHECK` (so adding a value is a
+  one-line change) and the lead `evidence` block is one JSONB column.
 - **`sync/push_to_supabase.py`** reads the durable stores + run manifests and
-  upserts them into these tables, keyed on the same dedup keys used locally.
-  It is idempotent and never writes the lifecycle columns, so a BDM's edits in
-  Retool survive every re-sync. See the RUNBOOK's "Push to Supabase" section and
-  `sync/README.md`.
-
-### Staging layer (planned, not yet built)
-
-Comparing a run against existing data before promoting it is deferred. The
-intended shape: land each run's leads in a `staging_lead` table (same columns as
-`lead`, no lifecycle fields), then diff against `lead` on `external_id` — new
-ids insert, existing ids refresh only pipeline-owned fields, and ids absent from
-the run are left untouched. Because both pipelines share `lead` and carry a
-`source` field, the same diff also yields the web-search vs meeting-minutes
-trial comparison as a query. Until then, `sync/push_to_supabase.py` upserts
-straight into the live tables, which is safe because upserts are idempotent and
-lifecycle fields are preserved.
+  upserts them into **staging only**, keyed on the same dedup keys used
+  locally. It is idempotent and never writes `lead_entry`'s triage/resolution
+  columns, the staging `lead` table, or anything in production. See the
+  RUNBOOK's "Push to Supabase" section and `sync/README.md`.
 
 ---
 
@@ -279,11 +299,11 @@ the content, and blocks a write that does not conform. Routed files:
 | File | Contract | Wrapper version |
 |---|---|---|
 | `output/**/sources.json` | source | `2.1` (+ `location_id` required) |
-| `output/**/leads.json` | lead | `2.0` (+ `location_id` required) |
+| `output/**/leads.json` | lead | `2.1` (+ `location_id` required) |
 | `output/**/run_manifest.json` | run_manifest | — (whole object) |
 | `sources/registry.json` | source | `2.1` |
 | `organizations/registry.json` | organization | `1.0` |
-| `leads/ledger.json` | lead | `2.0` |
+| `leads/ledger.json` | lead | `2.1` |
 | `locations/registry.yaml` | location | — (each record) |
 | `locations/state.json` | location_state | — (each record) |
 

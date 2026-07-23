@@ -1,46 +1,41 @@
 #!/usr/bin/env python3
-"""Push the pipeline's durable stores into Supabase (Postgres via PostgREST).
+"""Push the pipeline's durable stores into the STAGING Supabase project.
 
-This is the bridge between the file-based pipeline and the shared Supabase tables
-the Retool BDM UI sits on. It reads the local durable stores + run manifests,
-transforms each record into a table row, and upserts it. Stages stay decoupled:
-nothing here calls a pipeline stage; it only reads what the stages already wrote.
+This is the bridge between the file-based pipeline and the two-database Supabase
+split (see sql/): STAGING is the landing zone + triage + entity resolution that
+both scrape pipelines write to; PRODUCTION is the system of record only the
+promotion job writes (not yet built — this script never touches it). It reads
+the local durable stores + run manifests, transforms each record into a table
+row, and upserts it. Stages stay decoupled: nothing here calls a pipeline stage;
+it only reads what the stages already wrote.
 
     locations/registry.yaml        -> search_area
     organizations/registry.json    -> organization (+ organization_geography)
     sources/registry.json          -> source
-    leads/ledger.json              -> lead
+    leads/ledger.json              -> lead_entry   (one row per scrape mention)
     output/**/run_manifest.json    -> run
     locations/state.json           -> location_state
 
 Idempotent: every table upserts on its stable key, so re-running only refreshes.
-The lead lifecycle columns (status, rejected_reason, assigned_bdm) are Supabase-only
-and are NEVER sent, so a BDM's edits in Retool survive every re-sync.
+lead_entry's triage/resolution columns (review_status, rejected_reason,
+reviewed_by, lead_id, observation_type, match_confidence) are NEVER sent, so a
+BDM's triage decisions and the resolution step's linkage survive every re-sync.
+The staging `lead` table (resolved opportunities, dedup_key) is written by the
+resolution step, not by this sync.
 
-Environments: each Supabase environment is a separate project with its own URL
-and service_role key. The target is chosen with --env (or SUPABASE_ENV) and
-defaults to "staging" so the safe target is the one you get by forgetting to set
-it. Credentials load from sync/.env.<env> (falling back to sync/.env), so:
+Credentials load from sync/.env.staging (falling back to sync/.env):
 
-    sync/.env.staging       -> SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY for staging
-    sync/.env.production     -> the same two values for production
-
-Pushing to production is gated behind --confirm-production so it can never happen
-by accident. "Promoting" a run is not a database-to-database copy: the local
-durable stores are the source of truth, so you re-run the same idempotent sync
-against production once the staging push looks right.
-
-Setup: create the tables with sql/schema.sql in EACH project, then fill in
-sync/.env.<env> — see sync/.env.staging.example / sync/.env.production.example.
-
-    SUPABASE_URL=https://<project>.supabase.co
+    SUPABASE_URL=https://<staging-project>.supabase.co
     SUPABASE_SERVICE_ROLE_KEY=<service-role key>   # bypasses RLS; keep secret
 
+Setup: create the staging tables with sql/staging_schema.sql (and the production
+tables with sql/production_schema.sql in the production project, for the
+promotion job). See sync/.env.staging.example.
+
 Usage:
-    python3 sync/push_to_supabase.py --dry-run                    # transform + print, no network
-    python3 sync/push_to_supabase.py                              # push to staging (default)
-    python3 sync/push_to_supabase.py --env production --confirm-production
-    python3 sync/push_to_supabase.py --tables lead,source        # push a subset
+    python3 sync/push_to_supabase.py --dry-run              # transform + print, no network
+    python3 sync/push_to_supabase.py                        # push to staging
+    python3 sync/push_to_supabase.py --tables lead_entry,source   # push a subset
 
 See docs/RUNBOOK.md ("Push to Supabase") for the operator walkthrough.
 """
@@ -66,19 +61,19 @@ TABLE_ORDER = [
     "organization",
     "organization_geography",
     "source",
-    "lead",
+    "lead_entry",
     "run",
     "location_state",
 ]
 
 # Conflict target per table: the column(s) PostgREST upserts on. Must match a
-# primary key or unique constraint in sql/schema.sql.
+# primary key or unique constraint in sql/staging_schema.sql.
 CONFLICT_KEYS = {
     "search_area": "location_id",
     "organization": "organization_id",
     "organization_geography": "organization_id,kind,value",
     "source": "id",
-    "lead": "external_id",
+    "lead_entry": "entry_id",
     "run": "location_id,run_timestamp",
     "location_state": "location_id",
 }
@@ -93,9 +88,6 @@ BATCH_SIZE = 500  # PostgREST accepts row arrays; batch so a request never gets 
 def load_json(path: Path) -> dict:
     with path.open(encoding="utf-8") as fh:
         return json.load(fh)
-
-
-ENVIRONMENTS = ("staging", "production")
 
 
 def load_env_file(path: Path) -> None:
@@ -113,13 +105,13 @@ def load_env_file(path: Path) -> None:
         os.environ.setdefault(key.strip(), value.strip().strip('"').strip("'"))
 
 
-def load_env_for(env: str) -> None:
-    """Load credentials for one environment.
+def load_env() -> None:
+    """Load the staging credentials.
 
-    Reads sync/.env.<env> first, then falls back to the legacy sync/.env for any
-    key not already set. setdefault means the more specific file wins.
+    Reads sync/.env.staging first, then falls back to the legacy sync/.env for
+    any key not already set. setdefault means the more specific file wins.
     """
-    load_env_file(ROOT / "sync" / f".env.{env}")
+    load_env_file(ROOT / "sync" / ".env.staging")
     load_env_file(ROOT / "sync" / ".env")
 
 
@@ -191,18 +183,44 @@ def rows_source() -> list[dict]:
     return [{f: src.get(f) for f in fields} for src in doc.get("sources", [])]
 
 
-def rows_lead() -> list[dict]:
-    """Core lead columns + the evidence JSONB. Lifecycle columns are omitted on
-    purpose so an upsert never clobbers a BDM's status / assignment in Retool."""
+# Query params that never distinguish one page from another. Mirrors the
+# normalized_url recipe in docs/SCHEMAS.md (source registry dedup key).
+_TRACKING_PARAMS = {"utm_source", "utm_medium", "utm_campaign", "utm_term",
+                    "utm_content", "fbclid", "gclid"}
+
+
+def normalize_url(url: str | None) -> str | None:
+    """Lowercase scheme+host, strip fragment + tracking params, no trailing slash."""
+    if not url:
+        return None
+    from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
+    parts = urlsplit(url.strip())
+    query = urlencode([(k, v) for k, v in parse_qsl(parts.query, keep_blank_values=True)
+                       if k.lower() not in _TRACKING_PARAMS])
+    return urlunsplit((parts.scheme.lower(), parts.netloc.lower(),
+                       parts.path.rstrip("/"), query, ""))
+
+
+def rows_lead_entry() -> list[dict]:
+    """Ledger lead -> staging lead_entry row (one row per scrape mention).
+
+    entry_id reuses the ledger's content-derived external_id — it already
+    identifies one mention (hash of organization + project label + source_url).
+    Triage/resolution columns (review_status, lead_id, observation_type, ...)
+    are omitted on purpose: an upsert only touches payload columns, so a BDM's
+    triage decisions and the resolution step's linkage survive every re-sync."""
     doc = load_json(ROOT / "leads" / "ledger.json")
-    core = [
-        "external_id", "source", "organization", "organization_id", "state",
-        "county", "summary", "evidence_quote", "source_url", "discovered_at",
-        "bid_due_date", "location_id",
+    passthrough = [
+        "source", "organization", "organization_id", "state", "county",
+        "summary", "evidence_quote", "source_url", "discovered_at",
+        "lead_value_estimation", "location_id",
     ]
     rows = []
     for lead in doc.get("leads", []):
-        row = {f: lead.get(f) for f in core}
+        row = {f: lead.get(f) for f in passthrough}
+        row["entry_id"] = lead["external_id"]
+        row["bid_due_date"] = lead.get("bid_due_date") or None  # "" would not cast to date
+        row["normalized_url"] = normalize_url(lead.get("source_url"))
         row["evidence"] = lead.get("evidence")  # whole nested block -> jsonb
         rows.append(row)
     return rows
@@ -237,7 +255,7 @@ BUILDERS = {
     "organization": rows_organization,
     "organization_geography": rows_organization_geography,
     "source": rows_source,
-    "lead": rows_lead,
+    "lead_entry": rows_lead_entry,
     "run": rows_run,
     "location_state": rows_location_state,
 }
@@ -290,31 +308,16 @@ def _post_with_retry(url: str, body: bytes, headers: dict, table: str, attempts:
 # --------------------------------------------------------------------------- #
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Push durable stores into Supabase.")
+    parser = argparse.ArgumentParser(
+        description="Push durable stores into the staging Supabase project. "
+                    "Production is written only by the promotion job, never by this sync.")
     parser.add_argument("--dry-run", action="store_true",
                         help="Transform and print row counts + a sample row; no network calls.")
     parser.add_argument("--tables", default="",
                         help="Comma-separated subset to sync (default: all, in dependency order).")
-    parser.add_argument("--env", choices=ENVIRONMENTS, default=None,
-                        help="Target environment (default: SUPABASE_ENV, else staging).")
-    parser.add_argument("--confirm-production", action="store_true",
-                        help="Required to actually push to production (guards against accidents).")
     args = parser.parse_args()
 
-    # Resolve target env: --env > SUPABASE_ENV > staging. Default to the safe one.
-    env = args.env or os.environ.get("SUPABASE_ENV", "staging")
-    if env not in ENVIRONMENTS:
-        raise SystemExit(f"Unknown --env '{env}'. Choose one of: {', '.join(ENVIRONMENTS)}")
-
-    # Pushing to production must be explicit — never a default or an accident.
-    if env == "production" and not args.dry_run and not args.confirm_production:
-        raise SystemExit(
-            "Refusing to push to production without --confirm-production. "
-            "Push to staging first (the default), verify, then re-run with "
-            "--env production --confirm-production."
-        )
-
-    load_env_for(env)
+    load_env()
 
     selected = TABLE_ORDER
     if args.tables:
@@ -328,15 +331,15 @@ def main() -> int:
     key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "")
     if not args.dry_run and (not base_url or not key):
         raise SystemExit(
-            f"Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY for '{env}' "
-            f"(env vars or sync/.env.{env}), or pass --dry-run. "
-            f"See sync/.env.{env}.example."
+            "Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY for staging "
+            "(env vars or sync/.env.staging), or pass --dry-run. "
+            "See sync/.env.staging.example."
         )
 
     if args.dry_run:
-        print(f"target: {env} (dry run — no network)")
+        print("target: staging (dry run — no network)")
     else:
-        print(f"target: {env} -> {base_url}")
+        print(f"target: staging -> {base_url}")
 
     for table in selected:
         rows = BUILDERS[table]()
@@ -352,7 +355,7 @@ def main() -> int:
         upsert(table, rows, base_url, key)
         print(f"{table}: upserted {len(rows)} row(s)")
 
-    print("dry run complete — nothing was sent." if args.dry_run else f"sync complete ({env}).")
+    print("dry run complete — nothing was sent." if args.dry_run else "sync complete (staging).")
     return 0
 
 

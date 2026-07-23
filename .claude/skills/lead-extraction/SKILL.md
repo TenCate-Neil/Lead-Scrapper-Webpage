@@ -84,7 +84,7 @@ never lands in the main window. Below, "the orchestrator" means the coordinator.
    rate limits and tool-call budget.
 4. Each worker returns a JSON array of lead objects (empty `[]` if none), WITHOUT
    `external_id`. It fills the core fields (`organization`, `summary`,
-   `evidence_quote`, `source_url`, `location_id`) and the `evidence` block
+   `evidence_quote`, `source_url`, `lead_value_estimation`, `location_id`) and the `evidence` block
    (project_name, details, contact, source_ids, source_urls, confidence,
    needs_review). Hold each array in the coordinator's context as it returns,
    never in the main session; do not write per-source files.
@@ -114,6 +114,10 @@ unless a target sport is also clearly present. The canonical lists are in
   confidently resolved or there is no named site.
 - Never fabricate solicitation numbers, dates, costs, or contacts. Unknown string
   fields are `""`; unknown arrays stay empty.
+- `lead_value_estimation` is grounded only in stated or retrieved figures
+  (bond allocation, budget line, engineer's/bid estimate). No figure means
+  "unknown"; a rough source-grounded inference means "uncertain" — never an
+  invented number.
 - `evidence.project_name` is a label: `[Site or facility name] - [compact scope]`,
   3-8 words, max 255 chars — not a sentence. It feeds the `external_id` hash.
 - Core fields the orchestrator completes from the registries: `organization_id`,
@@ -131,8 +135,10 @@ unless a target sport is also clearly present. The canonical lists are in
    >= 8; a full SHA-1 hex satisfies this.
 3. Deduplicate by `external_id` across all sources: leads sharing an id are the
    same project. Merge them — union `evidence.source_ids` and
-   `evidence.source_urls`, prefer non-empty field values, keep the highest
-   `confidence`, and set `needs_review` true if any copy was flagged.
+   `evidence.source_urls`, prefer non-empty field values (for
+   `lead_value_estimation`, a concrete figure beats "uncertain" beats
+   "unknown"), keep the highest `confidence`, and set `needs_review` true if
+   any copy was flagged.
 4. **Dedup against the ledger:** a lead whose `external_id` is already in
    `leads/ledger.json` is NOT new — count it as `leads_duplicate` and do not
    re-append it (if the source shows a material change, update the existing
@@ -151,7 +157,7 @@ unless a target sport is also clearly present. The canonical lists are in
 
 ## Output
 1. Write `output/<location_id>/<run-timestamp>/leads.json` — a wrapper document
-   `{ "schema_version": "2.0", "location_id": "<slug>", "leads": [ ... ] }` whose
+   `{ "schema_version": "2.1", "location_id": "<slug>", "leads": [ ... ] }` whose
    `leads` array holds this run's NEW (and materially changed) Lead objects, each
    valid against `contracts/lead.schema.json`, with `evidence.run_timestamp` set
    to this run folder.
