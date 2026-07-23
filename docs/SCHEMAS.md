@@ -24,7 +24,7 @@ Two notes on terminology:
 ## Conventions used by all contracts
 
 - Schemas are JSON Schema draft 2020-12. Current versions: `lead` and `source`
-  are **2.0**; `organization` is **1.0**; `location`, `location_state`, and
+  are **2.1**; `organization` is **1.0**; `location`, `location_state`, and
   `run_manifest` are **1.1** (their `schema_version` accepts any `1.x`).
 - Objects are strict: `additionalProperties: false`. An unexpected or misspelled
   field is a validation error, not a silent extra. The two exceptions are noted
@@ -66,14 +66,16 @@ contract. They are the local mirrors of the future Supabase tables.
 
 ---
 
-## Lead (v2.0)
+## Lead (v2.1)
 
 One artificial-turf lead, in **two tiers**: a flat core a BDM can read at a
 glance (and which maps 1:1 onto a Supabase row), plus an optional nested
 `evidence` block holding the richer extraction detail — demoted, not deleted.
 Both pipelines (this repo and the meeting-minutes repo) emit the same core.
+v2.1 is additive: it adds `lead_value_estimation` and defines `bid_due_date`
+(both optional, so v2.0 records remain valid).
 
-### Core fields (all required except `organization_id` and `evidence`)
+### Core fields (all required except `organization_id`, `bid_due_date`, `lead_value_estimation`, and `evidence`)
 
 | Field | Type | Meaning |
 |---|---|---|
@@ -87,6 +89,8 @@ Both pipelines (this repo and the meeting-minutes repo) emit the same core.
 | `evidence_quote` | `string` | The single best verbatim quote from the source supporting the lead. `""` if the source is not quotable. |
 | `source_url` | `string`, non-empty | One deep link to the page the lead was found on, so a BDM can open the source, validate the lead, and research further. |
 | `discovered_at` | date-time | UTC timestamp the pipeline first recorded the lead. |
+| `bid_due_date` | `string`, optional | Bid/proposal due date if the source states one (ISO preferred). `""` when none. |
+| `lead_value_estimation` | `string`, optional (2.1) | Estimated project value: a dollar amount or range grounded in figures the source states or retrieval confirms (bond allocation, budget line, bid estimate). `"uncertain"` when only a rough source-grounded inference is possible (basis in `evidence.details`); `"unknown"` when the source gives no dollar basis. Never a fabricated number. |
 | `location_id` | slug | Which search area surfaced the lead (search input, not lead geography). |
 
 ### `evidence` (optional detail tier — never in the default BDM view)
@@ -279,11 +283,11 @@ the content, and blocks a write that does not conform. Routed files:
 | File | Contract | Wrapper version |
 |---|---|---|
 | `output/**/sources.json` | source | `2.1` (+ `location_id` required) |
-| `output/**/leads.json` | lead | `2.0` (+ `location_id` required) |
+| `output/**/leads.json` | lead | `2.1` (+ `location_id` required) |
 | `output/**/run_manifest.json` | run_manifest | — (whole object) |
 | `sources/registry.json` | source | `2.1` |
 | `organizations/registry.json` | organization | `1.0` |
-| `leads/ledger.json` | lead | `2.0` |
+| `leads/ledger.json` | lead | `2.1` |
 | `locations/registry.yaml` | location | — (each record) |
 | `locations/state.json` | location_state | — (each record) |
 

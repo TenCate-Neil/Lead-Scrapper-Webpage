@@ -59,8 +59,8 @@ Stages are decoupled through shared storage + the location state machine in
 
 - **`location_id`** is a stable slug `us-<state>-<area>` (e.g. `us-tx-austin-msa`), used identically in inputs, state, and output paths. It is search INPUT; a lead's geography anchors on its organization (see `contracts/organization.schema.json`).
 - **Output path**: `output/<location_id>/<run-timestamp>/` where the timestamp is UTC `YYYYMMDDTHHMMSSZ`. Never overwrite a prior run. Run files are snapshots; the registries/ledger are the durable stores.
-- **Leads are two-tier**: a flat core the BDMs read (organization, state/county, summary, evidence_quote, source_url, discovered_at) plus an optional nested `evidence` block with the extraction detail. Every lead carries a stable `external_id` (idempotent upsert key) and `source: "web-search"`.
-- **Every wrapper document carries a top-level `schema_version`** (`lead` wrappers are `2.0`, `source` wrappers `2.1`; `location`, `location_state`, `run_manifest` records carry `1.x` inline).
+- **Leads are two-tier**: a flat core the BDMs read (organization, state/county, summary, lead_value_estimation, evidence_quote, source_url, discovered_at) plus an optional nested `evidence` block with the extraction detail. Every lead carries a stable `external_id` (idempotent upsert key) and `source: "web-search"`.
+- **Every wrapper document carries a top-level `schema_version`** (`lead` and `source` wrappers are `2.1`; `location`, `location_state`, `run_manifest` records carry `1.x` inline).
 - **Definition of done for a location**: coverage ≥ target AND run quality ≥ threshold, or the discovery budget is exhausted — then state flips to `ready_for_scrape`. See `docs/ARCHITECTURE.md`.
 
 ## Ground rules

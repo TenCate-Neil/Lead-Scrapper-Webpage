@@ -198,11 +198,12 @@ def rows_lead() -> list[dict]:
     core = [
         "external_id", "source", "organization", "organization_id", "state",
         "county", "summary", "evidence_quote", "source_url", "discovered_at",
-        "bid_due_date", "location_id",
+        "bid_due_date", "lead_value_estimation", "location_id",
     ]
     rows = []
     for lead in doc.get("leads", []):
         row = {f: lead.get(f) for f in core}
+        row["bid_due_date"] = row["bid_due_date"] or None  # "" would not cast to date
         row["evidence"] = lead.get("evidence")  # whole nested block -> jsonb
         rows.append(row)
     return rows

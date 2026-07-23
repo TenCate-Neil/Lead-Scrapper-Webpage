@@ -114,6 +114,7 @@ create table if not exists lead (
     source_url      text not null,
     discovered_at   timestamptz not null,
     bid_due_date    date,
+    lead_value_estimation text,    -- estimated project value: amount/range from the source, or 'uncertain'/'unknown'
     location_id     text,
     evidence        jsonb,          -- the optional detail tier, verbatim
 
@@ -129,6 +130,9 @@ create table if not exists lead (
     constraint lead_rejected_needs_reason
         check (status <> 'Rejected' or coalesce(rejected_reason, '') <> '')
 );
+-- Additive columns for deployments created before the column existed
+-- (`create table if not exists` does not alter an existing table).
+alter table lead add column if not exists lead_value_estimation text;
 create index if not exists lead_source_idx        on lead (source);        -- pipeline comparison
 create index if not exists lead_status_idx        on lead (status);
 create index if not exists lead_location_id_idx   on lead (location_id);
