@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://tencate.example/contracts/lead.schema.json",
   "title": "Lead",
-  "description": "One artificial-turf lead. Two tiers: the flat core (what a BDM sees; maps 1:1 to a Supabase 'lead' row) plus an optional nested 'evidence' block holding the richer extraction detail. Version 2.0 replaced the Salesforce-shaped v1 record; lifecycle fields (status, assigned_bdm, change log) live in Supabase, not in this file contract. Version 2.1 (additive): adds lead_value_estimation and defines bid_due_date (optional). See docs/SCHEMAS.md.",
+  "description": "One artificial-turf lead. Two tiers: the flat core (what a BDM sees; maps 1:1 to a staging 'lead_entry' row, entry_id = external_id) plus an optional nested 'evidence' block holding the richer extraction detail. Version 2.0 replaced the Salesforce-shaped v1 record; triage fields live in Supabase staging, lifecycle fields in production, not in this file contract. Version 2.1 (additive): adds lead_value_estimation and defines bid_due_date (optional). See docs/SCHEMAS.md.",
   "type": "object",
   "additionalProperties": false,
   "required": [

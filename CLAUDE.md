@@ -23,7 +23,10 @@ Lead Scraper (skill: lead-extraction)     # 3. ledger-first: extract only NEW le
         │  appends leads/ledger.json
         │  writes  output/<location_id>/<run>/leads.json     (contract: contracts/lead.schema.json)
         ▼
-Supabase upsert (external_id keyed) → Retool UI for BDMs
+Supabase STAGING upsert (lead_entry, entry_id = external_id)
+        │  → BDM triage + entity resolution (dedup_key per opportunity)
+        ▼
+promotion job (planned) → Supabase PRODUCTION (lifecycle) → Retool UI for BDMs
 ```
 
 Stages are decoupled through shared storage + the location state machine in
@@ -45,8 +48,8 @@ Stages are decoupled through shared storage + the location state machine in
 - `.claude/commands/` — entry points: `/discover`, `/scrape`, `/status`.
 - `.claude/hooks/` — schema-validation hook run on file writes.
 - `output/` — generated run artifacts. **Never commit** (gitignored) except the one tracked example run.
-- `sql/` — `schema.sql`, the Supabase (Postgres) DDL for the tables the durable stores mirror. Run once per project.
-- `sync/` — `push_to_supabase.py` upserts the durable stores into Supabase (idempotent; never writes BDM lifecycle fields). Environment-aware: `--env staging|production` (default `staging`) selects a separate Supabase project, reading credentials from `sync/.env.<env>`; production writes require `--confirm-production`. `.env*` are gitignored (only `*.example` tracked); see `sync/README.md`.
+- `sql/` — Supabase (Postgres) DDL, one file per project: `staging_schema.sql` (landing zone + triage + entity resolution — where the pipeline writes; ledger leads land as `lead_entry` rows) and `production_schema.sql` (system of record with the BDM lifecycle — written only by the promotion job, not yet built). Run each once in its project.
+- `sync/` — `push_to_supabase.py` upserts the durable stores into the STAGING project only (idempotent; never writes triage/resolution columns, the staging `lead` table, or production). Credentials from `sync/.env.staging` (fallback `.env`); `.env*` are gitignored (only `*.example` tracked); see `sync/README.md`.
 - `docs/` — `ARCHITECTURE.md` (design), `SCHEMAS.md` (fields + Supabase mapping), `RUNBOOK.md` (operations).
 
 ## How to run
