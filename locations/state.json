@@ -20,6 +20,27 @@
       "latest_scrape_run": "20260701T184158Z",
       "lease": null,
       "notes": "Backfilled from the legacy flat output file output/austin_turf_leads_20260701T184158Z.json. coverage and quality_score were not measured in this legacy run and are left null. See output/us-tx-austin-msa/20260701T184158Z/run_manifest.json for run details and gaps."
+    },
+    {
+      "schema_version": "1.1",
+      "location_id": "us-oh-cuyahoga-county",
+      "status": "stale",
+      "last_run": "2026-07-24T12:00:00Z",
+      "next_due": "2026-07-31T12:00:00Z",
+      "coverage": 0.1429,
+      "quality_score": 0.76,
+      "counts": {
+        "entities": 14,
+        "sources_verified": 19,
+        "leads": 0
+      },
+      "latest_run": "20260724T120000Z",
+      "last_discovered": "2026-07-24T12:00:00Z",
+      "last_scraped": null,
+      "latest_discovery_run": "20260724T120000Z",
+      "latest_scrape_run": null,
+      "lease": null,
+      "notes": "Fresh discovery for Cuyahoga County. 14 entities enumerated; 0 known sources to recheck. 19 sources verified but only 2 cleared the 0.60 confidence bar (City of Cleveland parks capital 0.72; Strongsville City Schools 2026 bond page 0.80). Coverage 0.14 well below 0.90 target: most municipal/district procurement portals verified but were rejected by review as generic/empty of current turf solicitations; aggregator (BidNet) and state portal (OhioBuys/DAS) endpoints broken/not_found. Several real turf projects (Westlake, CMSD JFK Stadium, Solon MS turf) were found but their public pages scored below threshold or are on blocked third-party sites. Escalation ladder exhausted -> diminishing_returns. Not ready_for_scrape."
     }
   ]
 }

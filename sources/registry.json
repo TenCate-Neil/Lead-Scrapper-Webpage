@@ -136,6 +136,1104 @@
       "first_seen": "2026-07-01T18:41:58Z",
       "last_checked": "2026-07-01T18:41:58Z",
       "last_result": "verified; leads extracted in run 20260701T184158Z"
+    },
+    {
+      "location_id": "us-oh-cuyahoga-county",
+      "entity": "Cuyahoga County",
+      "entity_type": "county",
+      "source_type": "procurement",
+      "name": "Office of Procurement & Diversity - Notice/Award Document Search",
+      "url": "https://opd.cuyahogacounty.us/en-US/DocumentSearch.aspx",
+      "contains": "Searchable interface (INFOR Events and Notices) for county procurement notices and contract awards, filterable by notice type (Notice/Award), agency (dozens of departments including Public Works), approving authority, bid due date range, keyword, and notice number; can filter to open notices only.",
+      "relevant_sports": [
+        "needs_validation"
+      ],
+      "lead_stage": [
+        "active_bid",
+        "awarded"
+      ],
+      "searchability": "good",
+      "monitor_frequency": "weekly",
+      "validation_status": "verified",
+      "validation_tier": [
+        "live",
+        "relevant"
+      ],
+      "confidence": 0.2,
+      "reviewed": true,
+      "last_validated": "2026-07-24T12:00:00Z",
+      "normalized_url": "https://opd.cuyahogacounty.us/en-US/DocumentSearch.aspx",
+      "location_ids": [
+        "us-oh-cuyahoga-county"
+      ],
+      "first_seen": "2026-07-24T12:00:00Z",
+      "last_checked": "2026-07-24T12:00:00Z",
+      "last_result": "verified; reviewed conf=0.2; rejected: Generic homepage-level search portal, not a deep link to a specific bid/notice; page shows",
+      "id": "SRC-005",
+      "sport_confirmed": false
+    },
+    {
+      "location_id": "us-oh-cuyahoga-county",
+      "entity": "Cuyahoga County",
+      "entity_type": "county",
+      "source_type": "procurement",
+      "name": "Public Works - Open and Upcoming Bids",
+      "url": "https://cuyahogacounty.gov/publicworks/work-with-us/open-and-upcoming-bids",
+      "contains": "Department of Public Works page listing open and upcoming construction/infrastructure bid opportunities; page was inaccessible via automated fetch (WAF block) but confirmed to exist and be referenced as the department's active bid listing via county search results.",
+      "relevant_sports": [
+        "needs_validation"
+      ],
+      "lead_stage": [
+        "active_bid"
+      ],
+      "searchability": "medium",
+      "monitor_frequency": "weekly",
+      "validation_status": "retry",
+      "normalized_url": "https://cuyahogacounty.gov/publicworks/work-with-us/open-and-upcoming-bids",
+      "location_ids": [
+        "us-oh-cuyahoga-county"
+      ],
+      "first_seen": "2026-07-24T12:00:00Z",
+      "last_checked": "2026-07-24T12:00:00Z",
+      "last_result": "retry",
+      "id": "SRC-006",
+      "sport_confirmed": false
+    },
+    {
+      "location_id": "us-oh-cuyahoga-county",
+      "entity": "State of Ohio Procurement (OhioBuys / DAS)",
+      "entity_type": "state",
+      "source_type": "procurement",
+      "name": "OhioBuys - View Public Solicitations",
+      "url": "https://ohiobuys.ohio.gov/page.aspx/en/rfp/request_browse_public",
+      "contains": "Statewide public solicitations search/browse tool for the State of Ohio's e-procurement system (OhioBuys), filterable by keyword, commodity code, solicitation status, contracting entity, dates, MBE set-aside, solicitation type, ID, and awarded status. Covers all state agencies statewide, including Cuyahoga County-located state facilities and projects.",
+      "relevant_sports": [
+        "needs_validation"
+      ],
+      "lead_stage": [
+        "active_bid"
+      ],
+      "searchability": "good",
+      "monitor_frequency": "weekly",
+      "validation_status": "retry",
+      "validation_tier": [
+        "live"
+      ],
+      "normalized_url": "https://ohiobuys.ohio.gov/page.aspx/en/rfp/request_browse_public",
+      "location_ids": [
+        "us-oh-cuyahoga-county"
+      ],
+      "first_seen": "2026-07-24T12:00:00Z",
+      "last_checked": "2026-07-24T12:00:00Z",
+      "last_result": "retry",
+      "id": "SRC-007",
+      "sport_confirmed": false
+    },
+    {
+      "location_id": "us-oh-cuyahoga-county",
+      "entity": "State of Ohio Procurement (OhioBuys / DAS)",
+      "entity_type": "state",
+      "source_type": "procurement",
+      "name": "Selling to the State (Ohio Procurement Services entry point)",
+      "url": "https://procure.ohio.gov/bidders-and-suppliers/resources/01_selling+to+the+state",
+      "contains": "DAS Office of Procurement Services landing page directing suppliers to OhioBuys registration and the public solicitations search tool; general vendor onboarding and how-to-bid guidance for the State of Ohio.",
+      "relevant_sports": [
+        "needs_validation"
+      ],
+      "lead_stage": [
+        "active_bid"
+      ],
+      "searchability": "medium",
+      "monitor_frequency": "monthly",
+      "validation_status": "not_found",
+      "normalized_url": "https://procure.ohio.gov/bidders-and-suppliers/resources/01_selling+to+the+state",
+      "location_ids": [
+        "us-oh-cuyahoga-county"
+      ],
+      "first_seen": "2026-07-24T12:00:00Z",
+      "last_checked": "2026-07-24T12:00:00Z",
+      "last_result": "not_found",
+      "id": "SRC-008",
+      "sport_confirmed": false
+    },
+    {
+      "location_id": "us-oh-cuyahoga-county",
+      "entity": "BidNet Direct - Ohio",
+      "entity_type": "aggregator",
+      "source_type": "procurement",
+      "name": "Ohio Bids Search / Solicitations Listing (BidNet Direct)",
+      "url": "https://www.bidnetdirect.com/public/solicitations/ohio-229",
+      "contains": "Statewide Ohio bid/RFP/RFQ solicitations listing that includes postings from Cuyahoga County government agencies (e.g. 'County Of Cuyahoga' buyer listings observed for hazmat, IT, election, and facilities procurements). Full listing appears to require registration/login to browse beyond individual bid detail pages surfaced via search.",
+      "relevant_sports": [
+        "needs_validation"
+      ],
+      "lead_stage": [
+        "active_bid"
+      ],
+      "searchability": "medium",
+      "monitor_frequency": "weekly",
+      "sport_confirmed": false,
+      "validation_status": "broken",
+      "normalized_url": "https://www.bidnetdirect.com/public/solicitations/ohio-229",
+      "location_ids": [
+        "us-oh-cuyahoga-county"
+      ],
+      "first_seen": "2026-07-24T12:00:00Z",
+      "last_checked": "2026-07-24T12:00:00Z",
+      "last_result": "broken",
+      "id": "SRC-009"
+    },
+    {
+      "location_id": "us-oh-cuyahoga-county",
+      "entity": "BidNet Direct - Ohio",
+      "entity_type": "aggregator",
+      "source_type": "procurement",
+      "name": "Ohio Participating Agencies (BidNet Direct)",
+      "url": "https://www.bidnetdirect.com/ohio/participating-buyers",
+      "contains": "Directory of local government agencies participating in the Ohio BidNet Direct purchasing group, useful for identifying which Cuyahoga County cities, county departments, and school districts post solicitations through this aggregator.",
+      "relevant_sports": [
+        "needs_validation"
+      ],
+      "lead_stage": [
+        "early_planning"
+      ],
+      "searchability": "medium",
+      "monitor_frequency": "quarterly",
+      "sport_confirmed": false,
+      "validation_status": "broken",
+      "normalized_url": "https://www.bidnetdirect.com/ohio/participating-buyers",
+      "location_ids": [
+        "us-oh-cuyahoga-county"
+      ],
+      "first_seen": "2026-07-24T12:00:00Z",
+      "last_checked": "2026-07-24T12:00:00Z",
+      "last_result": "broken",
+      "id": "SRC-010"
+    },
+    {
+      "location_id": "us-oh-cuyahoga-county",
+      "entity": "City of Cleveland",
+      "entity_type": "city",
+      "source_type": "cip",
+      "name": "Mayor's Office Capital Projects \u2013 Parks & Recreation",
+      "url": "https://www.clevelandohio.gov/city-hall/office-mayor/capital-projects/parks-recreation",
+      "contains": "Overview of MOCAP-managed parks/recreation capital projects citywide, including completed and in-progress renovations (e.g. Clark Field, Mercedes Cotner Park, Central Park multi-purpose field, Collinwood Athletic Complex sound system, U.S. Soccer Foundation mini-pitch soccer fields at Lonnie Burten and Halloran Park). Explicitly names soccer fields and a multi-purpose field; other sports not detailed for turf surface type.",
+      "relevant_sports": [
+        "soccer",
+        "multipurpose",
+        "needs_validation"
+      ],
+      "lead_stage": [
+        "early_planning",
+        "historical_reference"
+      ],
+      "searchability": "good",
+      "monitor_frequency": "monthly",
+      "sport_confirmed": true,
+      "validation_status": "verified",
+      "validation_tier": [
+        "live",
+        "relevant",
+        "sport_confirmed"
+      ],
+      "confidence": 0.72,
+      "reviewed": true,
+      "last_validated": "2026-07-24T12:00:00Z",
+      "normalized_url": "https://www.clevelandohio.gov/city-hall/office-mayor/capital-projects/parks-recreation",
+      "location_ids": [
+        "us-oh-cuyahoga-county"
+      ],
+      "first_seen": "2026-07-24T12:00:00Z",
+      "last_checked": "2026-07-24T12:00:00Z",
+      "last_result": "verified; reviewed conf=0.72; accepted",
+      "id": "SRC-011"
+    },
+    {
+      "location_id": "us-oh-cuyahoga-county",
+      "entity": "City of Cleveland",
+      "entity_type": "city",
+      "source_type": "procurement",
+      "name": "Request for Qualifications/Proposal (RFP/RFQ) listing",
+      "url": "https://www.clevelandohio.gov/city-hall/departments/finance/request-qualificationsproposal",
+      "contains": "List of active RFPs/RFQs for professional services and construction management, including recreation center and camp master-plan solicitations (e.g. Michael J. Zone Neighborhood Resource & Recreation Center Locker Room Improvements, Central Recreation Center Expansion CMAR, Camp George L. Forbes Master Plan) with closing dates.",
+      "relevant_sports": [
+        "needs_validation"
+      ],
+      "lead_stage": [
+        "active_bid",
+        "early_planning"
+      ],
+      "searchability": "good",
+      "monitor_frequency": "weekly",
+      "sport_confirmed": false,
+      "validation_status": "verified",
+      "validation_tier": [
+        "live",
+        "relevant",
+        "fresh"
+      ],
+      "confidence": 0.25,
+      "reviewed": true,
+      "last_validated": "2026-07-24T12:00:00Z",
+      "normalized_url": "https://www.clevelandohio.gov/city-hall/departments/finance/request-qualificationsproposal",
+      "location_ids": [
+        "us-oh-cuyahoga-county"
+      ],
+      "first_seen": "2026-07-24T12:00:00Z",
+      "last_checked": "2026-07-24T12:00:00Z",
+      "last_result": "verified; reviewed conf=0.25; rejected: Generic RFP/RFQ index page, not a deep link to a specific project; none of the active list",
+      "id": "SRC-012"
+    },
+    {
+      "location_id": "us-oh-cuyahoga-county",
+      "entity": "City of Parma",
+      "entity_type": "city",
+      "source_type": "procurement",
+      "name": "Bid Postings (City of Parma CivicEngage)",
+      "url": "https://cityofparma-oh.gov/Bids.aspx",
+      "contains": "Official city bid postings page; states no open bids at the time of check but allows sorting by open/closed/awarded/cancelled and offers email/text notification signup for new bid opportunities for contractors, vendors, and suppliers.",
+      "relevant_sports": [
+        "needs_validation"
+      ],
+      "lead_stage": [
+        "active_bid",
+        "awarded"
+      ],
+      "searchability": "good",
+      "monitor_frequency": "weekly",
+      "sport_confirmed": false,
+      "validation_status": "verified",
+      "validation_tier": [
+        "live",
+        "relevant"
+      ],
+      "confidence": 0.25,
+      "reviewed": true,
+      "last_validated": "2026-07-24T12:00:00Z",
+      "normalized_url": "https://cityofparma-oh.gov/Bids.aspx",
+      "location_ids": [
+        "us-oh-cuyahoga-county"
+      ],
+      "first_seen": "2026-07-24T12:00:00Z",
+      "last_checked": "2026-07-24T12:00:00Z",
+      "last_result": "verified; reviewed conf=0.25; rejected: Generic citywide bid board with no open postings at time of check ('no open bid postings a",
+      "id": "SRC-013"
+    },
+    {
+      "location_id": "us-oh-cuyahoga-county",
+      "entity": "City of Parma",
+      "entity_type": "city",
+      "source_type": "procurement",
+      "name": "Vendor Registration / Bid Board (Public Purchase)",
+      "url": "https://www.publicpurchase.com/gems/buyer/public/home?syndicatedOrgId=6113&region=OH",
+      "contains": "City of Parma's page on the Public Purchase aggregator/vendor registration platform; open bid listings require vendor login to view, so contents were not directly observable, but the city is a confirmed registered agency on this system.",
+      "relevant_sports": [
+        "needs_validation"
+      ],
+      "lead_stage": [
+        "active_bid"
+      ],
+      "searchability": "medium",
+      "monitor_frequency": "weekly",
+      "sport_confirmed": false,
+      "validation_status": "verified",
+      "validation_tier": [
+        "live",
+        "relevant"
+      ],
+      "confidence": 0.15,
+      "reviewed": true,
+      "last_validated": "2026-07-24T12:00:00Z",
+      "normalized_url": "https://www.publicpurchase.com/gems/buyer/public/home",
+      "location_ids": [
+        "us-oh-cuyahoga-county"
+      ],
+      "first_seen": "2026-07-24T12:00:00Z",
+      "last_checked": "2026-07-24T12:00:00Z",
+      "last_result": "verified; reviewed conf=0.15; rejected: Generic buyer-portal homepage, not a deep link to a specific bid; all open-bid listings ar",
+      "id": "SRC-014"
+    },
+    {
+      "location_id": "us-oh-cuyahoga-county",
+      "entity": "City of Strongsville",
+      "entity_type": "city",
+      "source_type": "cip",
+      "name": "City Council Legislation Archive",
+      "url": "https://www.strongsville.org/government/city-council/legislation",
+      "contains": "Searchable-by-date archive (2014-2026) of city ordinances and resolutions, including contract awards, capital appropriations, and grant agreements, with PDF downloads for each item. No full-text search; browse by year/month.",
+      "relevant_sports": [
+        "needs_validation"
+      ],
+      "lead_stage": [
+        "awarded",
+        "funding",
+        "historical_reference"
+      ],
+      "searchability": "medium",
+      "monitor_frequency": "monthly",
+      "validation_status": "verified",
+      "validation_tier": [
+        "live",
+        "relevant",
+        "fresh"
+      ],
+      "confidence": 0.28,
+      "reviewed": true,
+      "last_validated": "2026-07-24T12:00:00Z",
+      "normalized_url": "https://www.strongsville.org/government/city-council/legislation",
+      "location_ids": [
+        "us-oh-cuyahoga-county"
+      ],
+      "first_seen": "2026-07-24T12:00:00Z",
+      "last_checked": "2026-07-24T12:00:00Z",
+      "last_result": "verified; reviewed conf=0.28; rejected: Generic paginated legislation archive (314+ pages), not a deep link to a specific bid/ordi",
+      "id": "SRC-015",
+      "sport_confirmed": false
+    },
+    {
+      "location_id": "us-oh-cuyahoga-county",
+      "entity": "City of Strongsville",
+      "entity_type": "city",
+      "source_type": "construction_updates",
+      "name": "News & Updates (City Website)",
+      "url": "https://www.strongsville.org/news-updates/october-2024/new-town-center-park-is-open",
+      "contains": "City news post announcing completion of a new Town Center Park (pavilion, playground, splash pad, courts) funded partly by county/state/NOPEC grants; example of the news-updates section used for completed capital park projects.",
+      "relevant_sports": [
+        "needs_validation"
+      ],
+      "lead_stage": [
+        "historical_reference"
+      ],
+      "searchability": "medium",
+      "monitor_frequency": "monthly",
+      "validation_status": "broken",
+      "validation_tier": [
+        "live"
+      ],
+      "normalized_url": "https://www.strongsville.org/news-updates/october-2024/new-town-center-park-is-open",
+      "location_ids": [
+        "us-oh-cuyahoga-county"
+      ],
+      "first_seen": "2026-07-24T12:00:00Z",
+      "last_checked": "2026-07-24T12:00:00Z",
+      "last_result": "broken",
+      "id": "SRC-016",
+      "sport_confirmed": false
+    },
+    {
+      "location_id": "us-oh-cuyahoga-county",
+      "entity": "City of Westlake",
+      "entity_type": "city",
+      "source_type": "construction_updates",
+      "name": "Parkside Athletic Field Complex construction update",
+      "url": "https://www.cityofwestlake.org/article/2298210",
+      "contains": "City news article: construction begins on Parkside Athletic Field Complex, described as two artificial turf fields designed for full-size football and soccer with flexible lining for age groups, plus playground, picnic shelter, concession/restroom building; opening targeted late 2025.",
+      "relevant_sports": [
+        "football",
+        "soccer"
+      ],
+      "lead_stage": [
+        "awarded",
+        "historical_reference"
+      ],
+      "searchability": "medium",
+      "monitor_frequency": "quarterly",
+      "sport_confirmed": true,
+      "validation_status": "verified",
+      "validation_tier": [
+        "live",
+        "relevant"
+      ],
+      "confidence": 0.5,
+      "reviewed": true,
+      "last_validated": "2026-07-24T12:00:00Z",
+      "normalized_url": "https://www.cityofwestlake.org/article/2298210",
+      "location_ids": [
+        "us-oh-cuyahoga-county"
+      ],
+      "first_seen": "2026-07-24T12:00:00Z",
+      "last_checked": "2026-07-24T12:00:00Z",
+      "last_result": "verified; reviewed conf=0.5; accepted",
+      "id": "SRC-017"
+    },
+    {
+      "location_id": "us-oh-cuyahoga-county",
+      "entity": "City of Westlake",
+      "entity_type": "city",
+      "source_type": "construction_updates",
+      "name": "Recreation Center Park athletic field transformation update",
+      "url": "https://www.cityofwestlake.org/article/2323798",
+      "contains": "City news article on Recreation Center Park upgrades: construction began July 2025 on new artificial turf infields for baseball fields and a new regulation-sized artificial turf multipurpose field for football and soccer, with field lighting; surrounding grass improved with sand-slitting, grading, sodding, irrigation.",
+      "relevant_sports": [
+        "football",
+        "soccer",
+        "baseball_softball",
+        "multipurpose"
+      ],
+      "lead_stage": [
+        "awarded",
+        "historical_reference"
+      ],
+      "searchability": "medium",
+      "monitor_frequency": "quarterly",
+      "sport_confirmed": true,
+      "validation_status": "verified",
+      "validation_tier": [
+        "live",
+        "relevant"
+      ],
+      "confidence": 0.35,
+      "reviewed": true,
+      "last_validated": "2026-07-24T12:00:00Z",
+      "normalized_url": "https://www.cityofwestlake.org/article/2323798",
+      "location_ids": [
+        "us-oh-cuyahoga-county"
+      ],
+      "first_seen": "2026-07-24T12:00:00Z",
+      "last_checked": "2026-07-24T12:00:00Z",
+      "last_result": "verified; reviewed conf=0.35; rejected: WebFetch could not retrieve usable page content (repeatedly truncated/failed), so sport co",
+      "id": "SRC-018"
+    },
+    {
+      "location_id": "us-oh-cuyahoga-county",
+      "entity": "City of Solon",
+      "entity_type": "city",
+      "source_type": "construction_updates",
+      "name": "Varsity Field artificial turf project coverage (Patch)",
+      "url": "https://patch.com/ohio/solon/125-000-donation-clears-path-artificial-turf-solon-field",
+      "contains": "News article reporting a $125,000 donation from Councilman William Russo and wife funded artificial turf installation at Varsity Field, Solon Community Park, supporting baseball, flag football, lacrosse, soccer, and softball; construction began Oct 1, 2019, completed by year-end 2019. Historical/completed project, useful as evidence of prior turf investment pattern at this entity.",
+      "relevant_sports": [
+        "football",
+        "soccer",
+        "baseball_softball"
+      ],
+      "lead_stage": [
+        "historical_reference"
+      ],
+      "searchability": "medium",
+      "monitor_frequency": "quarterly",
+      "sport_confirmed": true,
+      "validation_status": "verified",
+      "validation_tier": [
+        "live",
+        "relevant",
+        "sport_confirmed"
+      ],
+      "confidence": 0.18,
+      "reviewed": true,
+      "last_validated": "2026-07-24T12:00:00Z",
+      "normalized_url": "https://patch.com/ohio/solon/125-000-donation-clears-path-artificial-turf-solon-field",
+      "location_ids": [
+        "us-oh-cuyahoga-county"
+      ],
+      "first_seen": "2026-07-24T12:00:00Z",
+      "last_checked": "2026-07-24T12:00:00Z",
+      "last_result": "verified; reviewed conf=0.18; rejected: Article dated September 2019 describing a project that was already under construction/comp",
+      "id": "SRC-019"
+    },
+    {
+      "location_id": "us-oh-cuyahoga-county",
+      "entity": "City of Solon",
+      "entity_type": "city",
+      "source_type": "parks_plan",
+      "name": "Solon Parks & Recreation Master Plan (2022)",
+      "url": "https://www.solonohio.gov/DocumentCenter/View/565/Parks",
+      "contains": "City of Solon Parks and Recreation Master Plan document; a related web search summary indicated the Parks and Recreation Department has plans to eventually install turf on fields 1-5 at Community Park for baseball, flag football, lacrosse, soccer and softball, though the PDF itself could not be parsed cleanly by automated fetch and needs direct validation of the turf-field passage and page number.",
+      "relevant_sports": [
+        "football",
+        "soccer",
+        "baseball_softball"
+      ],
+      "lead_stage": [
+        "early_planning"
+      ],
+      "searchability": "poor",
+      "monitor_frequency": "quarterly",
+      "sport_confirmed": true,
+      "validation_status": "not_found",
+      "validation_tier": [
+        "live"
+      ],
+      "normalized_url": "https://www.solonohio.gov/DocumentCenter/View/565/Parks",
+      "location_ids": [
+        "us-oh-cuyahoga-county"
+      ],
+      "first_seen": "2026-07-24T12:00:00Z",
+      "last_checked": "2026-07-24T12:00:00Z",
+      "last_result": "not_found",
+      "id": "SRC-020"
+    },
+    {
+      "location_id": "us-oh-cuyahoga-county",
+      "entity": "Cleveland Metropolitan School District",
+      "entity_type": "school_district",
+      "source_type": "cip",
+      "name": "Capital Improvement and Architectural Services (Segment 8 / JFK Stadium)",
+      "url": "https://www.clevelandmetroschools.org/division-of-operations/capital-improvement-and-architectural-services",
+      "contains": "Overview of active and completed capital-improvement construction segments (Clark, Gallagher, Marion C. Seltzer, Lincoln-West, JFK, Garrett Morgan, Garfield, O.H. Perry). Explicitly describes the JFK Stadium project with an 8-lane synthetic track and a premium turf field suitable for football, soccer, and other field sports, with construction starting August 2025 and completion targeted July 2026.",
+      "relevant_sports": [
+        "football",
+        "soccer",
+        "multipurpose"
+      ],
+      "lead_stage": [
+        "active_bid",
+        "early_planning"
+      ],
+      "searchability": "medium",
+      "monitor_frequency": "monthly",
+      "sport_confirmed": true,
+      "validation_status": "verified",
+      "validation_tier": [
+        "live",
+        "relevant",
+        "sport_confirmed"
+      ],
+      "confidence": 0.45,
+      "reviewed": true,
+      "last_validated": "2026-07-24T12:00:00Z",
+      "normalized_url": "https://www.clevelandmetroschools.org/division-of-operations/capital-improvement-and-architectural-services",
+      "location_ids": [
+        "us-oh-cuyahoga-county"
+      ],
+      "first_seen": "2026-07-24T12:00:00Z",
+      "last_checked": "2026-07-24T12:00:00Z",
+      "last_result": "verified; reviewed conf=0.45; rejected: Homepage-level CIP listing page, not a deep-linked bid/plan page; no bid/solicitation numb",
+      "id": "SRC-021"
+    },
+    {
+      "location_id": "us-oh-cuyahoga-county",
+      "entity": "Cleveland Metropolitan School District",
+      "entity_type": "school_district",
+      "source_type": "construction_updates",
+      "name": "JFK Stadium / Browns Field Installation Announcement",
+      "url": "https://www.clevelandmetroschools.org/site/default.aspx?PageType=3&DomainID=3062&ModuleInstanceID=1887&ViewID=6446EE88-D30C-497E-9316-3F8874B3E108&RenderLoc=0&FlexDataID=11864&PageID=9145",
+      "contains": "News item referenced in site search results describing the Cleveland Browns installing synthetic turf football fields at CMSD sites (five sites, including James F. Rhodes Stadium) and/or the new JFK Stadium synthetic turf field project; page returned 403 on direct fetch and needs validator re-check with a different method.",
+      "relevant_sports": [
+        "football",
+        "needs_validation"
+      ],
+      "lead_stage": [
+        "historical_reference",
+        "early_planning"
+      ],
+      "searchability": "poor",
+      "monitor_frequency": "quarterly",
+      "sport_confirmed": true,
+      "validation_status": "broken",
+      "normalized_url": "https://www.clevelandmetroschools.org/site/default.aspx",
+      "location_ids": [
+        "us-oh-cuyahoga-county"
+      ],
+      "first_seen": "2026-07-24T12:00:00Z",
+      "last_checked": "2026-07-24T12:00:00Z",
+      "last_result": "broken",
+      "id": "SRC-022"
+    },
+    {
+      "location_id": "us-oh-cuyahoga-county",
+      "entity": "Parma City School District",
+      "entity_type": "school_district",
+      "source_type": "procurement",
+      "name": "Operations Department (RFP/Bid postings)",
+      "url": "https://www.parmacityschools.org/our-district/departments/operations",
+      "contains": "District Operations page stating current RFP deadlines are posted here ('if no RFPs are posted at left then there are no current RFPs for bid'); lists facilities managed including 13 school buildings and Byers Field. No active bids observed at time of check.",
+      "relevant_sports": [
+        "needs_validation"
+      ],
+      "lead_stage": [
+        "active_bid"
+      ],
+      "searchability": "medium",
+      "monitor_frequency": "monthly",
+      "sport_confirmed": false,
+      "validation_status": "verified",
+      "validation_tier": [
+        "live",
+        "relevant"
+      ],
+      "confidence": 0.15,
+      "reviewed": true,
+      "last_validated": "2026-07-24T12:00:00Z",
+      "normalized_url": "https://www.parmacityschools.org/our-district/departments/operations",
+      "location_ids": [
+        "us-oh-cuyahoga-county"
+      ],
+      "first_seen": "2026-07-24T12:00:00Z",
+      "last_checked": "2026-07-24T12:00:00Z",
+      "last_result": "verified; reviewed conf=0.15; rejected: Generic department landing page with no active RFPs, no dates, no bid documents, and no ta",
+      "id": "SRC-023"
+    },
+    {
+      "location_id": "us-oh-cuyahoga-county",
+      "entity": "Parma City School District",
+      "entity_type": "school_district",
+      "source_type": "procurement",
+      "name": "Board of Education Meeting Records (BoardDocs)",
+      "url": "https://go.boarddocs.com/oh/parma/Board.nsf",
+      "contains": "BoardDocs platform hosting Parma City School District Board of Education agendas, minutes, and resolutions, including contract/bid awards requiring board vote per district policy. Direct fetch returned 403 (likely bot-blocked); existence confirmed via search results and district reference to this as the official agenda posting location.",
+      "relevant_sports": [
+        "needs_validation"
+      ],
+      "lead_stage": [
+        "active_bid",
+        "awarded",
+        "historical_reference"
+      ],
+      "searchability": "poor",
+      "monitor_frequency": "monthly",
+      "sport_confirmed": false,
+      "validation_status": "broken",
+      "normalized_url": "https://go.boarddocs.com/oh/parma/Board.nsf",
+      "location_ids": [
+        "us-oh-cuyahoga-county"
+      ],
+      "first_seen": "2026-07-24T12:00:00Z",
+      "last_checked": "2026-07-24T12:00:00Z",
+      "last_result": "broken",
+      "id": "SRC-024"
+    },
+    {
+      "location_id": "us-oh-cuyahoga-county",
+      "entity": "Strongsville City Schools",
+      "entity_type": "school_district",
+      "source_type": "construction_updates",
+      "name": "Parent Updates from Superintendent",
+      "url": "https://www.scsmustangs.org/find-it-fast/parent-updates-from-superintendent",
+      "contains": "Superintendent update posts including a Feb 2, 2026 entry 'Board Approves Turf Field Replacement at Pat Catan Stadium and SMS' and subsequent May/June 2026 'Summer Turf Projects' updates tracking installation progress.",
+      "relevant_sports": [
+        "football",
+        "multipurpose"
+      ],
+      "lead_stage": [
+        "awarded",
+        "active_bid"
+      ],
+      "searchability": "good",
+      "monitor_frequency": "weekly",
+      "sport_confirmed": true,
+      "validation_status": "verified",
+      "validation_tier": [
+        "live",
+        "relevant",
+        "fresh"
+      ],
+      "confidence": 0.45,
+      "reviewed": true,
+      "last_validated": "2026-07-24T12:00:00Z",
+      "normalized_url": "https://www.scsmustangs.org/find-it-fast/parent-updates-from-superintendent",
+      "location_ids": [
+        "us-oh-cuyahoga-county"
+      ],
+      "first_seen": "2026-07-24T12:00:00Z",
+      "last_checked": "2026-07-24T12:00:00Z",
+      "last_result": "verified; reviewed conf=0.45; rejected: Corroborated, sport-specific football stadium turf project with a specific Feb 2026 board ",
+      "id": "SRC-025"
+    },
+    {
+      "location_id": "us-oh-cuyahoga-county",
+      "entity": "Strongsville City Schools",
+      "entity_type": "school_district",
+      "source_type": "athletic_facility_plan",
+      "name": "Board of Education Meeting Agendas & Minutes (BoardDocs)",
+      "url": "https://go.boarddocs.com/oh/strongoh/Board.nsf/Public",
+      "contains": "BoardDocs portal for Strongsville BOE agendas, minutes, and policies; linked from the district's official Board Meeting Information page. Direct fetch returned 403 (bot-blocked) but individual meeting-item deep links (e.g. goto?open=&id=...) surface in search and are where board votes such as turf field replacement approvals would be recorded.",
+      "relevant_sports": [
+        "needs_validation"
+      ],
+      "lead_stage": [
+        "awarded",
+        "historical_reference"
+      ],
+      "searchability": "poor",
+      "monitor_frequency": "weekly",
+      "sport_confirmed": false,
+      "validation_status": "broken",
+      "normalized_url": "https://go.boarddocs.com/oh/strongoh/Board.nsf/Public",
+      "location_ids": [
+        "us-oh-cuyahoga-county"
+      ],
+      "first_seen": "2026-07-24T12:00:00Z",
+      "last_checked": "2026-07-24T12:00:00Z",
+      "last_result": "broken",
+      "id": "SRC-026"
+    },
+    {
+      "location_id": "us-oh-cuyahoga-county",
+      "entity": "Westlake City Schools",
+      "entity_type": "school_district",
+      "source_type": "procurement",
+      "name": "Business Affairs Department page",
+      "url": "https://www.wlake.org/departments/business-affairs",
+      "contains": "Landing page for the district's Business Affairs office with links to Equipment auction, Facility rentals, and RFP/RFQ; contact info for Director of Business Affairs Adam House who oversees procurement and facilities.",
+      "relevant_sports": [
+        "needs_validation"
+      ],
+      "lead_stage": [
+        "active_bid",
+        "early_planning"
+      ],
+      "searchability": "medium",
+      "monitor_frequency": "monthly",
+      "sport_confirmed": false,
+      "validation_status": "verified",
+      "validation_tier": [
+        "live",
+        "relevant"
+      ],
+      "confidence": 0.2,
+      "reviewed": true,
+      "last_validated": "2026-07-24T12:00:00Z",
+      "normalized_url": "https://www.wlake.org/departments/business-affairs",
+      "location_ids": [
+        "us-oh-cuyahoga-county"
+      ],
+      "first_seen": "2026-07-24T12:00:00Z",
+      "last_checked": "2026-07-24T12:00:00Z",
+      "last_result": "verified; reviewed conf=0.2; rejected: Generic department landing page, not a deep link; no bids/RFPs, dates, or sport mentioned ",
+      "id": "SRC-027"
+    },
+    {
+      "location_id": "us-oh-cuyahoga-county",
+      "entity": "Westlake City Schools",
+      "entity_type": "school_district",
+      "source_type": "procurement",
+      "name": "RFP/RFQ (Business Affairs)",
+      "url": "https://www.wlake.org/departments/business-affairs/rfprfq",
+      "contains": "District RFP/RFQ listing page under Business Affairs; currently shows no active solicitations ('N/A at this time') but is the official posting location for future bid opportunities including construction/renovation projects.",
+      "relevant_sports": [
+        "needs_validation"
+      ],
+      "lead_stage": [
+        "active_bid"
+      ],
+      "searchability": "medium",
+      "monitor_frequency": "monthly",
+      "sport_confirmed": false,
+      "validation_status": "verified",
+      "validation_tier": [
+        "live",
+        "relevant"
+      ],
+      "confidence": 0.28,
+      "reviewed": true,
+      "last_validated": "2026-07-24T12:00:00Z",
+      "normalized_url": "https://www.wlake.org/departments/business-affairs/rfprfq",
+      "location_ids": [
+        "us-oh-cuyahoga-county"
+      ],
+      "first_seen": "2026-07-24T12:00:00Z",
+      "last_checked": "2026-07-24T12:00:00Z",
+      "last_result": "verified; reviewed conf=0.28; rejected: Page currently shows no active RFP/RFQ items ('N/A at this time'); no sport named, no corr",
+      "id": "SRC-028"
+    },
+    {
+      "location_id": "us-oh-cuyahoga-county",
+      "entity": "Solon City Schools",
+      "entity_type": "school_district",
+      "source_type": "construction_updates",
+      "name": "Solon High School Stewart Field Turf Reconstruction (SHS Courier)",
+      "url": "https://theshscourier.com/8130/news/solon-high-school-ends-season-in-reconstructed-football-stadium/",
+      "contains": "Student newspaper article (per search snippet; direct fetch returned 403) reporting Stewart Field's ~11-year-old artificial turf was replaced by October 2024, with upgraded sand/rubber padding for player and marching band safety; notes typical turf lifespan of 10-12 years, implying a future replacement cycle around 2034-2036.",
+      "relevant_sports": [
+        "football"
+      ],
+      "lead_stage": [
+        "historical_reference"
+      ],
+      "searchability": "poor",
+      "monitor_frequency": "quarterly",
+      "sport_confirmed": true,
+      "validation_status": "broken",
+      "normalized_url": "https://theshscourier.com/8130/news/solon-high-school-ends-season-in-reconstructed-football-stadium",
+      "location_ids": [
+        "us-oh-cuyahoga-county"
+      ],
+      "first_seen": "2026-07-24T12:00:00Z",
+      "last_checked": "2026-07-24T12:00:00Z",
+      "last_result": "broken",
+      "id": "SRC-029"
+    },
+    {
+      "location_id": "us-oh-cuyahoga-county",
+      "entity": "Solon City Schools",
+      "entity_type": "school_district",
+      "source_type": "procurement",
+      "name": "BoardDocs - Board of Education Agendas & Minutes",
+      "url": "https://go.boarddocs.com/oh/solo/board.nsf/public",
+      "contains": "Board meeting agendas, minutes, and supporting documents where contract awards, bid approvals, and construction resolutions would be posted; portal confirmed to exist via search but detail pages returned 403 on direct fetch attempt.",
+      "relevant_sports": [
+        "needs_validation"
+      ],
+      "lead_stage": [
+        "active_bid",
+        "awarded",
+        "early_planning"
+      ],
+      "searchability": "medium",
+      "monitor_frequency": "monthly",
+      "sport_confirmed": false,
+      "validation_status": "broken",
+      "normalized_url": "https://go.boarddocs.com/oh/solo/board.nsf/public",
+      "location_ids": [
+        "us-oh-cuyahoga-county"
+      ],
+      "first_seen": "2026-07-24T12:00:00Z",
+      "last_checked": "2026-07-24T12:00:00Z",
+      "last_result": "broken",
+      "id": "SRC-030"
+    },
+    {
+      "location_id": "us-oh-cuyahoga-county",
+      "entity": "Shaker Heights City School District",
+      "entity_type": "school_district",
+      "source_type": "procurement",
+      "name": "Contract Bid Information (District Purchasing)",
+      "url": "https://www.shaker.org/business-operations/contract-bid-information",
+      "contains": "Lists active RFPs/bids (e.g. AV upgrades, food service management, preschool expansion project management, middle years redesign) with due dates and addenda; an archived-bids section noted no archived bids for a recent fiscal year. No turf/athletic field bids seen at time of check, but this is the district's primary procurement posting page.",
+      "relevant_sports": [
+        "needs_validation"
+      ],
+      "lead_stage": [
+        "active_bid"
+      ],
+      "searchability": "good",
+      "monitor_frequency": "weekly",
+      "sport_confirmed": false,
+      "validation_status": "verified",
+      "validation_tier": [
+        "live",
+        "relevant",
+        "fresh"
+      ],
+      "confidence": 0.15,
+      "reviewed": true,
+      "last_validated": "2026-07-24T12:00:00Z",
+      "normalized_url": "https://www.shaker.org/business-operations/contract-bid-information",
+      "location_ids": [
+        "us-oh-cuyahoga-county"
+      ],
+      "first_seen": "2026-07-24T12:00:00Z",
+      "last_checked": "2026-07-24T12:00:00Z",
+      "last_result": "verified; reviewed conf=0.15; rejected: Generic district bid-listing page; current solicitations shown (classroom AV, food service",
+      "id": "SRC-031"
+    },
+    {
+      "location_id": "us-oh-cuyahoga-county",
+      "entity": "Shaker Heights City School District",
+      "entity_type": "school_district",
+      "source_type": "procurement",
+      "name": "Bid Postings (BidNet Direct aggregator page)",
+      "url": "https://www.bidnetdirect.com/ohio/solicitations/open-bids/statewide/Shaker-Heights-City-School-District/43031659072",
+      "contains": "Aggregator deep link listing open/closed solicitations for Shaker Heights City School District on the BidNet Direct Ohio statewide procurement portal.",
+      "relevant_sports": [
+        "needs_validation"
+      ],
+      "lead_stage": [
+        "active_bid"
+      ],
+      "searchability": "medium",
+      "monitor_frequency": "weekly",
+      "sport_confirmed": false,
+      "validation_status": "broken",
+      "normalized_url": "https://www.bidnetdirect.com/ohio/solicitations/open-bids/statewide/Shaker-Heights-City-School-District/43031659072",
+      "location_ids": [
+        "us-oh-cuyahoga-county"
+      ],
+      "first_seen": "2026-07-24T12:00:00Z",
+      "last_checked": "2026-07-24T12:00:00Z",
+      "last_result": "broken",
+      "id": "SRC-032"
+    },
+    {
+      "location_id": "us-oh-cuyahoga-county",
+      "entity": "Solon City Schools",
+      "entity_type": "school_district",
+      "source_type": "cip",
+      "name": "Strategic Plan Update (facilities focus area)",
+      "url": "https://www.solonschools.org/our-district-0/strategic-plan/strategic-plan-update",
+      "relevant_sports": [
+        "needs_validation"
+      ],
+      "lead_stage": [
+        "early_planning"
+      ],
+      "searchability": "medium",
+      "monitor_frequency": "quarterly",
+      "sport_confirmed": false,
+      "validation_status": "verified",
+      "validation_tier": [
+        "live",
+        "relevant"
+      ],
+      "confidence": 0.2,
+      "reviewed": true,
+      "last_validated": "2026-07-24T12:00:00Z",
+      "normalized_url": "https://www.solonschools.org/our-district-0/strategic-plan/strategic-plan-update",
+      "location_ids": [
+        "us-oh-cuyahoga-county"
+      ],
+      "first_seen": "2026-07-24T12:00:00Z",
+      "last_checked": "2026-07-24T12:00:00Z",
+      "last_result": "verified; reviewed conf=0.2; rejected: generic strategic-plan landing, no sport, not deep-linked",
+      "id": "SRC-033"
+    },
+    {
+      "location_id": "us-oh-cuyahoga-county",
+      "entity": "Solon City Schools",
+      "entity_type": "school_district",
+      "source_type": "budget",
+      "name": "Finance Department (permanent improvement levy)",
+      "url": "https://www.solonschools.org/our-departments/finance",
+      "relevant_sports": [
+        "needs_validation"
+      ],
+      "lead_stage": [
+        "funding"
+      ],
+      "searchability": "medium",
+      "monitor_frequency": "quarterly",
+      "sport_confirmed": false,
+      "validation_status": "verified",
+      "validation_tier": [
+        "live",
+        "relevant"
+      ],
+      "confidence": 0.12,
+      "reviewed": true,
+      "last_validated": "2026-07-24T12:00:00Z",
+      "normalized_url": "https://www.solonschools.org/our-departments/finance",
+      "location_ids": [
+        "us-oh-cuyahoga-county"
+      ],
+      "first_seen": "2026-07-24T12:00:00Z",
+      "last_checked": "2026-07-24T12:00:00Z",
+      "last_result": "verified; reviewed conf=0.12; rejected: generic department page, no sport/CIP doc",
+      "id": "SRC-034"
+    },
+    {
+      "location_id": "us-oh-cuyahoga-county",
+      "entity": "Strongsville City Schools",
+      "entity_type": "school_district",
+      "source_type": "bond_program",
+      "name": "Foundation for the Future - Master Facilities Plan / 2026 Bond",
+      "url": "https://www.scsmustangs.org/f4f",
+      "contains": "District master facilities/bond page with dollar-figure line items incl. baseball/softball field project (~$3.2M) and stadium upgrades (~$2.7M), timeline through 2031, board presentation references.",
+      "relevant_sports": [
+        "baseball_softball",
+        "needs_validation"
+      ],
+      "lead_stage": [
+        "early_planning",
+        "funding"
+      ],
+      "searchability": "good",
+      "monitor_frequency": "monthly",
+      "sport_confirmed": true,
+      "validation_status": "verified",
+      "validation_tier": [
+        "live",
+        "relevant",
+        "sport_confirmed"
+      ],
+      "confidence": 0.8,
+      "reviewed": true,
+      "last_validated": "2026-07-24T12:00:00Z",
+      "normalized_url": "https://www.scsmustangs.org/f4f",
+      "location_ids": [
+        "us-oh-cuyahoga-county"
+      ],
+      "first_seen": "2026-07-24T12:00:00Z",
+      "last_checked": "2026-07-24T12:00:00Z",
+      "last_result": "verified; reviewed conf=0.8; accepted (deep, dated, baseball/softball named)",
+      "id": "SRC-035"
+    },
+    {
+      "location_id": "us-oh-cuyahoga-county",
+      "entity": "City of Westlake",
+      "entity_type": "city",
+      "source_type": "construction_updates",
+      "name": "Parkside Athletic Field Complex - Grand Opening",
+      "url": "https://www.cityofwestlake.org/article/2507089",
+      "contains": "City news article: grand opening of Parkside Athletic Field Complex with two artificial turf fields for full-size football and soccer.",
+      "relevant_sports": [
+        "football",
+        "soccer"
+      ],
+      "lead_stage": [
+        "awarded"
+      ],
+      "searchability": "good",
+      "monitor_frequency": "monthly",
+      "sport_confirmed": true,
+      "validation_status": "verified",
+      "validation_tier": [
+        "live",
+        "relevant"
+      ],
+      "confidence": 0.45,
+      "reviewed": true,
+      "last_validated": "2026-07-24T12:00:00Z",
+      "normalized_url": "https://www.cityofwestlake.org/article/2507089",
+      "location_ids": [
+        "us-oh-cuyahoga-county"
+      ],
+      "first_seen": "2026-07-24T12:00:00Z",
+      "last_checked": "2026-07-24T12:00:00Z",
+      "last_result": "verified; reviewed conf=0.45; accepted but below 0.60 threshold (completed project, body unfetchable)",
+      "id": "SRC-036"
+    },
+    {
+      "location_id": "us-oh-cuyahoga-county",
+      "entity": "State of Ohio Procurement (OhioBuys / DAS)",
+      "entity_type": "state",
+      "source_type": "procurement",
+      "name": "DAS Procurement Services",
+      "url": "https://das.ohio.gov/buying-and-selling/procurement-services",
+      "relevant_sports": [
+        "needs_validation"
+      ],
+      "lead_stage": [
+        "active_bid"
+      ],
+      "searchability": "poor",
+      "monitor_frequency": "weekly",
+      "sport_confirmed": false,
+      "validation_status": "not_found",
+      "normalized_url": "https://das.ohio.gov/buying-and-selling/procurement-services",
+      "location_ids": [
+        "us-oh-cuyahoga-county"
+      ],
+      "first_seen": "2026-07-24T12:00:00Z",
+      "last_checked": "2026-07-24T12:00:00Z",
+      "last_result": "not_found on refine recheck",
+      "id": "SRC-037"
+    },
+    {
+      "location_id": "us-oh-cuyahoga-county",
+      "entity": "BidNet Direct - Ohio",
+      "entity_type": "aggregator",
+      "source_type": "procurement",
+      "name": "BidNet Direct - Ohio landing",
+      "url": "https://www.bidnetdirect.com/ohio",
+      "relevant_sports": [
+        "needs_validation"
+      ],
+      "lead_stage": [
+        "active_bid"
+      ],
+      "searchability": "poor",
+      "monitor_frequency": "weekly",
+      "sport_confirmed": false,
+      "validation_status": "broken",
+      "normalized_url": "https://www.bidnetdirect.com/ohio",
+      "location_ids": [
+        "us-oh-cuyahoga-county"
+      ],
+      "first_seen": "2026-07-24T12:00:00Z",
+      "last_checked": "2026-07-24T12:00:00Z",
+      "last_result": "broken/403 on refine recheck",
+      "id": "SRC-038"
     }
   ]
 }

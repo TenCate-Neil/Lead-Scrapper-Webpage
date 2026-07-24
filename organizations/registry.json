@@ -10,13 +10,30 @@
       "state": "TX",
       "primary_county": "Williamson",
       "geography": [
-        { "kind": "county", "value": "Williamson" },
-        { "kind": "county", "value": "Travis" },
-        { "kind": "place", "value": "Leander" },
-        { "kind": "place", "value": "Cedar Park" },
-        { "kind": "place", "value": "Austin" }
+        {
+          "kind": "county",
+          "value": "Williamson"
+        },
+        {
+          "kind": "county",
+          "value": "Travis"
+        },
+        {
+          "kind": "place",
+          "value": "Leander"
+        },
+        {
+          "kind": "place",
+          "value": "Cedar Park"
+        },
+        {
+          "kind": "place",
+          "value": "Austin"
+        }
       ],
-      "location_ids": ["us-tx-austin-msa"],
+      "location_ids": [
+        "us-tx-austin-msa"
+      ],
       "first_seen": "2026-07-01T18:41:58Z"
     },
     {
@@ -27,14 +44,299 @@
       "state": "TX",
       "primary_county": "Williamson",
       "geography": [
-        { "kind": "county", "value": "Williamson" },
-        { "kind": "county", "value": "Travis" },
-        { "kind": "place", "value": "Round Rock" },
-        { "kind": "place", "value": "Austin" },
-        { "kind": "place", "value": "Cedar Park" }
+        {
+          "kind": "county",
+          "value": "Williamson"
+        },
+        {
+          "kind": "county",
+          "value": "Travis"
+        },
+        {
+          "kind": "place",
+          "value": "Round Rock"
+        },
+        {
+          "kind": "place",
+          "value": "Austin"
+        },
+        {
+          "kind": "place",
+          "value": "Cedar Park"
+        }
       ],
-      "location_ids": ["us-tx-austin-msa"],
+      "location_ids": [
+        "us-tx-austin-msa"
+      ],
       "first_seen": "2026-07-01T18:41:58Z"
+    },
+    {
+      "organization_id": "cuyahoga-county-oh",
+      "name": "Cuyahoga County",
+      "type": "county",
+      "website": "https://cuyahogacounty.gov",
+      "state": "OH",
+      "primary_county": "Cuyahoga",
+      "geography": [
+        {
+          "kind": "county",
+          "value": "Cuyahoga"
+        }
+      ],
+      "location_ids": [
+        "us-oh-cuyahoga-county"
+      ],
+      "first_seen": "2026-07-24T12:00:00Z"
+    },
+    {
+      "organization_id": "city-of-cleveland-oh",
+      "name": "City of Cleveland",
+      "type": "city",
+      "website": "https://www.clevelandohio.gov",
+      "state": "OH",
+      "primary_county": "Cuyahoga",
+      "geography": [
+        {
+          "kind": "county",
+          "value": "Cuyahoga"
+        },
+        {
+          "kind": "place",
+          "value": "Cleveland"
+        }
+      ],
+      "location_ids": [
+        "us-oh-cuyahoga-county"
+      ],
+      "first_seen": "2026-07-24T12:00:00Z"
+    },
+    {
+      "organization_id": "city-of-parma-oh",
+      "name": "City of Parma",
+      "type": "city",
+      "website": "https://www.cityofparma-oh.gov",
+      "state": "OH",
+      "primary_county": "Cuyahoga",
+      "geography": [
+        {
+          "kind": "county",
+          "value": "Cuyahoga"
+        },
+        {
+          "kind": "place",
+          "value": "Parma"
+        }
+      ],
+      "location_ids": [
+        "us-oh-cuyahoga-county"
+      ],
+      "first_seen": "2026-07-24T12:00:00Z"
+    },
+    {
+      "organization_id": "city-of-strongsville-oh",
+      "name": "City of Strongsville",
+      "type": "city",
+      "website": "https://www.strongsville.org",
+      "state": "OH",
+      "primary_county": "Cuyahoga",
+      "geography": [
+        {
+          "kind": "county",
+          "value": "Cuyahoga"
+        },
+        {
+          "kind": "place",
+          "value": "Strongsville"
+        }
+      ],
+      "location_ids": [
+        "us-oh-cuyahoga-county"
+      ],
+      "first_seen": "2026-07-24T12:00:00Z"
+    },
+    {
+      "organization_id": "city-of-westlake-oh",
+      "name": "City of Westlake",
+      "type": "city",
+      "website": "https://www.cityofwestlake.org",
+      "state": "OH",
+      "primary_county": "Cuyahoga",
+      "geography": [
+        {
+          "kind": "county",
+          "value": "Cuyahoga"
+        },
+        {
+          "kind": "place",
+          "value": "Westlake"
+        }
+      ],
+      "location_ids": [
+        "us-oh-cuyahoga-county"
+      ],
+      "first_seen": "2026-07-24T12:00:00Z"
+    },
+    {
+      "organization_id": "city-of-solon-oh",
+      "name": "City of Solon",
+      "type": "city",
+      "website": "https://www.solonohio.org",
+      "state": "OH",
+      "primary_county": "Cuyahoga",
+      "geography": [
+        {
+          "kind": "county",
+          "value": "Cuyahoga"
+        },
+        {
+          "kind": "place",
+          "value": "Solon"
+        }
+      ],
+      "location_ids": [
+        "us-oh-cuyahoga-county"
+      ],
+      "first_seen": "2026-07-24T12:00:00Z"
+    },
+    {
+      "organization_id": "cleveland-metropolitan-sd-oh",
+      "name": "Cleveland Metropolitan School District",
+      "type": "school_district",
+      "website": "https://www.clevelandmetroschools.org",
+      "state": "OH",
+      "primary_county": "Cuyahoga",
+      "geography": [
+        {
+          "kind": "county",
+          "value": "Cuyahoga"
+        },
+        {
+          "kind": "place",
+          "value": "Cleveland"
+        }
+      ],
+      "location_ids": [
+        "us-oh-cuyahoga-county"
+      ],
+      "first_seen": "2026-07-24T12:00:00Z"
+    },
+    {
+      "organization_id": "parma-city-sd-oh",
+      "name": "Parma City School District",
+      "type": "school_district",
+      "website": "https://www.parmacityschools.org",
+      "state": "OH",
+      "primary_county": "Cuyahoga",
+      "geography": [
+        {
+          "kind": "county",
+          "value": "Cuyahoga"
+        },
+        {
+          "kind": "place",
+          "value": "Parma"
+        },
+        {
+          "kind": "place",
+          "value": "Parma Heights"
+        },
+        {
+          "kind": "place",
+          "value": "Seven Hills"
+        }
+      ],
+      "location_ids": [
+        "us-oh-cuyahoga-county"
+      ],
+      "first_seen": "2026-07-24T12:00:00Z"
+    },
+    {
+      "organization_id": "strongsville-city-sd-oh",
+      "name": "Strongsville City Schools",
+      "type": "school_district",
+      "website": "https://www.scsmustangs.org",
+      "state": "OH",
+      "primary_county": "Cuyahoga",
+      "geography": [
+        {
+          "kind": "county",
+          "value": "Cuyahoga"
+        },
+        {
+          "kind": "place",
+          "value": "Strongsville"
+        }
+      ],
+      "location_ids": [
+        "us-oh-cuyahoga-county"
+      ],
+      "first_seen": "2026-07-24T12:00:00Z"
+    },
+    {
+      "organization_id": "westlake-city-sd-oh",
+      "name": "Westlake City Schools",
+      "type": "school_district",
+      "website": "https://www.wlake.org",
+      "state": "OH",
+      "primary_county": "Cuyahoga",
+      "geography": [
+        {
+          "kind": "county",
+          "value": "Cuyahoga"
+        },
+        {
+          "kind": "place",
+          "value": "Westlake"
+        }
+      ],
+      "location_ids": [
+        "us-oh-cuyahoga-county"
+      ],
+      "first_seen": "2026-07-24T12:00:00Z"
+    },
+    {
+      "organization_id": "solon-city-sd-oh",
+      "name": "Solon City Schools",
+      "type": "school_district",
+      "website": "https://www.solonschools.org",
+      "state": "OH",
+      "primary_county": "Cuyahoga",
+      "geography": [
+        {
+          "kind": "county",
+          "value": "Cuyahoga"
+        },
+        {
+          "kind": "place",
+          "value": "Solon"
+        }
+      ],
+      "location_ids": [
+        "us-oh-cuyahoga-county"
+      ],
+      "first_seen": "2026-07-24T12:00:00Z"
+    },
+    {
+      "organization_id": "shaker-heights-city-sd-oh",
+      "name": "Shaker Heights City School District",
+      "type": "school_district",
+      "website": "https://www.shaker.org",
+      "state": "OH",
+      "primary_county": "Cuyahoga",
+      "geography": [
+        {
+          "kind": "county",
+          "value": "Cuyahoga"
+        },
+        {
+          "kind": "place",
+          "value": "Shaker Heights"
+        }
+      ],
+      "location_ids": [
+        "us-oh-cuyahoga-county"
+      ],
+      "first_seen": "2026-07-24T12:00:00Z"
     }
   ]
 }
