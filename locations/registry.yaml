@@ -30,6 +30,17 @@ locations:
     cadence: weekly
     tags: [texas, tier-1]
     added_date: "2026-07-13"
+  - schema_version: "1.0"
+    location_id: us-oh-cuyahoga-county
+    name: Cuyahoga-County
+    type: county
+    scope:
+      counties: [Cuyahoga]
+      state: OH
+    priority: high
+    cadence: weekly
+    tags: [cuyahoga, tier-1]
+    added_date: "2026-07-24"
 
   # ---------------------------------------------------------------------------
   # Example stubs. Uncomment and adjust to add a location. Copy the shape above:
